@@ -23,7 +23,7 @@ namespace Domain.Entities
         /// <summary>
         ///     Дата отправки сообщения (Unix time)
         /// </summary>
-        public DateTime Date { get; set; }
+        public int Date { get; set; }
 
         /// <summary>
         /// 	Диалог, в котором было отправлено сообщение

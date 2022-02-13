@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csproj", "{788194E0-620C-458A-93A3-57B3EEA39892}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{788194E0-620C-458A-93A3-57B3EEA39892}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{A09F8F49-132F-469E-B8E9-A0D1FDCBD2B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{A09F8F49-132F-469E-B8E9-A0D1FDCBD2B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{31B266B2-A9C5-4F62-8944-FE504F84D66C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{31B266B2-A9C5-4F62-8944-FE504F84D66C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramWorker", "TelegramWorker\TelegramWorker.csproj", "{BA3A231D-AA97-4658-B83F-B7087AA35455}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{31B266B2-A9C5-4F62-8944-FE504F84D66C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31B266B2-A9C5-4F62-8944-FE504F84D66C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31B266B2-A9C5-4F62-8944-FE504F84D66C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA3A231D-AA97-4658-B83F-B7087AA35455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA3A231D-AA97-4658-B83F-B7087AA35455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA3A231D-AA97-4658-B83F-B7087AA35455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA3A231D-AA97-4658-B83F-B7087AA35455}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
