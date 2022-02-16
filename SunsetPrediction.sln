@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{788194E0-620C-458A-93A3-57B3EEA39892}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{A09F8F49-132F-469E-B8E9-A0D1FDCBD2B1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{31B266B2-A9C5-4F62-8944-FE504F84D66C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramWorker", "TelegramWorker\TelegramWorker.csproj", "{BA3A231D-AA97-4658-B83F-B7087AA35455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramWorker", "TelegramWorker\TelegramWorker.csproj", "{BA3A231D-AA97-4658-B83F-B7087AA35455}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{788194E0-620C-458A-93A3-57B3EEA39892}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{788194E0-620C-458A-93A3-57B3EEA39892}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{788194E0-620C-458A-93A3-57B3EEA39892}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{788194E0-620C-458A-93A3-57B3EEA39892}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A09F8F49-132F-469E-B8E9-A0D1FDCBD2B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A09F8F49-132F-469E-B8E9-A0D1FDCBD2B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A09F8F49-132F-469E-B8E9-A0D1FDCBD2B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
