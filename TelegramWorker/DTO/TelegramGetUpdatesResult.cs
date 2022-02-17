@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace TelegramWorker.Dtos
+namespace TelegramWorker.DTO
 {
     public class TelegramGetUpdatesResult
     {

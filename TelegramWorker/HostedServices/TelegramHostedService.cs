@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using TelegramWorker.Dtos;
+using TelegramWorker.DTO;
 using TelegramWorker.Settings;
 
 namespace TelegramWorker.HostedServices

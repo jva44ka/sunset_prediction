@@ -1,0 +1,53 @@
+﻿using System.Threading.Tasks;
+using Dapper;
+using DataAccess.ConnectionFactories;
+using DataAccess.DAL;
+using DataAccess.DAO.Interfaces;
+
+namespace DataAccess.DAO
+{
+    public class UpdateDao : IUpdateDao
+    {
+        private readonly IConnectionFactory _connectionFactory;
+
+        public UpdateDao(IConnectionFactory connectionFactory)
+        {
+            _connectionFactory = connectionFactory;
+        }
+
+
+        public async Task<bool> Create(UpdateDal update)
+        {
+            string sql = 
+@"
+INSERT INTO 
+    updates 
+VALUES (
+    @update_id
+);";
+            using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
+            var rowsInserted = await connection.ExecuteAsync(sql, new
+            {
+                update_id = update.UpdateId
+            });
+            return rowsInserted == 1;
+        }
+
+        public async Task<UpdateDal> GetLastUpdate()
+        {
+            string sql =
+                @"
+SELECT
+    update_id   AS  UpdateId
+FROM
+    updates
+ORDER BY 
+    update_id DESC
+LIMIT 
+    1";
+            using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
+            var update = await connection.QuerySingleAsync<UpdateDal>(sql).ConfigureAwait(false);
+            return update;
+        }
+    }
+}

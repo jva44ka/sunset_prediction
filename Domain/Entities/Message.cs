@@ -23,7 +23,7 @@ namespace Domain.Entities
         /// <summary>
         ///     Дата отправки сообщения (Unix time)
         /// </summary>
-        public int Date { get; set; }
+        public int DateUnix { get; set; }
 
         /// <summary>
         /// 	Диалог, в котором было отправлено сообщение
@@ -177,5 +177,18 @@ namespace Domain.Entities
         /// </summary>
         [JsonPropertyName("pinned_message")]
         public Message PinnedMessage { get; set; }
+
+
+        public DateTime GetDateUnixAsDate()
+        {
+            if (DateUnix == default)
+            {
+                return default;
+            }
+
+            var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(DateUnix).ToLocalTime();
+            return dateTime;
+        }
     }
 }
