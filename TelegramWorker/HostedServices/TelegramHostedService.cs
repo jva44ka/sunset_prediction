@@ -40,16 +40,8 @@ namespace TelegramWorker.HostedServices
 
                 try
                 {
-                    var lastHandledUpdateId = await _updateService.GetLastUpdateId()
-                                                                  .ConfigureAwait(false);
-
                     var httpClient = _httpClientFactory.CreateClient();
-                    var getUpdatesUrl = $"{_telegramApiSettings.Value.Url}/bot{_telegramApiSettings.Value.BotToken}/getUpdates";
-                    getUpdatesUrl += $"?timeout={_telegramApiSettings.Value.LongPoolingTimeoutSec}";
-                    if (lastHandledUpdateId != null)
-                    {
-                        getUpdatesUrl += $"&offset={lastHandledUpdateId.Value + 1}";
-                    }
+                    var getUpdatesUrl = await GetUpdatesUrl().ConfigureAwait(false);
                     var response = await httpClient.GetAsync(getUpdatesUrl, stoppingToken);
 
                     if (response.IsSuccessStatusCode)
@@ -81,6 +73,23 @@ namespace TelegramWorker.HostedServices
             }
 
             _logger.LogInformation($"Worker stopped at: {DateTimeOffset.UtcNow}");
+        }
+
+        /// <summary>
+        ///     Строит URL для запроса к апи-методу "getUpdates"
+        /// </summary>
+        private async Task<string> GetUpdatesUrl()
+        {
+            var lastHandledUpdateId = await _updateService.GetLastUpdateId()
+                                                          .ConfigureAwait(false);
+            var getUpdatesUrl = $"{_telegramApiSettings.Value.Url}/bot{_telegramApiSettings.Value.BotToken}/getUpdates";
+            getUpdatesUrl += $"?timeout={_telegramApiSettings.Value.LongPoolingTimeoutSec}";
+            if (lastHandledUpdateId != null)
+            {
+                getUpdatesUrl += $"&offset={lastHandledUpdateId.Value + 1}";
+            }
+
+            return getUpdatesUrl;
         }
     }
 }
