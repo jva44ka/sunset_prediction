@@ -23,17 +23,19 @@ namespace DataAccess.DAO
 INSERT INTO 
     updates 
 VALUES (
-    @update_id
+    @update_id,
+    @handle_date
 );";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
-                update_id = update.UpdateId
+                update_id = update.UpdateId,
+                handle_date = update.HandleDate
             });
             return rowsInserted == 1;
         }
 
-        public async Task<UpdateDal> GetLastUpdate()
+        public async Task<UpdateDal?> GetLastUpdate()
         {
             string sql =
                 @"
@@ -46,7 +48,7 @@ ORDER BY
 LIMIT 
     1";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
-            var update = await connection.QuerySingleAsync<UpdateDal>(sql).ConfigureAwait(false);
+            var update = await connection.QueryFirstAsync<UpdateDal>(sql).ConfigureAwait(false);
             return update;
         }
     }

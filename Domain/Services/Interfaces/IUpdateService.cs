@@ -5,6 +5,7 @@ namespace Domain.Services.Interfaces
 {
     public interface IUpdateService
     {
+        public Task<int?> GetLastUpdateId();
         public Task HandleUpdate(Update update);
     }
 }

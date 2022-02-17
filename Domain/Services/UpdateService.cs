@@ -20,9 +20,16 @@ namespace Domain.Services
             _mapper = mapper;
         }
 
+        public async Task<int?> GetLastUpdateId()
+        {
+            var lastUpdate = await _updateDao.GetLastUpdate().ConfigureAwait(false);
+            return lastUpdate?.UpdateId;
+        }
+
         public async Task HandleUpdate(Update update)
         {
             var updateDal = _mapper.ToDal(update);
+            updateDal.HandleDate = DateTime.UtcNow;
             var creationResult = await _updateDao.Create(updateDal).ConfigureAwait(false);
 
             if (!creationResult)

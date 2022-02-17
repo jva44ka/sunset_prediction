@@ -17,6 +17,6 @@ namespace DataAccess.DAO.Interfaces
         /// <summary>
         ///     Возвращает последний апдейт бота телеграма
         /// </summary>
-        Task<UpdateDal> GetLastUpdate();
+        Task<UpdateDal?> GetLastUpdate();
     }
 }
