@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramWorker", "TelegramWorker\TelegramWorker.csproj", "{BA3A231D-AA97-4658-B83F-B7087AA35455}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator", "Migrator\Migrator.csproj", "{577D0FBF-6393-40D0-9231-1498DF7D3F2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BA3A231D-AA97-4658-B83F-B7087AA35455}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA3A231D-AA97-4658-B83F-B7087AA35455}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA3A231D-AA97-4658-B83F-B7087AA35455}.Release|Any CPU.Build.0 = Release|Any CPU
+		{577D0FBF-6393-40D0-9231-1498DF7D3F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{577D0FBF-6393-40D0-9231-1498DF7D3F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{577D0FBF-6393-40D0-9231-1498DF7D3F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{577D0FBF-6393-40D0-9231-1498DF7D3F2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
