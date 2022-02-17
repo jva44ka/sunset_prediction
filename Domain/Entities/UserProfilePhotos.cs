@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -10,7 +10,7 @@ namespace Domain.Entities
         /// <summary>
         ///     Общее число доступных фотографий профиля
         /// </summary>
-        [JsonPropertyName("total_count")]
+        [JsonProperty("total_count")]
         public int TotalCount { get; set; }
 
         /// <summary>

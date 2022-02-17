@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -10,7 +10,7 @@ namespace Domain.Entities
         /// <summary>
         ///     Unique file identifier
         /// </summary>
-        [JsonPropertyName("file_id")]
+        [JsonProperty("file_id")]
         public string FileId { get; set; }
 
         /// <summary>
@@ -21,19 +21,19 @@ namespace Domain.Entities
         /// <summary>
         /// 	Опционально. Original filename as defined by sender
         /// </summary>
-        [JsonPropertyName("file_name")]
+        [JsonProperty("file_name")]
         public string FileName { get; set; }
 
         /// <summary>
         /// 	Опционально. MIME файла, заданный отправителем
         /// </summary>
-        [JsonPropertyName("mime_type")]
+        [JsonProperty("mime_type")]
         public string MimeType { get; set; }
         
         /// <summary>
         /// 	Опционально. Размер файла
         /// </summary>
-        [JsonPropertyName("file_size")]
+        [JsonProperty("file_size")]
         public string FileSize { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection.Metadata;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -12,7 +12,7 @@ namespace Domain.Entities
         /// <summary>
         /// 	Уникальный идентификатор сообщения
         /// </summary>
-        [JsonPropertyName("message_id")]
+        [JsonProperty("message_id")]
         public int MessageId { get; set; }
 
         /// <summary>
@@ -33,13 +33,13 @@ namespace Domain.Entities
         /// <summary>
         /// 	Опционально. Для пересланных сообщений: отправитель оригинального сообщения
         /// </summary>
-        [JsonPropertyName("forward_from")]
+        [JsonProperty("forward_from")]
         public User ForwardFrom { get; set; }
 
         /// <summary>
         /// 	Опционально. Для пересланных сообщений: дата отправки оригинального сообщения
         /// </summary>
-        [JsonPropertyName("forward_date")]
+        [JsonProperty("forward_date")]
         public DateTime ForwardDate { get; set; }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Domain.Entities
         ///     Note that the Message object in this field will not contain
         ///     further reply_to_message fields even if it itself is a reply.
         /// </summary>
-        [JsonPropertyName("reply_to_message")]
+        [JsonProperty("reply_to_message")]
         public Message ReplyToMessage { get; set; }
 
         /// <summary>
@@ -113,61 +113,61 @@ namespace Domain.Entities
         /// <summary>
         ///     Опционально. Информация о пользователе, добавленном в группу
         /// </summary>
-        [JsonPropertyName("new_chat_member")]
+        [JsonProperty("new_chat_member")]
         public User NewChatMember { get; set; }
 
         /// <summary>
         /// 	Опционально. Информация о пользователе, удалённом из группы
         /// </summary>
-        [JsonPropertyName("left_chat_member")]
+        [JsonProperty("left_chat_member")]
         public User LeftChatMember { get; set; }
 
         /// <summary>
         ///     Опционально. Название группы было изменено на это поле
         /// </summary>
-        [JsonPropertyName("new_chat_title")]
+        [JsonProperty("new_chat_title")]
         public string NewChatTitle { get; set; }
 
         /// <summary>
         ///     Опционально. Фото группы было изменено на это поле
         /// </summary>
-        [JsonPropertyName("new_chat_photo")]
+        [JsonProperty("new_chat_photo")]
         public PhotoSize[] NewChatPhoto { get; set; }
 
         /// <summary>
         ///     Опционально. Сервисное сообщение: фото группы было удалено
         /// </summary>
-        [JsonPropertyName("delete_chat_photo")]
+        [JsonProperty("delete_chat_photo")]
         public bool DeleteChatPhoto { get; set; }
 
         /// <summary>
         ///     Опционально. Сервисное сообщение: группа создана
         /// </summary>
-        [JsonPropertyName("group_chat_created")]
+        [JsonProperty("group_chat_created")]
         public bool GroupChatCreated { get; set; }
 
         /// <summary>
         ///     Опционально. Сервисное сообщение: супергруппа создана
         /// </summary>
-        [JsonPropertyName("supergroup_chat_created")]
+        [JsonProperty("supergroup_chat_created")]
         public bool SupergroupChatCreated { get; set; }
 
         /// <summary>
         ///     Опционально. Сервисное сообщение: канал создан
         /// </summary>
-        [JsonPropertyName("channel_chat_created")]
+        [JsonProperty("channel_chat_created")]
         public bool ChannelChatCreated { get; set; }
 
         /// <summary>
         ///     Опционально. Группа была преобразована в супергруппу с указанным идентификатором. Не превышает 1e13
         /// </summary>
-        [JsonPropertyName("migrate_to_chat_id")]
+        [JsonProperty("migrate_to_chat_id")]
         public int MigrateToChatId { get; set; }
 
         /// <summary>
         ///     Опционально. Cупергруппа была создана из группы с указанным идентификатором. Не превышает 1e13
         /// </summary>
-        [JsonPropertyName("migrate_from_chat_id")]
+        [JsonProperty("migrate_from_chat_id")]
         public int MigrateFromChatId { get; set; }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace Domain.Entities
         ///     Note that the Message object in this field will not contain further reply_to_message
         ///     fields even if it is itself a reply.
         /// </summary>
-        [JsonPropertyName("pinned_message")]
+        [JsonProperty("pinned_message")]
         public Message PinnedMessage { get; set; }
 
 

@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -13,7 +13,7 @@ namespace Domain.Entities
         /// <summary>
         ///     Указание клиенту скрыть клавиатуру бота
         /// </summary>
-        [JsonPropertyName("hide_keyboard")]
+        [JsonProperty("hide_keyboard")]
         public bool HideKeyboard { get; set; }
 
         /// <summary>

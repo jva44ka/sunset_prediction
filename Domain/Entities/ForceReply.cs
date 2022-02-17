@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -15,7 +15,7 @@ namespace Domain.Entities
         ///     and tapped ’Reply'
         /// <remarks>force_reply</remarks>
         /// </summary>
-        [JsonPropertyName("force_reply")]
+        [JsonProperty("force_reply")]
         public bool ForceReplyProp => true;
 
         /// <summary>

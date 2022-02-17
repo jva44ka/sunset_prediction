@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -10,25 +10,25 @@ namespace Domain.Entities
         /// <summary>
         ///     Номер телефона
         /// </summary>
-        [JsonPropertyName("phone_number")]
+        [JsonProperty("phone_number")]
         public string PhoneNumber { get; set; }
         
         /// <summary>
         ///     Имя
         /// </summary>
-        [JsonPropertyName("first_name")]
+        [JsonProperty("first_name")]
         public string FirstName { get; set; }
 
         /// <summary>
         ///     Опционально. Фамилия
         /// </summary>
-        [JsonPropertyName("last_name")]
+        [JsonProperty("last_name")]
         public string LastName { get; set; }
 
         /// <summary>
         ///     Опционально. Идентификатор пользователя в Telegram
         /// </summary>
-        [JsonPropertyName("user_id")]
+        [JsonProperty("user_id")]
         public int UserId { get; set; }
     }
 }

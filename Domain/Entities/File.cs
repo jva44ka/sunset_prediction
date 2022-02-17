@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -12,20 +12,20 @@ namespace Domain.Entities
         /// <summary>
         ///     Уникальный идентификатор файла
         /// </summary>
-        [JsonPropertyName("file_id")]
+        [JsonProperty("file_id")]
         public string FileId { get; set; }
 
         /// <summary>
         ///     Опционально. Размер файла, если известен
         /// </summary>
-        [JsonPropertyName("file_size")]
+        [JsonProperty("file_size")]
         public int FileSize { get; set; }
 
         /// <summary>
         ///     Опционально. Расположение файла. Для скачивания воспользуйтейсь ссылкой вида
         ///     https://api.telegram.org/file/bot<token>/<file_path>
         /// </summary>
-        [JsonPropertyName("file_path")]
+        [JsonProperty("file_path")]
         public string FilePath { get; set; }
     }
 }

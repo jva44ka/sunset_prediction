@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -10,7 +10,7 @@ namespace Domain.Entities
         /// <summary>
         ///     Массив строк, каждая из которых является массивом объектов InlineKeyboardButton.
         /// </summary>
-        [JsonPropertyName("inline_keyboard")]
+        [JsonProperty("inline_keyboard")]
         public InlineKeyboardButton[] inline_keyboard { get; set; }
     }
 }

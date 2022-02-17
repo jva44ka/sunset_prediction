@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -17,14 +17,14 @@ namespace Domain.Entities
         ///     (сделать её меньше, если кнопок мало). По умолчанию False, то есть клавиатура всегда такого же размера,
         ///     как и стандартная клавиатура устройства.
         /// </summary>
-        [JsonPropertyName("resize_keyboard")]
+        [JsonProperty("resize_keyboard")]
         public bool ResizeKeyboard { get; set; }
 
         /// <summary>
         ///     Опционально. Указывает клиенту скрыть клавиатуру после использования (после нажатия на кнопку).
         ///     Её по-прежнему можно будет открыть через иконку в поле ввода сообщения. По умолчанию False.
         /// </summary>
-        [JsonPropertyName("one_time_keyboard")]
+        [JsonProperty("one_time_keyboard")]
         public bool OneTimeKeyboard { get; set; }
 
         /// <summary>

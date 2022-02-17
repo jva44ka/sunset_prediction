@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -30,19 +30,19 @@ namespace Domain.Entities
         /// <summary>
         ///     Опционально. Имя собеседника в чате
         /// </summary>
-        [JsonPropertyName("first_name")]
+        [JsonProperty("first_name")]
         public string FirstName { get; set; }
 
         /// <summary>
         ///     Опционально. Фамилия собеседника в чате
         /// </summary>
-        [JsonPropertyName("last_name")]
+        [JsonProperty("last_name")]
         public string LastName { get; set; }
 
         /// <summary>
         ///     Опционально. True, если все участники чата являются администраторами
         /// </summary>
-        [JsonPropertyName("all_members_are_administrators")]
+        [JsonProperty("all_members_are_administrators")]
         public bool AllMembersAreAdministrators { get; set; }
     }
 }

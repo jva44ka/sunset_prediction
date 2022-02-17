@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -15,13 +15,13 @@ namespace Domain.Entities
         /// <summary>
         ///     Имя бота или пользователя
         /// </summary>
-        [JsonPropertyName("first_name")]
+        [JsonProperty("first_name")]
         public string FirstName { get; set; }
 
         /// <summary>
         ///     Опционально. Фамилия бота или пользователя
         /// </summary>
-        [JsonPropertyName("last_name")]
+        [JsonProperty("last_name")]
         public string LastName { get; set; }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -25,7 +25,7 @@ namespace Domain.Entities
         /// <summary>
         ///     Опционально. Идентификатор объекта в Foursquare
         /// </summary>
-        [JsonPropertyName("foursquare_id")]
+        [JsonProperty("foursquare_id")]
         public string FoursquareId { get; set; }
     }
 }

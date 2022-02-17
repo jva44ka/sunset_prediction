@@ -19,8 +19,6 @@ namespace TelegramWorker.HostedServices
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IOptions<TelegramApiSettings> _telegramApiSettings;
 
-        private const int LongPoolingTimeoutSec = 60; 
-
         public TelegramBackgroundService(ILogger<TelegramBackgroundService> logger,
                                          IUpdateService updateService,
                                          IHttpClientFactory httpClientFactory,
@@ -46,7 +44,8 @@ namespace TelegramWorker.HostedServices
                                                                   .ConfigureAwait(false);
 
                     var httpClient = _httpClientFactory.CreateClient();
-                    var getUpdatesUrl = $"{_telegramApiSettings.Value.Url}/bot{_telegramApiSettings.Value.BotToken}/getUpdates?timeout={LongPoolingTimeoutSec}";
+                    var getUpdatesUrl = $"{_telegramApiSettings.Value.Url}/bot{_telegramApiSettings.Value.BotToken}/getUpdates";
+                    getUpdatesUrl += $"?timeout={_telegramApiSettings.Value.LongPoolingTimeoutSec}";
                     if (lastHandledUpdateId != null)
                     {
                         getUpdatesUrl += $"&offset={lastHandledUpdateId.Value + 1}";
@@ -78,7 +77,7 @@ namespace TelegramWorker.HostedServices
                     _logger.LogError(e.Message);
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(LongPoolingTimeoutSec), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(_telegramApiSettings.Value.LongPoolingTimeoutSec), stoppingToken);
             }
 
             _logger.LogInformation($"Worker stopped at: {DateTimeOffset.UtcNow}");

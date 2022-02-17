@@ -14,5 +14,10 @@
         ///     Токен бота
         /// </summary>
         public string BotToken { get; set; }
+
+        /// <summary>
+        ///     Таймаут опроса новых обновлений у бота в секундах
+        /// </summary>
+        public int LongPoolingTimeoutSec { get; set; }
     }
 }

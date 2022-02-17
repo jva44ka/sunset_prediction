@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -18,14 +18,14 @@ namespace Domain.Entities
         ///     Опционально. Если значение True, то при нажатии на кнопку боту отправится контакт пользователя
         ///     с его номером телефона. Доступно только в диалогах с ботом.
         /// </summary>
-        [JsonPropertyName("request_contact")]
+        [JsonProperty("request_contact")]
         public bool RequestContact { get; set; }
 
         /// <summary>
         ///     Опционально. Если значение True, то при нажатии на кнопку боту отправится местоположение пользователя.
         ///     Доступно только в диалогах с ботом.
         /// </summary>
-        [JsonPropertyName("request_location")]
+        [JsonProperty("request_location")]
         public bool RequestLocation { get; set; }
     }
 }

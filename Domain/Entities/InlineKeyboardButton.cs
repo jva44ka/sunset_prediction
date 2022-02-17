@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -21,7 +21,7 @@ namespace Domain.Entities
         /// <summary>
         ///     Опционально. Данные, которые будут отправлены в callback_query при нажатии на кнопку
         /// </summary>
-        [JsonPropertyName("callback_data")]
+        [JsonProperty("callback_data")]
         public string CallbackData { get; set; }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Domain.Entities
         ///     встроенным режимом с этим же ботом.Особенно полезно в сочетаниями с действиями switch_pm…
         ///     – в этом случае пользователь вернётся в исходный чат автоматически, без ручного выбора из списка.
         /// </summary>
-        [JsonPropertyName("switch_inline_query")]
+        [JsonProperty("switch_inline_query")]
         public string SwitchInlineQuery { get; set; }
         
         /// <summary>
@@ -42,7 +42,7 @@ namespace Domain.Entities
         ///     inline query in the current chat's input field. Can be empty, in which case only the bot’s
         ///     username will be inserted.
         /// </summary>
-        [JsonPropertyName("switch_inline_query_current_chat")]
+        [JsonProperty("switch_inline_query_current_chat")]
         public string SwitchInlineQueryCurrentChat { get; set; }
     }
 }

@@ -48,7 +48,7 @@ ORDER BY
 LIMIT 
     1";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
-            var update = await connection.QueryFirstAsync<UpdateDal>(sql).ConfigureAwait(false);
+            var update = await connection.QueryFirstOrDefaultAsync<UpdateDal>(sql).ConfigureAwait(false);
             return update;
         }
     }

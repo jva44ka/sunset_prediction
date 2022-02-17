@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -29,7 +29,7 @@ namespace Domain.Entities
         /// <summary>
         ///     Опционально. Идентификатор сообщения, отправленного через вашего бота во встроенном режиме
         /// </summary>
-        [JsonPropertyName("inline_message_id")]
+        [JsonProperty("inline_message_id")]
         public string InlineMessageId { get; set; }
 
         /// <summary>

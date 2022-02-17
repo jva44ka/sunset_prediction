@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace Domain.Entities
 {
@@ -17,7 +17,7 @@ namespace Domain.Entities
         ///     to restore the correct update sequence, should they get out of order.
         /// </summary>
         /// <remarks>update_id</remarks>
-        [JsonPropertyName("update_id")]
+        [JsonProperty("update_id")]
         public int UpdateId { get; set; }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Domain.Entities
         ///     Опционально. New incoming callback query
         /// </summary>
         /// <remarks>callback_query</remarks>
-        [JsonPropertyName("callback_query")]
+        [JsonProperty("callback_query")]
         public CallbackQuery CallbackQuery { get; set; }
     }
 }
