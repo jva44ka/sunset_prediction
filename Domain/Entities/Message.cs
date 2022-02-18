@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection.Metadata;
 using Newtonsoft.Json;
 
 namespace Domain.Entities

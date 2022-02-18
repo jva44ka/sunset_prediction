@@ -24,6 +24,7 @@ namespace TelegramWorker.Installers
 
             //domain
             serviceCollection.AddSingleton<IMapper<Update, UpdateDal>, UpdateMapper>();
+            serviceCollection.AddSingleton<ICitiesParserService, CitiesParserService>();
             serviceCollection.AddSingleton<IUpdateService, UpdateService>();
             serviceCollection.AddHttpClient();
             return serviceCollection;
