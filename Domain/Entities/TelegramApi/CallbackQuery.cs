@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Domain.Entities
+namespace Domain.Entities.TelegramApi
 {
     /// <summary>
     ///     Этот объект представляет входящий запрос обратной связи от инлайн-кнопки с заданным callback_data.

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Domain.Entities
+namespace Domain.Entities.TelegramApi
 {
     /// <summary>
     ///     После получения сообщения с этим объектом, приложение Telegram свернёт клавиатуру бота и отобразит

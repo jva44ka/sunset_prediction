@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace Domain.Entities
+namespace Domain.Entities.TelegramApi
 {
     /// <summary>
-    ///     Этот объект представляет голосовое сообщение.
+    ///     Этот объект представляет стикер.
     /// </summary>
-    public class Voice
+    public class Sticker
     {
         /// <summary>
         ///     Уникальный идентификатор файла
@@ -14,15 +14,19 @@ namespace Domain.Entities
         public string FileId { get; set; }
 
         /// <summary>
-        /// 	Продолжительность аудиофайла, заданная отправителем
+        /// 	Ширина стикера
         /// </summary>
-        public int Duration { get; set; }
+        public int Width { get; set; }
 
         /// <summary>
-        /// 	Опционально. MIME-тип файла, заданный отправителем
+        /// 	Высота стикера
         /// </summary>
-        [JsonProperty("mime_type")]
-        public string MimeType { get; set; }
+        public int Height { get; set; }
+
+        /// <summary>
+        /// 	Опционально. Превью стикера в формате .webp или .jpg
+        /// </summary>
+        public PhotoSize Thumb { get; set; }
 
         /// <summary>
         /// 	Опционально. Размер файла

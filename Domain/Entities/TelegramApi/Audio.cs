@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Domain.Entities
+namespace Domain.Entities.TelegramApi
 {
     /// <summary>
     ///     Этот объект представляет аудиозапись, которую клиенты Telegram воспинимают как музыкальный трек.

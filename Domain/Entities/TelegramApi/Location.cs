@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities
+﻿namespace Domain.Entities.TelegramApi
 {
     /// <summary>
     ///     Этот объект представляет точку на карте.

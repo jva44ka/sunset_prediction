@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Domain.Entities
+namespace Domain.Entities.TelegramApi
 {
     /// <summary>
     ///     Этот объект представляет файл, не являющийся фотографией, голосовым сообщением или аудиозаписью.

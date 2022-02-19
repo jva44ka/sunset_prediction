@@ -1,5 +1,5 @@
 ﻿using DataAccess.DAL;
-using Domain.Entities;
+using Domain.Entities.TelegramApi;
 using Domain.Mappers.Interfaces;
 
 namespace Domain.Mappers

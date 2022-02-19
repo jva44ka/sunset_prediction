@@ -2,7 +2,7 @@
 using DataAccess.DAL;
 using DataAccess.DAO;
 using DataAccess.DAO.Interfaces;
-using Domain.Entities;
+using Domain.Entities.TelegramApi;
 using Domain.Mappers;
 using Domain.Mappers.Interfaces;
 using Domain.Services;
