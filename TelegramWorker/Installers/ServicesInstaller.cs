@@ -2,6 +2,7 @@
 using DataAccess.DAL;
 using DataAccess.DAO;
 using DataAccess.DAO.Interfaces;
+using Domain.Entities;
 using Domain.Entities.TelegramApi;
 using Domain.Mappers;
 using Domain.Mappers.Interfaces;
@@ -21,11 +22,15 @@ namespace TelegramWorker.Installers
             //data access
             serviceCollection.AddSingleton<IConnectionFactory, NpgConnectionFactory>();
             serviceCollection.AddSingleton<IUpdateDao, UpdateDao>();
+            serviceCollection.AddSingleton<IDialogStateDao, DialogStateDao>();
 
             //domain
             serviceCollection.AddSingleton<IMapper<Update, UpdateDal>, UpdateMapper>();
+            serviceCollection.AddSingleton<IMapper<DialogState, DialogStateDal>, DialogStateMapper>();
+
             serviceCollection.AddSingleton<ICitiesParserService, CitiesParserService>();
             serviceCollection.AddSingleton<IUpdateService, UpdateService>();
+            serviceCollection.AddSingleton<IDialogStateService, DialogStateService>();
             serviceCollection.AddHttpClient();
             return serviceCollection;
         }

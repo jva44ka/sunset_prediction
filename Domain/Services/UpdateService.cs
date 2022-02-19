@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DataAccess.DAL;
 using DataAccess.DAO.Interfaces;
 using Domain.Entities;
+using Domain.Entities.TelegramApi;
 using Domain.Mappers.Interfaces;
 using Domain.Services.Interfaces;
 
@@ -11,13 +12,22 @@ namespace Domain.Services
     public class UpdateService : IUpdateService
     {
         private readonly IUpdateDao _updateDao;
-        private readonly IMapper<Update, UpdateDal> _mapper;
+        private readonly IMapper<Update, UpdateDal> _updatesMapper;
+        private readonly IDialogStateDao _dialogStateDao;
+        private readonly IDialogStateService _dialogStateService;
+        private readonly IMapper<DialogState, DialogStateDal> _dialogStateMapper;
 
         public UpdateService(IUpdateDao updateDao, 
-                             IMapper<Update, UpdateDal> mapper)
+                             IMapper<Update, UpdateDal> updatesMapper,
+                             IDialogStateDao dialogStateDao,
+                             IDialogStateService dialogStateService, 
+                             IMapper<DialogState, DialogStateDal> dialogStateMapper)
         {
             _updateDao = updateDao;
-            _mapper = mapper;
+            _updatesMapper = updatesMapper;
+            _dialogStateDao = dialogStateDao;
+            _dialogStateService = dialogStateService;
+            _dialogStateMapper = dialogStateMapper;
         }
 
         public async Task<int?> GetLastUpdateId()
@@ -26,9 +36,9 @@ namespace Domain.Services
             return lastUpdate?.UpdateId;
         }
 
-        public async Task HandleUpdate(Update update)
+        public async Task<string> HandleUpdate(Update update)
         {
-            var updateDal = _mapper.ToDal(update);
+            var updateDal = _updatesMapper.ToDal(update);
             updateDal.HandleDate = DateTime.UtcNow;
             var creationResult = await _updateDao.Create(updateDal).ConfigureAwait(false);
 
@@ -37,7 +47,12 @@ namespace Domain.Services
                 throw new Exception($"Failed to create record in table \"updates\" with update_id: {update.UpdateId}");
             }
 
-            //TODO: реагируем на апдейт: подписываем юзер, спрашиваем город и т.д.
+            var userId = update.Message.From.Id;
+            var currentStateDal = await _dialogStateDao.GetStateByUserId(userId).ConfigureAwait(false);
+            var currentState = _dialogStateMapper.ToEntity(currentStateDal);
+            var resultMessage = await _dialogStateService.TransitionState(currentState, update.Message).ConfigureAwait(false);
+
+            return resultMessage;
         }
     }
 }

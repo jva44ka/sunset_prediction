@@ -6,6 +6,11 @@ namespace Domain.Services.Interfaces
     public interface IUpdateService
     {
         public Task<int?> GetLastUpdateId();
-        public Task HandleUpdate(Update update);
+
+        /// <summary>
+        ///     Обрабатывает <see cref="Update"/>
+        /// </summary>
+        /// <returns>Сообщение, которое нужно отправить пользователю в ответ</returns>
+        public Task<string> HandleUpdate(Update update);
     }
 }

@@ -1,5 +1,8 @@
 using System;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Services.Interfaces;
@@ -51,11 +54,15 @@ namespace TelegramWorker.HostedServices
 
                         if (updatesResult.Ok && updatesResult.Result.Length > 0)
                         {
+                            var messageResult = string.Empty;
+
                             //TODO: распаралелить
                             foreach (var update in updatesResult.Result)
                             {
-                                await _updateService.HandleUpdate(update);
+                                messageResult = await _updateService.HandleUpdate(update);
                             }
+
+                            await SendMessage(messageResult, updatesResult.Result.Last().Message.Chat.Id);
                         }
                     }
                     else
@@ -75,6 +82,19 @@ namespace TelegramWorker.HostedServices
             _logger.LogInformation($"Worker stopped at: {DateTimeOffset.UtcNow}");
         }
 
+        private async Task SendMessage(string messageText, int chatId)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var url = SendMessageUrl();
+            var body = $@"
+{{
+    ""chat_id"": ""{chatId}"",
+    ""text"": ""{messageText}""
+}}
+";
+            await httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"));
+        }
+
         /// <summary>
         ///     Строит URL для запроса к апи-методу "getUpdates"
         /// </summary>
@@ -90,6 +110,14 @@ namespace TelegramWorker.HostedServices
             }
 
             return getUpdatesUrl;
+        }
+
+        /// <summary>
+        ///     Строит URL для запроса к апи-методу "sendMessage"
+        /// </summary>
+        private string SendMessageUrl()
+        {
+            return $"{_telegramApiSettings.Value.Url}/bot{_telegramApiSettings.Value.BotToken}/sendMessage";
         }
     }
 }

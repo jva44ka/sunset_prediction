@@ -22,12 +22,14 @@ namespace Domain.Services
             if (route != null)
             {
                 var cityLocation = route.First();
+                var countryLocation = route.Last();
                 return new City
                 {
                     Id = cityLocation.Id,
                     Address = string.Join(", ", route.Select(location => location.Name)),
                     Name = cityLocation.Name,
-                    UrlName = cityLocation.Name.Split('(').First().Trim()
+                    UrlName = cityLocation.Name.Split('(').First().Trim(),
+                    CountryCode = countryLocation.CountryCode
                 };
             }
 

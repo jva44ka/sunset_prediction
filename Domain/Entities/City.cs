@@ -13,5 +13,6 @@
         /// </example>
         public string UrlName { get; set; }
         public string Address { get; set; }
+        public string CountryCode { get; set; }
     }
 }
