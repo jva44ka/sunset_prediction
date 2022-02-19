@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Entities;
 using Domain.Services.Interfaces;
 using Newtonsoft.Json;
 
@@ -14,18 +15,29 @@ namespace Domain.Services
         //TODO: Сделать слабую ссылку чтобы не держать файл в памяти
         private Location[]? _locations;
 
-        public async Task<string?> FindFullAddress(string searchCityName)
+        public async Task<City?> FindCity(string searchCityName)
         {
             var route = await SearchRoute(searchCityName).ConfigureAwait(false);
 
             if (route != null)
             {
-                return string.Join(", ", route.Select(location => location.Name));
+                var cityLocation = route.First();
+                return new City
+                {
+                    Id = cityLocation.Id,
+                    Address = string.Join(", ", route.Select(location => location.Name)),
+                    Name = cityLocation.Name,
+                    UrlName = cityLocation.Name.Split('(').First().Trim()
+                };
             }
 
             return null;
         }
 
+        /// <summary>
+        ///     При найденом по названию городе возвращает инвертированную (от города к государству)
+        ///     коллекцию локаций, представляющую маршрут по дереву до этой локации
+        /// </summary>
         private async Task<List<Location>?> SearchRoute(string searchLocationName)
         {
             _locations ??= await GetLocationsFromFile().ConfigureAwait(false);

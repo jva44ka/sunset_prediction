@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace Domain.Services.Interfaces
 {
@@ -8,9 +9,9 @@ namespace Domain.Services.Interfaces
     public interface ICitiesParserService
     {
         /// <summary>
-        ///     При совпадении названия города возвращает полный адресс ( например "страна, субъект, город")
+        ///     При совпадении названия города возвращает объект <see cref="City"/>.
         ///     Иначе возвращает null
         /// </summary>
-        Task<string?> FindFullAddress(string searchCityName);
+        Task<City?> FindCity(string searchCityName);
     }
 }

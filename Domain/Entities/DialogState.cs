@@ -4,7 +4,7 @@
     {
         public int UserId { get; set; }
 
-        public DialogStateEnum PreviousState { get; set; }
+        public DialogStateEnum? PreviousState { get; set; }
         
         public DialogStateEnum State { get; set; }
     }
@@ -15,7 +15,6 @@
         ///     Пользователь инициировал диалог. Ожидается ввод названия города
         /// </summary>
         /// <remarks>
-        ///
         ///     Выход:
         ///     <list type="bullet">
         ///         <item><see cref="ProposedInputCity"/></item>
