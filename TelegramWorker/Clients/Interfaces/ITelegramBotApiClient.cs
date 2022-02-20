@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using TelegramWorker.DTO;
 
 namespace TelegramWorker.Clients.Interfaces
 {
@@ -14,6 +15,6 @@ namespace TelegramWorker.Clients.Interfaces
         /// <summary>
         ///     Запрос на отправку ботом сообщения в чат
         /// </summary>
-        Task<HttpResponseMessage> SendMessage(string messageText, int chatId, CancellationToken stoppingToken);
+        Task<HttpResponseMessage> SendMessage(TelegramSendMessageRequest request, CancellationToken stoppingToken);
     }
 }

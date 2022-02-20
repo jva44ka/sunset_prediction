@@ -35,6 +35,27 @@ namespace Domain.Services
 
             return null;
         }
+        
+        public async Task<City?> FindCity(int cityId)
+        {
+            var route = await SearchRoute(cityId).ConfigureAwait(false);
+
+            if (route != null)
+            {
+                var cityLocation = route.First();
+                var countryLocation = route.Last();
+                return new City
+                {
+                    Id = cityLocation.Id,
+                    Address = string.Join(", ", route.Select(location => location.Name)),
+                    Name = cityLocation.Name,
+                    UrlName = cityLocation.Name.Split('(').First().Trim(),
+                    CountryCode = countryLocation.CountryCode
+                };
+            }
+
+            return null;
+        }
 
         /// <summary>
         ///     При найденом по названию городе возвращает инвертированную (от города к государству)
@@ -57,17 +78,21 @@ namespace Domain.Services
             return null;
         }
         
-        private async Task<Location?> SearchLocation(string searchName)
+        /// <summary>
+        ///     При найденом по названию городе возвращает инвертированную (от города к государству)
+        ///     коллекцию локаций, представляющую маршрут по дереву до этой локации
+        /// </summary>
+        private async Task<List<Location>?> SearchRoute(int cityId)
         {
             _locations ??= await GetLocationsFromFile().ConfigureAwait(false);
 
             foreach (var location in _locations)
             {
-                var matchLocation = location.Search(searchName);
+                var matchLocationRoute = location.SearchRoute(cityId);
 
-                if (matchLocation != null)
+                if (matchLocationRoute != null)
                 {
-                    return matchLocation;
+                    return matchLocationRoute;
                 }
             }
 
@@ -95,21 +120,6 @@ namespace Domain.Services
             public string? CountryCode { get; set; }
             public string Name { get; set; }
             public Location[] Areas { get; set; }
-
-            public Location? Search(string searchName)
-            {
-                if (Name == searchName)
-                {
-                    return this;
-                }
-
-                foreach (var area in Areas)
-                {
-                    area.Search(searchName);
-                }
-
-                return null;
-            }
             
             /// <summary>
             ///     При найденом по названию городе возвращает инвертированную (от города к государству)
@@ -126,6 +136,32 @@ namespace Domain.Services
                 foreach (var area in Areas)
                 {
                     var route = area.SearchRoute(searchName);
+
+                    if (route != null)
+                    {
+                        route.Add(this);
+                        return route;
+                    }
+                }
+
+                return null;
+            }
+            
+            /// <summary>
+            ///     При найденом по названию городе возвращает инвертированную (от города к государству)
+            ///     коллекцию локаций, представляющую маршрут по дереву до этой локации
+            /// </summary>
+            public List<Location>? SearchRoute(int cityId)
+            {
+                if (Id.Equals(cityId))
+                {
+                    var route = new List<Location> {this};
+                    return route;
+                }
+
+                foreach (var area in Areas)
+                {
+                    var route = area.SearchRoute(cityId);
 
                     if (route != null)
                     {

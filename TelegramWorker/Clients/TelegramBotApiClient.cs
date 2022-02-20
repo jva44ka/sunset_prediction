@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using TelegramWorker.Clients.Interfaces;
+using TelegramWorker.DTO;
 using TelegramWorker.Settings;
 
 namespace TelegramWorker.Clients
@@ -27,16 +28,11 @@ namespace TelegramWorker.Clients
             return httpClient.GetAsync(getUpdatesUrl, stoppingToken);
         }
         
-        public async Task<HttpResponseMessage> SendMessage(string messageText, int chatId, CancellationToken stoppingToken)
+        public async Task<HttpResponseMessage> SendMessage(TelegramSendMessageRequest request, CancellationToken stoppingToken)
         {
             var httpClient = _httpClientFactory.CreateClient();
             var url = SendMessageUrl();
-            var body = $@"
-{{
-    ""chat_id"": ""{chatId}"",
-    ""text"": ""{messageText}""
-}}
-";
+            var body = request.ToJson();
             return await httpClient.PostAsync(url, new StringContent(body, Encoding.UTF8, "application/json"), stoppingToken);
         }
 

@@ -25,10 +25,12 @@ namespace TelegramWorker.Installers
             serviceCollection.AddSingleton<IConnectionFactory, NpgConnectionFactory>();
             serviceCollection.AddSingleton<IUpdateDao, UpdateDao>();
             serviceCollection.AddSingleton<IDialogStateDao, DialogStateDao>();
+            serviceCollection.AddSingleton<ICityDao, CityDao>();
 
             //domain
             serviceCollection.AddSingleton<IMapper<Update, UpdateDal>, UpdateMapper>();
             serviceCollection.AddSingleton<IMapper<DialogState, DialogStateDal>, DialogStateMapper>();
+            serviceCollection.AddSingleton<IMapper<City, CityDal>, CityMapper>();
 
             serviceCollection.AddSingleton<ICitiesParserService, CitiesParserService>();
             serviceCollection.AddSingleton<IUpdateService, UpdateService>();

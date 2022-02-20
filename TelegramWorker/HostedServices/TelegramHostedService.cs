@@ -60,10 +60,12 @@ namespace TelegramWorker.HostedServices
                                 messageResult = await _updateService.HandleUpdate(update);
                             }
 
-                            await _telegramBotApiClient.SendMessage(
-                                messageResult, 
-                                updatesResult.Result.Last().Message.Chat.Id,
-                                stoppingToken);
+                            var sendMessageRequest = new TelegramSendMessageRequest
+                            {
+                                Text = messageResult,
+                                ChatId = updatesResult.Result.Last().Message.Chat.Id
+                            };
+                            await _telegramBotApiClient.SendMessage(sendMessageRequest, stoppingToken);
                         }
                     }
                     else

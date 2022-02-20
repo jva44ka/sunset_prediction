@@ -13,5 +13,11 @@ namespace Domain.Services.Interfaces
         ///     Иначе возвращает null
         /// </summary>
         Task<City?> FindCity(string searchCityName);
+        
+        /// <summary>
+        ///     При совпадении id города возвращает объект <see cref="City"/>.
+        ///     Иначе возвращает null
+        /// </summary>
+        Task<City?> FindCity(int id);
     }
 }

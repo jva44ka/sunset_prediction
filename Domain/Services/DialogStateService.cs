@@ -14,15 +14,21 @@ namespace Domain.Services
     {
         private readonly ICitiesParserService _citiesParserService;
         private readonly IDialogStateDao _dialogStateDao;
-        private readonly IMapper<DialogState, DialogStateDal> _mapper;
+        private readonly ICityDao _cityDao;
+        private readonly IMapper<DialogState, DialogStateDal> _dialogStateMapper;
+        private readonly IMapper<City, CityDal> _cityMapper;
 
         public DialogStateService(ICitiesParserService citiesParserService,
                                   IDialogStateDao dialogStateDao,
-                                  IMapper<DialogState, DialogStateDal> mapper)
+                                  ICityDao cityDao,
+                                  IMapper<DialogState, DialogStateDal> dialogStateMapper,
+                                  IMapper<City, CityDal> cityMapper)
         {
             _citiesParserService = citiesParserService;
             _dialogStateDao = dialogStateDao;
-            _mapper = mapper;
+            _cityDao = cityDao;
+            _dialogStateMapper = dialogStateMapper;
+            _cityMapper = cityMapper;
         }
 
         public Task<string> TransitionState(DialogState? currentState, Message message)
@@ -37,7 +43,7 @@ namespace Domain.Services
                 case DialogStateEnum.ProposedInputCity:
                     return ProposedInputCity(currentState, message);
                 case DialogStateEnum.ProposedFoundedCity:
-                    throw new NotImplementedException();
+                    return ProposedFoundedCity(currentState, message);
                 case DialogStateEnum.OfChoosingSubscribeType:
                     throw new NotImplementedException();
                 case DialogStateEnum.SubscribedToEverydayPushes:
@@ -58,8 +64,9 @@ namespace Domain.Services
 
         
         private async Task<string> ProposedInputCity(DialogState currentState, 
-                                                                          Message message)
+                                                     Message message)
         {
+            //TODO: сначала искать по базе
             var city = await _citiesParserService.FindCity(message.Text).ConfigureAwait(false);
             if (city != null)
             {
@@ -68,9 +75,10 @@ namespace Domain.Services
                     PreviousState = currentState.State,
                     State = DialogStateEnum.ProposedFoundedCity,
                     UserId = currentState.UserId,
-                    ProposedCityId = city.Id
+                    ProposedCityId = city.Id,
+                    StateChangeDate = DateTime.UtcNow
                 };
-                var newStateDal = _mapper.ToDal(newState);
+                var newStateDal = _dialogStateMapper.ToDal(newState);
                 await _dialogStateDao.Update(newStateDal).ConfigureAwait(false);
 
                 return $"Ваш город {city.Address}?";
@@ -80,6 +88,51 @@ namespace Domain.Services
                 return "Город с таким названием не найден. Попробуйте написать точное название вашего города.";
             }
         }
+        
+        private async Task<string> ProposedFoundedCity(DialogState currentState, 
+                                                       Message message)
+        {
+            if (message.Text.Trim().ToLower() == "да")
+            {
+                var newState = new DialogState
+                {
+                    UserId = currentState.UserId,
+                    PreviousState = currentState.State,
+                    State = DialogStateEnum.OfChoosingSubscribeType,
+                    StateChangeDate = DateTime.UtcNow
+                };
+                var newStateDal = _dialogStateMapper.ToDal(newState);
+                await _dialogStateDao.Update(newStateDal).ConfigureAwait(false);
+
+                var city = await _citiesParserService.FindCity(currentState.ProposedCityId.Value)
+                                                     .ConfigureAwait(false);
+                var cityInDb = await _cityDao.GetCityById(city.Id).ConfigureAwait(false);
+                if (cityInDb == null)
+                {
+                    var cityDal = _cityMapper.ToDal(city);
+                    await _cityDao.Create(cityDal).ConfigureAwait(false);
+                }
+
+                return "Выбирите и напишите вариант рассылки:\n" +
+                       "1. 'Обычная' - бот присылает одно сообщение за час до заката при высокой вероятности заката \n" +
+                       "2. 'Двойная' - бот присылает одно сообщение с утра, второе сообщение за час до заката при высокой вероятности заката";
+            }
+            else
+            {
+                var newState = new DialogState
+                {
+                    UserId = currentState.UserId,
+                    PreviousState = currentState.State,
+                    State = DialogStateEnum.ProposedInputCity,
+                    StateChangeDate = DateTime.UtcNow
+                };
+                var newStateDal = _dialogStateMapper.ToDal(newState);
+                await _dialogStateDao.Update(newStateDal).ConfigureAwait(false);
+
+                return "Возможно вы ввели неполное название города, попробуйте еще раз.";
+            }
+        }
+
         private async Task<string> WithoutState(Message message)
         {
             var newState = new DialogState
@@ -88,7 +141,7 @@ namespace Domain.Services
                 UserId = message.From.Id,
                 StateChangeDate = DateTime.UtcNow
             };
-            var newStateDal = _mapper.ToDal(newState);
+            var newStateDal = _dialogStateMapper.ToDal(newState);
             await _dialogStateDao.Create(newStateDal).ConfigureAwait(false);
 
             return "Пожалуйста введите название своего города (желательно точное название).";

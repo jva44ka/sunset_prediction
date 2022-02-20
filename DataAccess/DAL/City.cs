@@ -1,6 +1,6 @@
-﻿namespace Domain.Entities
+﻿namespace DataAccess.DAL
 {
-    public class City
+    public class CityDal
     {
         public int Id { get; set; }
         public string Name { get; set; }
