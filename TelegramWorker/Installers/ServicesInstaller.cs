@@ -9,6 +9,8 @@ using Domain.Mappers.Interfaces;
 using Domain.Services;
 using Domain.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using TelegramWorker.Clients;
+using TelegramWorker.Clients.Interfaces;
 
 namespace TelegramWorker.Installers
 {
@@ -31,6 +33,9 @@ namespace TelegramWorker.Installers
             serviceCollection.AddSingleton<ICitiesParserService, CitiesParserService>();
             serviceCollection.AddSingleton<IUpdateService, UpdateService>();
             serviceCollection.AddSingleton<IDialogStateService, DialogStateService>();
+
+            //http clients
+            serviceCollection.AddSingleton<ITelegramBotApiClient, TelegramBotApiClient>();
             serviceCollection.AddHttpClient();
             return serviceCollection;
         }
