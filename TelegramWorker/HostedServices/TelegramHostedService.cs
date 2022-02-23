@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain.Entities.TelegramApi;
 using Domain.Services.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -48,22 +49,17 @@ namespace TelegramWorker.HostedServices
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContentString = await response.Content.ReadAsStringAsync(stoppingToken);
-                        var updatesResult = JsonConvert.DeserializeObject<TelegramGetUpdatesResult>(responseContentString);
+                        var responseDto = JsonConvert.DeserializeObject<TelegramGetUpdatesResult>(responseContentString);
 
-                        if (updatesResult.Ok && updatesResult.Result.Length > 0)
+                        if (responseDto.Ok && responseDto.Result.Length > 0)
                         {
-                            var messageResult = string.Empty;
-
-                            //TODO: распаралелить
-                            foreach (var update in updatesResult.Result)
-                            {
-                                messageResult = await _updateService.HandleUpdate(update);
-                            }
+                            //TODO: Баг: если прийдут апдейты с разных чатов, отправится все равно одно сообщение последнему апдейту
+                            var lastUpdateResultMessage = await UpdatesHandle(responseDto.Result);
 
                             var sendMessageRequest = new TelegramSendMessageRequest
                             {
-                                Text = messageResult,
-                                ChatId = updatesResult.Result.Last().Message.Chat.Id
+                                Text = lastUpdateResultMessage,
+                                ChatId = responseDto.Result.Last().Message.Chat.Id
                             };
                             await _telegramBotApiClient.SendMessage(sendMessageRequest, stoppingToken);
                         }
@@ -83,6 +79,13 @@ namespace TelegramWorker.HostedServices
             }
 
             _logger.LogInformation($"Worker stopped at: {DateTimeOffset.UtcNow}");
+        }
+
+        private async Task<string> UpdatesHandle(Update[] updates)
+        {
+            var tasks = updates.Select(u => _updateService.HandleUpdate(u));
+            var tasksResults = await Task.WhenAll(tasks);
+            return tasksResults.Last();
         }
     }
 }
