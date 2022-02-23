@@ -5,6 +5,7 @@ using DataAccess.DAO.Interfaces;
 using Domain.Entities;
 using Domain.Entities.TelegramApi;
 using Domain.Mappers.Interfaces;
+using Domain.Services.Dto;
 using Domain.Services.Interfaces;
 
 namespace Domain.Services
@@ -17,10 +18,10 @@ namespace Domain.Services
         private readonly IDialogStateService _dialogStateService;
         private readonly IMapper<DialogState, DialogStateDal> _dialogStateMapper;
 
-        public UpdateService(IUpdateDao updateDao, 
+        public UpdateService(IUpdateDao updateDao,
                              IMapper<Update, UpdateDal> updatesMapper,
                              IDialogStateDao dialogStateDao,
-                             IDialogStateService dialogStateService, 
+                             IDialogStateService dialogStateService,
                              IMapper<DialogState, DialogStateDal> dialogStateMapper)
         {
             _updateDao = updateDao;
@@ -36,7 +37,7 @@ namespace Domain.Services
             return lastUpdate?.UpdateId;
         }
 
-        public async Task<string> HandleUpdate(Update update)
+        public async Task<HandleUpdateResult> HandleUpdate(Update update)
         {
             var updateDal = _updatesMapper.ToDal(update);
             updateDal.HandleDate = DateTime.UtcNow;
@@ -52,7 +53,11 @@ namespace Domain.Services
             var currentState = _dialogStateMapper.ToEntity(currentStateDal);
             var resultMessage = await _dialogStateService.TransitionState(currentState, update.Message).ConfigureAwait(false);
 
-            return resultMessage;
+            return new HandleUpdateResult
+            {
+                ChatId = update.Message.Chat.Id, 
+                ResultMessageText = resultMessage
+            };
         }
     }
 }

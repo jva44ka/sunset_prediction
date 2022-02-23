@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Domain.Entities.TelegramApi;
+using Domain.Services.Dto;
 
 namespace Domain.Services.Interfaces
 {
@@ -11,6 +12,6 @@ namespace Domain.Services.Interfaces
         ///     Обрабатывает <see cref="Update"/>
         /// </summary>
         /// <returns>Сообщение, которое нужно отправить пользователю в ответ</returns>
-        public Task<string> HandleUpdate(Update update);
+        public Task<HandleUpdateResult> HandleUpdate(Update update);
     }
 }

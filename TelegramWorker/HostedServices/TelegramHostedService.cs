@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Entities.TelegramApi;
+using Domain.Services.Dto;
 using Domain.Services.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -53,15 +55,18 @@ namespace TelegramWorker.HostedServices
 
                         if (responseDto.Ok && responseDto.Result.Length > 0)
                         {
-                            //TODO: Баг: если прийдут апдейты с разных чатов, отправится все равно одно сообщение последнему апдейту
-                            var lastUpdateResultMessage = await UpdatesHandle(responseDto.Result);
+                            var updateHandleResults = await UpdatesHandle(responseDto.Result);
 
-                            var sendMessageRequest = new TelegramSendMessageRequest
+                            foreach (var chatId in updateHandleResults.Keys)
                             {
-                                Text = lastUpdateResultMessage,
-                                ChatId = responseDto.Result.Last().Message.Chat.Id
-                            };
-                            await _telegramBotApiClient.SendMessage(sendMessageRequest, stoppingToken);
+                                var sendMessageRequest = new TelegramSendMessageRequest
+                                {
+                                    ChatId = chatId,
+                                    Text = updateHandleResults[chatId],
+                                };
+                                //TODO: Добавить таймауты т.к. нельзя отправлять более 30 сообщений в секунду вроде бы
+                                await _telegramBotApiClient.SendMessage(sendMessageRequest, stoppingToken);
+                            }
                         }
                     }
                     else
@@ -81,11 +86,24 @@ namespace TelegramWorker.HostedServices
             _logger.LogInformation($"Worker stopped at: {DateTimeOffset.UtcNow}");
         }
 
-        private async Task<string> UpdatesHandle(Update[] updates)
+        private async Task<Dictionary<int, string>> UpdatesHandle(Update[] updates)
         {
             var tasks = updates.Select(u => _updateService.HandleUpdate(u));
-            var tasksResults = await Task.WhenAll(tasks);
-            return tasksResults.Last();
+            var handleResults = await Task.WhenAll(tasks);
+
+            var allUniqueChatIds = handleResults.Select(hr => hr.ChatId).Distinct();
+
+            // Формируем словарь вида: <"id чата", "сообщение в результате обработки последнего апдейта в этом чате">
+            var chatIdResultMessagesDictionary = new Dictionary<int, string>();
+            foreach (var chatId in allUniqueChatIds)
+            {
+                var lastMessageInChat = handleResults.Where(hr => hr.ChatId == chatId)
+                                                     .OrderBy(hr => hr.RequestMessageId)
+                                                     .Last()
+                                                     .ResultMessageText;
+                chatIdResultMessagesDictionary.Add(chatId, lastMessageInChat);
+            }
+            return chatIdResultMessagesDictionary;
         }
     }
 }
