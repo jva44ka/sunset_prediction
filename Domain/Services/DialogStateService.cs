@@ -45,7 +45,7 @@ namespace Domain.Services
                 case DialogStateEnum.ProposedFoundedCity:
                     return ProposedFoundedCity(currentState, message);
                 case DialogStateEnum.OfChoosingSubscribeType:
-                    throw new NotImplementedException();
+                    return OfChoosingSubscribeType(currentState, message);
                 case DialogStateEnum.SubscribedToEverydayPushes:
                     throw new NotImplementedException();
                 case DialogStateEnum.SubscribedToEverydayDoublePushes:
@@ -62,8 +62,8 @@ namespace Domain.Services
             }
         }
 
-        
-        private async Task<string> ProposedInputCity(DialogState currentState, 
+
+        private async Task<string> ProposedInputCity(DialogState currentState,
                                                      Message message)
         {
             //TODO: сначала искать по базе
@@ -88,8 +88,8 @@ namespace Domain.Services
                 return "Город с таким названием не найден. Попробуйте написать точное название вашего города.";
             }
         }
-        
-        private async Task<string> ProposedFoundedCity(DialogState currentState, 
+
+        private async Task<string> ProposedFoundedCity(DialogState currentState,
                                                        Message message)
         {
             if (message.Text.Trim().ToLower() == "да")
@@ -99,6 +99,7 @@ namespace Domain.Services
                     UserId = currentState.UserId,
                     PreviousState = currentState.State,
                     State = DialogStateEnum.OfChoosingSubscribeType,
+                    ProposedCityId = currentState.ProposedCityId,
                     StateChangeDate = DateTime.UtcNow
                 };
                 var newStateDal = _dialogStateMapper.ToDal(newState);
@@ -130,6 +131,51 @@ namespace Domain.Services
                 await _dialogStateDao.Update(newStateDal).ConfigureAwait(false);
 
                 return "Возможно вы ввели неполное название города, попробуйте еще раз.";
+            }
+        }
+
+        private async Task<string> OfChoosingSubscribeType(DialogState currentState,
+                                                           Message message)
+        {
+            switch (message.Text.Trim().ToLower())
+            {
+                case "обычная":
+                    {
+                        var newState = new DialogState
+                        {
+                            UserId = currentState.UserId,
+                            PreviousState = currentState.State,
+                            State = DialogStateEnum.SubscribedToEverydayPushes,
+                            ProposedCityId = currentState.ProposedCityId,
+                            StateChangeDate = DateTime.UtcNow
+                        };
+                        var newStateDal = _dialogStateMapper.ToDal(newState);
+                        await _dialogStateDao.Update(newStateDal).ConfigureAwait(false);
+
+                        return
+                            "Вы подписались на обычную рассылку. В случае успешного прогноза заката вам будет отправлено уведомление за час.";
+                    }
+
+                case "двойная":
+                    {
+                        var newState = new DialogState
+                        {
+                            UserId = currentState.UserId,
+                            PreviousState = currentState.State,
+                            State = DialogStateEnum.SubscribedToEverydayDoublePushes,
+                            ProposedCityId = currentState.ProposedCityId,
+                            StateChangeDate = DateTime.UtcNow
+                        };
+                        var newStateDal = _dialogStateMapper.ToDal(newState);
+                        await _dialogStateDao.Update(newStateDal).ConfigureAwait(false);
+
+                        return
+                            "Вы подписались на двойную рассылку. В случае успешного прогноза заката вам будет отправлено уведомление утром. " +
+                            "Если вечером того же дня прогноз будет все еще успешен, вам отправится второе уведомление за час до заката.";
+                    }
+
+                default:
+                    return "Введеный вариант подписки не распознан. Пожалуйста напишите один из вариантов: 'Обычная' или 'Двойная'";
             }
         }
 
