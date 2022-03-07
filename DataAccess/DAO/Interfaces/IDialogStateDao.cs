@@ -5,8 +5,8 @@ namespace DataAccess.DAO.Interfaces
 {
     public interface IDialogStateDao
     {
-        Task<DialogStateDal?> GetStateByUserId(int userId);
-        Task<bool> Create(DialogStateDal dialogStateDal);
-        Task<bool> Update(DialogStateDal dialogStateDal);
+        Task<UserDal?> GetStateByUserId(int userId);
+        Task<bool> Create(UserDal userDal);
+        Task<bool> Update(UserDal userDal);
     }
 }

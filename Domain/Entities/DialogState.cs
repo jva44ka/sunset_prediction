@@ -1,20 +1,6 @@
-﻿using System;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
-    public class DialogState
-    {
-        public int UserId { get; set; }
-
-        public DialogStateEnum? PreviousState { get; set; }
-        
-        public DialogStateEnum State { get; set; }
-
-        public int? ProposedCityId { get; set; }
-        public DateTime StateChangeDate { get; set; }
-    }
-
-    public enum DialogStateEnum : byte
+    public enum DialogState : byte
     {
         /// <summary>
         ///     Пользователь инициировал диалог. Ожидается ввод названия города

@@ -16,80 +16,80 @@ namespace DataAccess.DAO
         }
 
 
-        public async Task<DialogStateDal?> GetStateByUserId(int userId)
+        public async Task<UserDal?> GetStateByUserId(int userId)
         {
             string sql =
                 @"
 SELECT
-    user_id             AS  UserId,
-    previous_state      AS  PreviousState,
-    state               AS  State,
-    proposed_city_id    AS  ProposedCityId,
-    state_change_date   AS  StateChangeDate
+    id                          AS  Id,
+    previous_dialog_state       AS  PreviousDialogState,
+    dialog_state                AS  DialogState,
+    city_id                     AS  CityId,
+    state_change_date           AS  StateChangeDate
 FROM 
-    dialog_states
+    users
 WHERE
-    user_id = @user_id;";
+    id = @user_id;";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
-            var dialogStateDal = await connection.QueryFirstOrDefaultAsync<DialogStateDal>(sql, new
+            var dialogStateDal = await connection.QueryFirstOrDefaultAsync<UserDal>(sql, new
             {
                 user_id = userId
             });
             return dialogStateDal;
         }
         
-        public async Task<bool> Create(DialogStateDal dialogStateDal)
+        public async Task<bool> Create(UserDal userDal)
         {
             string sql =
                 @"
 INSERT INTO 
-    dialog_states (
-    user_id,
-    previous_state,
-    state,
-    proposed_city_id,
-    state_change_date
-)
+    users (
+        id,
+        previous_dialog_state,
+        dialog_state,
+        city_id,
+        state_change_date
+    )
 VALUES (
-    @user_id,
-    @previous_state,
-    @state,
-    @proposed_city_id,
+    @id,
+    @previous_dialog_state,
+    @dialog_state,
+    @city_id,
     @state_change_date
 );";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
-                user_id = dialogStateDal.UserId,
-                previous_state = dialogStateDal.PreviousState,
-                state = dialogStateDal.State,
-                proposed_city_id = dialogStateDal.ProposedCityId,
-                state_change_date = dialogStateDal.StateChangeDate
+                id = userDal.Id,
+                previous_dialog_state = userDal.PreviousDialogState,
+                dialog_state = userDal.DialogState,
+                city_id = userDal.CityId,
+                state_change_date = userDal.StateChangeDate
             });
             return rowsInserted == 1;
         }
         
-        public async Task<bool> Update(DialogStateDal dialogStateDal)
+        public async Task<bool> Update(UserDal userDal)
         {
             string sql =
                 @"
 UPDATE
-    dialog_states
+    users
 SET
-    previous_state = @previous_state,
-    state = @state,
-    proposed_city_id = @proposed_city_id,
+    previous_dialog_state = @previous_dialog_state,
+    dialog_state = @dialog_state,
+    city_id = @city_id,
     state_change_date = @state_change_date
 WHERE
-    user_id = @user_id";
+    id = @id";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
             var rowsUpdated = await connection.ExecuteAsync(sql, new
             {
-                user_id = dialogStateDal.UserId,
-                previous_state = dialogStateDal.PreviousState,
-                state = dialogStateDal.State,
-                proposed_city_id = dialogStateDal.ProposedCityId,
-                state_change_date = dialogStateDal.StateChangeDate
+                id = userDal.Id,
+                previous_dialog_state = userDal.PreviousDialogState,
+                dialog_state = userDal.DialogState,
+                city_id = userDal.CityId,
+                state_change_date = userDal.StateChangeDate
             });
             return rowsUpdated == 1;
         }

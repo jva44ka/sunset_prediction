@@ -6,6 +6,7 @@ using Domain.Entities;
 using Domain.Entities.TelegramApi;
 using Domain.Mappers.Interfaces;
 using Domain.Services.Interfaces;
+using User = Domain.Entities.User;
 
 namespace Domain.Services
 {
@@ -15,13 +16,13 @@ namespace Domain.Services
         private readonly ICitiesParserService _citiesParserService;
         private readonly IDialogStateDao _dialogStateDao;
         private readonly ICityDao _cityDao;
-        private readonly IMapper<DialogState, DialogStateDal> _dialogStateMapper;
+        private readonly IMapper<User, UserDal> _dialogStateMapper;
         private readonly IMapper<City, CityDal> _cityMapper;
 
         public DialogStateService(ICitiesParserService citiesParserService,
                                   IDialogStateDao dialogStateDao,
                                   ICityDao cityDao,
-                                  IMapper<DialogState, DialogStateDal> dialogStateMapper,
+                                  IMapper<User, UserDal> dialogStateMapper,
                                   IMapper<City, CityDal> cityMapper)
         {
             _citiesParserService = citiesParserService;
@@ -31,51 +32,51 @@ namespace Domain.Services
             _cityMapper = cityMapper;
         }
 
-        public Task<string> TransitionState(DialogState? currentState, Message message)
+        public Task<string> TransitionState(User? currentState, Message message)
         {
             if (currentState == null)
             {
                 return WithoutState(message);
             }
 
-            switch (currentState.State)
+            switch (currentState.DialogState)
             {
-                case DialogStateEnum.ProposedInputCity:
+                case DialogState.ProposedInputCity:
                     return ProposedInputCity(currentState, message);
-                case DialogStateEnum.ProposedFoundedCity:
+                case DialogState.ProposedFoundedCity:
                     return ProposedFoundedCity(currentState, message);
-                case DialogStateEnum.OfChoosingSubscribeType:
+                case DialogState.OfChoosingSubscribeType:
                     return OfChoosingSubscribeType(currentState, message);
-                case DialogStateEnum.SubscribedToEverydayPushes:
+                case DialogState.SubscribedToEverydayPushes:
                     throw new NotImplementedException();
-                case DialogStateEnum.SubscribedToEverydayDoublePushes:
+                case DialogState.SubscribedToEverydayDoublePushes:
                     throw new NotImplementedException();
-                case DialogStateEnum.SubscribedTriesToUnsubscribe:
+                case DialogState.SubscribedTriesToUnsubscribe:
                     throw new NotImplementedException();
-                case DialogStateEnum.Unsubscribed:
+                case DialogState.Unsubscribed:
                     throw new NotImplementedException();
-                case DialogStateEnum.UnsubscribedTriesSubscribe:
+                case DialogState.UnsubscribedTriesSubscribe:
                     throw new NotImplementedException();
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(currentState.State), currentState.State, null);
+                    throw new ArgumentOutOfRangeException(nameof(currentState.DialogState), currentState.DialogState, null);
 
             }
         }
 
 
-        private async Task<string> ProposedInputCity(DialogState currentState,
+        private async Task<string> ProposedInputCity(User currentState,
                                                      Message message)
         {
             //TODO: сначала искать по базе
             var city = await _citiesParserService.FindCity(message.Text).ConfigureAwait(false);
             if (city != null)
             {
-                var newState = new DialogState
+                var newState = new User
                 {
-                    PreviousState = currentState.State,
-                    State = DialogStateEnum.ProposedFoundedCity,
-                    UserId = currentState.UserId,
-                    ProposedCityId = city.Id,
+                    PreviousDialogState = currentState.DialogState,
+                    DialogState = DialogState.ProposedFoundedCity,
+                    Id = currentState.Id,
+                    CityId = city.Id,
                     StateChangeDate = DateTime.UtcNow
                 };
                 var newStateDal = _dialogStateMapper.ToDal(newState);
@@ -89,23 +90,23 @@ namespace Domain.Services
             }
         }
 
-        private async Task<string> ProposedFoundedCity(DialogState currentState,
+        private async Task<string> ProposedFoundedCity(User currentState,
                                                        Message message)
         {
             if (message.Text.Trim().ToLower() == "да")
             {
-                var newState = new DialogState
+                var newState = new User
                 {
-                    UserId = currentState.UserId,
-                    PreviousState = currentState.State,
-                    State = DialogStateEnum.OfChoosingSubscribeType,
-                    ProposedCityId = currentState.ProposedCityId,
+                    Id = currentState.Id,
+                    PreviousDialogState = currentState.DialogState,
+                    DialogState = DialogState.OfChoosingSubscribeType,
+                    CityId = currentState.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
                 var newStateDal = _dialogStateMapper.ToDal(newState);
                 await _dialogStateDao.Update(newStateDal).ConfigureAwait(false);
 
-                var city = await _citiesParserService.FindCity(currentState.ProposedCityId.Value)
+                var city = await _citiesParserService.FindCity(currentState.CityId.Value)
                                                      .ConfigureAwait(false);
                 var cityInDb = await _cityDao.GetCityById(city.Id).ConfigureAwait(false);
                 if (cityInDb == null)
@@ -120,11 +121,11 @@ namespace Domain.Services
             }
             else
             {
-                var newState = new DialogState
+                var newState = new User
                 {
-                    UserId = currentState.UserId,
-                    PreviousState = currentState.State,
-                    State = DialogStateEnum.ProposedInputCity,
+                    Id = currentState.Id,
+                    PreviousDialogState = currentState.DialogState,
+                    DialogState = DialogState.ProposedInputCity,
                     StateChangeDate = DateTime.UtcNow
                 };
                 var newStateDal = _dialogStateMapper.ToDal(newState);
@@ -134,19 +135,19 @@ namespace Domain.Services
             }
         }
 
-        private async Task<string> OfChoosingSubscribeType(DialogState currentState,
+        private async Task<string> OfChoosingSubscribeType(User currentState,
                                                            Message message)
         {
             switch (message.Text.Trim().ToLower())
             {
                 case "обычная":
                     {
-                        var newState = new DialogState
+                        var newState = new User
                         {
-                            UserId = currentState.UserId,
-                            PreviousState = currentState.State,
-                            State = DialogStateEnum.SubscribedToEverydayPushes,
-                            ProposedCityId = currentState.ProposedCityId,
+                            Id = currentState.Id,
+                            PreviousDialogState = currentState.DialogState,
+                            DialogState = DialogState.SubscribedToEverydayPushes,
+                            CityId = currentState.CityId,
                             StateChangeDate = DateTime.UtcNow
                         };
                         var newStateDal = _dialogStateMapper.ToDal(newState);
@@ -158,12 +159,12 @@ namespace Domain.Services
 
                 case "двойная":
                     {
-                        var newState = new DialogState
+                        var newState = new User
                         {
-                            UserId = currentState.UserId,
-                            PreviousState = currentState.State,
-                            State = DialogStateEnum.SubscribedToEverydayDoublePushes,
-                            ProposedCityId = currentState.ProposedCityId,
+                            Id = currentState.Id,
+                            PreviousDialogState = currentState.DialogState,
+                            DialogState = DialogState.SubscribedToEverydayDoublePushes,
+                            CityId = currentState.CityId,
                             StateChangeDate = DateTime.UtcNow
                         };
                         var newStateDal = _dialogStateMapper.ToDal(newState);
@@ -181,10 +182,10 @@ namespace Domain.Services
 
         private async Task<string> WithoutState(Message message)
         {
-            var newState = new DialogState
+            var newState = new User
             {
-                State = DialogStateEnum.ProposedInputCity,
-                UserId = message.From.Id,
+                DialogState = DialogState.ProposedInputCity,
+                Id = message.From.Id,
                 StateChangeDate = DateTime.UtcNow
             };
             var newStateDal = _dialogStateMapper.ToDal(newState);

@@ -7,6 +7,7 @@ using Domain.Entities.TelegramApi;
 using Domain.Mappers.Interfaces;
 using Domain.Services.Dto;
 using Domain.Services.Interfaces;
+using User = Domain.Entities.User;
 
 namespace Domain.Services
 {
@@ -16,13 +17,13 @@ namespace Domain.Services
         private readonly IMapper<Update, UpdateDal> _updatesMapper;
         private readonly IDialogStateDao _dialogStateDao;
         private readonly IDialogStateService _dialogStateService;
-        private readonly IMapper<DialogState, DialogStateDal> _dialogStateMapper;
+        private readonly IMapper<User, UserDal> _dialogStateMapper;
 
         public UpdateService(IUpdateDao updateDao,
                              IMapper<Update, UpdateDal> updatesMapper,
                              IDialogStateDao dialogStateDao,
                              IDialogStateService dialogStateService,
-                             IMapper<DialogState, DialogStateDal> dialogStateMapper)
+                             IMapper<User, UserDal> dialogStateMapper)
         {
             _updateDao = updateDao;
             _updatesMapper = updatesMapper;

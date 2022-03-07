@@ -1,20 +1,6 @@
-﻿using System;
-
-namespace DataAccess.DAL
+﻿namespace DataAccess.DAL
 {
-    public class DialogStateDal
-    {
-        public int UserId { get; set; }
-
-        public DialogStateEnumDal? PreviousState { get; set; }
-        
-        public DialogStateEnumDal State { get; set; }
-
-        public int? ProposedCityId { get; set; }
-        public DateTime StateChangeDate { get; set; }
-    }
-
-    public enum DialogStateEnumDal : byte
+    public enum DialogStateDal : byte
     {
         /// <summary>
         ///     Пользователь инициировал диалог. Ожидается ввод названия города
