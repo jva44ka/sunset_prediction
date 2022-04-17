@@ -10,17 +10,7 @@ namespace DataAccess.DAO
     {
         private readonly IConnectionFactory _connectionFactory;
 
-        public CityDao(IConnectionFactory connectionFactory)
-        {
-            _connectionFactory = connectionFactory;
-        }
-
-
-        public async Task<City?> GetCityById(int id)
-        {
-            string sql =
-                @"
-SELECT
+        private const string SelectFieldNames = @"
     id              AS  Id,
     name            AS  Name,
     url_name        AS  UrlName,
@@ -28,14 +18,45 @@ SELECT
     country_code    AS  CountryCode,
     latitude        AS  Latitude,
     longitude       AS  Longitude
+";
+
+        public CityDao(IConnectionFactory connectionFactory)
+        {
+            _connectionFactory = connectionFactory;
+        }
+
+        public async Task<City?> GetCityById(int id)
+        {
+            string sql =
+                $@"
+SELECT
+    {SelectFieldNames}
 FROM 
     cities
 WHERE
-    id = @id;";
+    id = @id";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
             var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
             {
                 id = id
+            });
+            return cityDal;
+        }
+        
+        public async Task<City?> GetCityByLowerCaseName(string cityName)
+        {
+            string sql =
+                $@"
+SELECT
+    {SelectFieldNames}
+FROM 
+    cities
+WHERE
+    LOWER(cities.name) LIKE CONCAT('%', @cityName, '%')";
+            using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
+            var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
+            {
+                cityName = cityName
             });
             return cityDal;
         }
@@ -54,7 +75,7 @@ VALUES (
     @country_code,
     @latitude,
     @longitude
-);";
+)";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {

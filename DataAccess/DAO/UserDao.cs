@@ -6,11 +6,11 @@ using Domain.Entities;
 
 namespace DataAccess.DAO
 {
-    public class DialogStateDao : IDialogStateDao
+    public class UserDao : IDialogStateDao
     {
         private readonly IConnectionFactory _connectionFactory;
 
-        public DialogStateDao(IConnectionFactory connectionFactory)
+        public UserDao(IConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
         }

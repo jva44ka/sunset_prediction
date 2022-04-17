@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Application.Services.Interfaces;
 using DataAccess.DAO.Interfaces;
-using Domain.Entities;
+using Domain.Entities.Enums;
 using TelegramApi.Client.Entities;
 using User = Domain.Entities.User;
 
@@ -61,8 +61,16 @@ namespace Application.Services
         private async Task<string> ProposedInputCity(User currentState,
                                                      Message message)
         {
-            //TODO: сначала искать по базе
-            var city = await _citiesParserService.FindCity(message.Text).ConfigureAwait(false);
+            var cityNotExistInDB = false;
+            var city = await _cityDao.GetCityByLowerCaseName(message.Text.Trim().ToLower())
+                                     .ConfigureAwait(false);
+            if (city == null)
+            {
+                cityNotExistInDB = true;
+                city = await _citiesParserService.FindCity(message.Text)
+                                                 .ConfigureAwait(false);
+            }
+
             if (city != null)
             {
                 var newState = new User
@@ -73,14 +81,19 @@ namespace Application.Services
                     CityId = city.Id,
                     StateChangeDate = DateTime.UtcNow
                 };
-                await _dialogStateDao.Update(newState).ConfigureAwait(false);
+
+                if (cityNotExistInDB)
+                {
+                    await _cityDao.Create(city)
+                                  .ConfigureAwait(false);
+                }
+                await _dialogStateDao.Update(newState)
+                                     .ConfigureAwait(false);
 
                 return $"Ваш город {city.Address}?";
             }
-            else
-            {
-                return "Город с таким названием не найден. Попробуйте написать точное название вашего города.";
-            }
+
+            return "Город с таким названием не найден. Попробуйте написать точное название вашего города.";
         }
 
         private async Task<string> ProposedFoundedCity(User currentState,

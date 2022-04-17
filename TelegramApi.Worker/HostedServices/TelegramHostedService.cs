@@ -54,18 +54,8 @@ namespace TelegramApi.Worker.HostedServices
 
                         if (responseDto.Ok && responseDto.Result.Length > 0)
                         {
-                            var updateHandleResults = await UpdatesHandle(responseDto.Result);
-
-                            foreach (var chatId in updateHandleResults.Keys)
-                            {
-                                var sendMessageRequest = new TelegramSendMessageRequest
-                                {
-                                    ChatId = chatId,
-                                    Text = updateHandleResults[chatId],
-                                };
-                                //TODO: Добавить таймауты т.к. нельзя отправлять более 30 сообщений в секунду вроде бы
-                                await _telegramBotApiClient.SendMessage(sendMessageRequest, stoppingToken);
-                            }
+                            var updateHandleResults = await UpdatesHandle(responseDto.Result).ConfigureAwait(false);
+                            await SendUpdateHandleResults(updateHandleResults, stoppingToken).ConfigureAwait(false);
                         }
                     }
                     else
@@ -85,6 +75,13 @@ namespace TelegramApi.Worker.HostedServices
             _logger.LogInformation($"Worker stopped at: {DateTimeOffset.UtcNow}");
         }
 
+        /// <summary>
+        ///     Обработка обновлений
+        /// </summary>
+        /// <param name="updates"></param>
+        /// <returns>
+        ///     Словарь вида: <"id чата", "сообщение в результате обработки последнего апдейта в этом чате">
+        /// </returns>
         private async Task<Dictionary<int, string>> UpdatesHandle(Update[] updates)
         {
             var tasks = updates.Select(u => _updateService.HandleUpdate(u));
@@ -103,6 +100,21 @@ namespace TelegramApi.Worker.HostedServices
                 chatIdResultMessagesDictionary.Add(chatId, lastMessageInChat);
             }
             return chatIdResultMessagesDictionary;
+        }
+
+        private async Task SendUpdateHandleResults(Dictionary<int, string> updateHandleResults,
+                                                   CancellationToken stoppingToken)
+        {
+            foreach (var chatId in updateHandleResults.Keys)
+            {
+                var sendMessageRequest = new TelegramSendMessageRequest
+                {
+                    ChatId = chatId,
+                    Text = updateHandleResults[chatId],
+                };
+                //TODO: Добавить таймауты т.к. нельзя отправлять более 30 сообщений в секунду вроде бы
+                await _telegramBotApiClient.SendMessage(sendMessageRequest, stoppingToken);
+            }
         }
     }
 }

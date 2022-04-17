@@ -22,7 +22,7 @@ namespace TelegramApi.Worker.Installers
             //data access
             serviceCollection.AddSingleton<IConnectionFactory, NpgConnectionFactory>();
             serviceCollection.AddSingleton<IUpdateDao, UpdateDao>();
-            serviceCollection.AddSingleton<IDialogStateDao, DialogStateDao>();
+            serviceCollection.AddSingleton<IUserDao, UserDao>();
             serviceCollection.AddSingleton<ICityDao, CityDao>();
 
             //domain
