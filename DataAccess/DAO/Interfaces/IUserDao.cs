@@ -6,7 +6,7 @@ namespace DataAccess.DAO.Interfaces
     public interface IUserDao
     {
         Task<User?> GetStateByUserId(int userId);
-        Task<bool> Create(User userDal);
-        Task<bool> Update(User userDal);
+        Task<bool> Create(User user);
+        Task<bool> Update(User user);
     }
 }

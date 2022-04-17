@@ -35,7 +35,8 @@ namespace Application.Services
         {
             var updateDal = _updatesMapper.ToEntity(update);
             updateDal.HandleDate = DateTime.UtcNow;
-            var creationResult = await _updateDao.Create(updateDal).ConfigureAwait(false);
+            var creationResult = await _updateDao.Create(updateDal)
+                                                 .ConfigureAwait(false);
 
             if (!creationResult)
             {
@@ -43,8 +44,10 @@ namespace Application.Services
             }
 
             var userId = update.Message.From.Id;
-            var currentState = await _userDao.GetStateByUserId(userId).ConfigureAwait(false);
-            var resultMessage = await _dialogStateService.TransitionState(currentState, update.Message).ConfigureAwait(false);
+            var currentState = await _userDao.GetStateByUserId(userId)
+                                             .ConfigureAwait(false);
+            var resultMessage = await _dialogStateService.TransitionState(currentState, update.Message)
+                                                         .ConfigureAwait(false);
 
             return new HandleUpdateResult
             {

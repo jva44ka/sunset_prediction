@@ -85,7 +85,7 @@ namespace Application.Services
                                   .ConfigureAwait(false);
                 }
                 await _userDao.Update(newUserState)
-                                     .ConfigureAwait(false);
+                              .ConfigureAwait(false);
 
                 return $"Ваш город {city.Address}?";
             }
@@ -241,8 +241,12 @@ namespace Application.Services
         {
             var newUserState = new User
             {
-                DialogState = DialogState.ProposedInputCity,
                 Id = message.From.Id,
+                FirstName = message.From.FirstName,
+                LastName = message.From.LastName,
+                UserName = message.From.Username,
+
+                DialogState = DialogState.ProposedInputCity,
                 StateChangeDate = DateTime.UtcNow
             };
             await _userDao.Create(newUserState).ConfigureAwait(false);

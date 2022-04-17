@@ -22,9 +22,12 @@ namespace DataAccess.DAO
                 @"
 SELECT
     id                          AS  Id,
+    city_id                     AS  CityId,
+    first_name                  AS  FirstName,
+    last_name                   AS  LastName,
+    user_name                   AS  UserName,
     previous_dialog_state       AS  PreviousDialogState,
     dialog_state                AS  DialogState,
-    city_id                     AS  CityId,
     state_change_date           AS  StateChangeDate
 FROM 
     users
@@ -38,7 +41,7 @@ WHERE
             return dialogStateDal;
         }
         
-        public async Task<bool> Create(User userDal)
+        public async Task<bool> Create(User user)
         {
             string sql =
                 @"
@@ -48,28 +51,37 @@ INSERT INTO
         previous_dialog_state,
         dialog_state,
         city_id,
-        state_change_date
+        state_change_date,
+        first_name,
+        last_name,
+        user_name
     )
 VALUES (
     @id,
     @previous_dialog_state,
     @dialog_state,
     @city_id,
-    @state_change_date
-);";
+    @state_change_date,
+    @first_name,
+    @last_name,
+    @user_name
+)";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
-                id = userDal.Id,
-                previous_dialog_state = userDal.PreviousDialogState,
-                dialog_state = userDal.DialogState,
-                city_id = userDal.CityId,
-                state_change_date = userDal.StateChangeDate
+                id = user.Id,
+                previous_dialog_state = user.PreviousDialogState,
+                dialog_state = user.DialogState,
+                city_id = user.CityId,
+                state_change_date = user.StateChangeDate,
+                first_name = user.FirstName,
+                last_name = user.LastName,
+                user_name = user.UserName,
             });
             return rowsInserted == 1;
         }
         
-        public async Task<bool> Update(User userDal)
+        public async Task<bool> Update(User user)
         {
             string sql =
                 @"
@@ -85,11 +97,11 @@ WHERE
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
             var rowsUpdated = await connection.ExecuteAsync(sql, new
             {
-                id = userDal.Id,
-                previous_dialog_state = userDal.PreviousDialogState,
-                dialog_state = userDal.DialogState,
-                city_id = userDal.CityId,
-                state_change_date = userDal.StateChangeDate
+                id = user.Id,
+                previous_dialog_state = user.PreviousDialogState,
+                dialog_state = user.DialogState,
+                city_id = user.CityId,
+                state_change_date = user.StateChangeDate
             });
             return rowsUpdated == 1;
         }
