@@ -45,9 +45,9 @@ namespace Application.Services
                 case DialogState.SubscribedTriesToUnsubscribe:
                     return SubscribedTriesToUnsubscribe(currentUserState, message);
                 case DialogState.Unsubscribed:
-                    throw new NotImplementedException();
+                    return Unsubscribed(currentUserState, message);
                 case DialogState.UnsubscribedTriesSubscribe:
-                    throw new NotImplementedException();
+                    return OfChoosingSubscribeType(currentUserState, message);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(currentUserState.DialogState), currentUserState.DialogState, null);
 
@@ -179,7 +179,7 @@ namespace Application.Services
                     return "Введеный вариант подписки не распознан. Пожалуйста напишите один из вариантов: 'Обычная' или 'Двойная'.";
             }
         }
-        
+
         private async Task<string> SubscribedToPushes(User currentUserState,
                                                       Message message)
         {
@@ -201,7 +201,7 @@ namespace Application.Services
 
             return "Если вы хотите отписаться от рассылки напишите 'Отписка'.";
         }
-        
+
         private async Task<string> SubscribedTriesToUnsubscribe(User currentUserState,
                                                                 Message message)
         {
@@ -218,7 +218,8 @@ namespace Application.Services
                 await _userDao.Update(newUserState).ConfigureAwait(false);
 
                 return
-                    "Вы отписаны от всех рассылок.";
+                    "Вы отписаны от всех рассылок. \n" +
+                    "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'";
             }
             else
             {
@@ -232,9 +233,31 @@ namespace Application.Services
                 };
                 await _userDao.Update(newUserState).ConfigureAwait(false);
 
-                return "Вы остались подписаны на рассылку. \n" +
+                return "Вы подписаны на рассылку. \n" +
                        "Если вы хотите отписаться от рассылки напишите 'Отписка'.";
             }
+        }
+
+        private async Task<string> Unsubscribed(User currentUserState,
+                                                Message message)
+        {
+            if (message.Text.Trim().ToLower() == "подписка")
+            {
+                var newUserState = new User
+                {
+                    Id = currentUserState.Id,
+                    PreviousDialogState = currentUserState.DialogState,
+                    DialogState = DialogState.UnsubscribedTriesSubscribe,
+                    CityId = currentUserState.CityId,
+                    StateChangeDate = DateTime.UtcNow
+                };
+                await _userDao.Update(newUserState).ConfigureAwait(false);
+
+                return "Напишите один из вариантов подписки: 'Обычная' или 'Двойная'.";
+            }
+
+            return "Вы отписаны от всех рассылок. \n" +
+                   "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'";
         }
 
         private async Task<string> WithoutState(Message message)
