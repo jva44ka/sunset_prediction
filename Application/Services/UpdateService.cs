@@ -11,17 +11,17 @@ namespace Application.Services
     {
         private readonly IUpdateDao _updateDao;
         private readonly IMapper<Domain.Entities.Update, TelegramApi.Client.Entities.Update> _updatesMapper;
-        private readonly IDialogStateDao _dialogStateDao;
+        private readonly IUserDao _userDao;
         private readonly IDialogStateService _dialogStateService;
 
         public UpdateService(IUpdateDao updateDao,
                              IMapper<Domain.Entities.Update, TelegramApi.Client.Entities.Update> updatesMapper,
-                             IDialogStateDao dialogStateDao,
+                             IUserDao userDao,
                              IDialogStateService dialogStateService)
         {
             _updateDao = updateDao;
             _updatesMapper = updatesMapper;
-            _dialogStateDao = dialogStateDao;
+            _userDao = userDao;
             _dialogStateService = dialogStateService;
         }
 
@@ -43,7 +43,7 @@ namespace Application.Services
             }
 
             var userId = update.Message.From.Id;
-            var currentState = await _dialogStateDao.GetStateByUserId(userId).ConfigureAwait(false);
+            var currentState = await _userDao.GetStateByUserId(userId).ConfigureAwait(false);
             var resultMessage = await _dialogStateService.TransitionState(currentState, update.Message).ConfigureAwait(false);
 
             return new HandleUpdateResult

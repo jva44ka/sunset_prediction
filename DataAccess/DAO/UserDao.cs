@@ -6,7 +6,7 @@ using Domain.Entities;
 
 namespace DataAccess.DAO
 {
-    public class UserDao : IDialogStateDao
+    public class UserDao : IUserDao
     {
         private readonly IConnectionFactory _connectionFactory;
 

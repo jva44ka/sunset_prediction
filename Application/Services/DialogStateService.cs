@@ -12,53 +12,50 @@ namespace Application.Services
     public class DialogStateService : IDialogStateService
     {
         private readonly ICitiesParserService _citiesParserService;
-        private readonly IDialogStateDao _dialogStateDao;
+        private readonly IUserDao _userDao;
         private readonly ICityDao _cityDao;
 
         public DialogStateService(ICitiesParserService citiesParserService,
-                                  IDialogStateDao dialogStateDao,
+                                  IUserDao userDao,
                                   ICityDao cityDao)
         {
             _citiesParserService = citiesParserService;
-            _dialogStateDao = dialogStateDao;
+            _userDao = userDao;
             _cityDao = cityDao;
         }
 
-        //TODO: Почему User currentState? разделить юзера и состояние диалога и выделить машину состояний в
-        //TODO: отдельную сущность(?) при этом в бд хранить все еще в одной таблице
-        public Task<string> TransitionState(User? currentState, Message message)
+        public Task<string> TransitionState(User? currentUserState, Message message)
         {
-            if (currentState == null)
+            if (currentUserState == null)
             {
                 return WithoutState(message);
             }
 
-            switch (currentState.DialogState)
+            switch (currentUserState.DialogState)
             {
                 case DialogState.ProposedInputCity:
-                    return ProposedInputCity(currentState, message);
+                    return ProposedInputCity(currentUserState, message);
                 case DialogState.ProposedFoundedCity:
-                    return ProposedFoundedCity(currentState, message);
+                    return ProposedFoundedCity(currentUserState, message);
                 case DialogState.OfChoosingSubscribeType:
-                    return OfChoosingSubscribeType(currentState, message);
+                    return OfChoosingSubscribeType(currentUserState, message);
                 case DialogState.SubscribedToEverydayPushes:
-                    throw new NotImplementedException();
                 case DialogState.SubscribedToEverydayDoublePushes:
-                    throw new NotImplementedException();
+                    return SubscribedToPushes(currentUserState, message);
                 case DialogState.SubscribedTriesToUnsubscribe:
-                    throw new NotImplementedException();
+                    return SubscribedTriesToUnsubscribe(currentUserState, message);
                 case DialogState.Unsubscribed:
                     throw new NotImplementedException();
                 case DialogState.UnsubscribedTriesSubscribe:
                     throw new NotImplementedException();
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(currentState.DialogState), currentState.DialogState, null);
+                    throw new ArgumentOutOfRangeException(nameof(currentUserState.DialogState), currentUserState.DialogState, null);
 
             }
         }
 
 
-        private async Task<string> ProposedInputCity(User currentState,
+        private async Task<string> ProposedInputCity(User currentUserState,
                                                      Message message)
         {
             var cityNotExistInDB = false;
@@ -73,11 +70,11 @@ namespace Application.Services
 
             if (city != null)
             {
-                var newState = new User
+                var newUserState = new User
                 {
-                    PreviousDialogState = currentState.DialogState,
+                    PreviousDialogState = currentUserState.DialogState,
                     DialogState = DialogState.ProposedFoundedCity,
-                    Id = currentState.Id,
+                    Id = currentUserState.Id,
                     CityId = city.Id,
                     StateChangeDate = DateTime.UtcNow
                 };
@@ -87,7 +84,7 @@ namespace Application.Services
                     await _cityDao.Create(city)
                                   .ConfigureAwait(false);
                 }
-                await _dialogStateDao.Update(newState)
+                await _userDao.Update(newUserState)
                                      .ConfigureAwait(false);
 
                 return $"Ваш город {city.Address}?";
@@ -96,22 +93,22 @@ namespace Application.Services
             return "Город с таким названием не найден. Попробуйте написать точное название вашего города.";
         }
 
-        private async Task<string> ProposedFoundedCity(User currentState,
+        private async Task<string> ProposedFoundedCity(User currentUserState,
                                                        Message message)
         {
             if (message.Text.Trim().ToLower() == "да")
             {
-                var newState = new User
+                var newUserState = new User
                 {
-                    Id = currentState.Id,
-                    PreviousDialogState = currentState.DialogState,
+                    Id = currentUserState.Id,
+                    PreviousDialogState = currentUserState.DialogState,
                     DialogState = DialogState.OfChoosingSubscribeType,
-                    CityId = currentState.CityId,
+                    CityId = currentUserState.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
-                await _dialogStateDao.Update(newState).ConfigureAwait(false);
+                await _userDao.Update(newUserState).ConfigureAwait(false);
 
-                var city = await _citiesParserService.FindCity(currentState.CityId.Value)
+                var city = await _citiesParserService.FindCity(currentUserState.CityId.Value)
                                                      .ConfigureAwait(false);
                 var cityInDb = await _cityDao.GetCityById(city.Id).ConfigureAwait(false);
                 if (cityInDb == null)
@@ -125,71 +122,130 @@ namespace Application.Services
             }
             else
             {
-                var newState = new User
+                var newUserState = new User
                 {
-                    Id = currentState.Id,
-                    PreviousDialogState = currentState.DialogState,
+                    Id = currentUserState.Id,
+                    PreviousDialogState = currentUserState.DialogState,
                     DialogState = DialogState.ProposedInputCity,
                     StateChangeDate = DateTime.UtcNow
                 };
-                await _dialogStateDao.Update(newState).ConfigureAwait(false);
+                await _userDao.Update(newUserState).ConfigureAwait(false);
 
                 return "Возможно вы ввели неполное название города, попробуйте еще раз.";
             }
         }
 
-        private async Task<string> OfChoosingSubscribeType(User currentState,
+        private async Task<string> OfChoosingSubscribeType(User currentUserState,
                                                            Message message)
         {
             switch (message.Text.Trim().ToLower())
             {
                 case "обычная":
                     {
-                        var newState = new User
+                        var newUserState = new User
                         {
-                            Id = currentState.Id,
-                            PreviousDialogState = currentState.DialogState,
+                            Id = currentUserState.Id,
+                            PreviousDialogState = currentUserState.DialogState,
                             DialogState = DialogState.SubscribedToEverydayPushes,
-                            CityId = currentState.CityId,
+                            CityId = currentUserState.CityId,
                             StateChangeDate = DateTime.UtcNow
                         };
-                        await _dialogStateDao.Update(newState).ConfigureAwait(false);
+                        await _userDao.Update(newUserState).ConfigureAwait(false);
 
                         return
-                            "Вы подписались на обычную рассылку. В случае успешного прогноза заката вам будет отправлено уведомление за час.";
+                            "Вы подписались на обычную рассылку. В случае успешного прогноза заката вам будет отправлено уведомление за час.\n" +
+                            "Если вы хотите отписаться от рассылки напишите 'Отписка'.";
                     }
 
                 case "двойная":
                     {
-                        var newState = new User
+                        var newUserState = new User
                         {
-                            Id = currentState.Id,
-                            PreviousDialogState = currentState.DialogState,
+                            Id = currentUserState.Id,
+                            PreviousDialogState = currentUserState.DialogState,
                             DialogState = DialogState.SubscribedToEverydayDoublePushes,
-                            CityId = currentState.CityId,
+                            CityId = currentUserState.CityId,
                             StateChangeDate = DateTime.UtcNow
                         };
-                        await _dialogStateDao.Update(newState).ConfigureAwait(false);
+                        await _userDao.Update(newUserState).ConfigureAwait(false);
 
                         return
                             "Вы подписались на двойную рассылку. В случае успешного прогноза заката вам будет отправлено уведомление утром. " +
-                            "Если вечером того же дня прогноз будет все еще успешен, вам отправится второе уведомление за час до заката.";
+                            "Если вечером того же дня прогноз будет все еще успешен, вам отправится второе уведомление за час до заката. \n" +
+                            "Если вы хотите отписаться от рассылки напишите 'Отписка'.";
                     }
 
                 default:
-                    return "Введеный вариант подписки не распознан. Пожалуйста напишите один из вариантов: 'Обычная' или 'Двойная'";
+                    return "Введеный вариант подписки не распознан. Пожалуйста напишите один из вариантов: 'Обычная' или 'Двойная'.";
+            }
+        }
+        
+        private async Task<string> SubscribedToPushes(User currentUserState,
+                                                      Message message)
+        {
+            if (message.Text.Trim().ToLower() == "отписка")
+            {
+                var newUserState = new User
+                {
+                    Id = currentUserState.Id,
+                    PreviousDialogState = currentUserState.DialogState,
+                    DialogState = DialogState.SubscribedTriesToUnsubscribe,
+                    CityId = currentUserState.CityId,
+                    StateChangeDate = DateTime.UtcNow
+                };
+                await _userDao.Update(newUserState).ConfigureAwait(false);
+
+                return
+                    "Вы действительно хотите отписаться от рассылки?";
+            }
+
+            return "Если вы хотите отписаться от рассылки напишите 'Отписка'.";
+        }
+        
+        private async Task<string> SubscribedTriesToUnsubscribe(User currentUserState,
+                                                                Message message)
+        {
+            if (message.Text.Trim().ToLower() == "да")
+            {
+                var newUserState = new User
+                {
+                    Id = currentUserState.Id,
+                    PreviousDialogState = currentUserState.DialogState,
+                    DialogState = DialogState.Unsubscribed,
+                    CityId = currentUserState.CityId,
+                    StateChangeDate = DateTime.UtcNow
+                };
+                await _userDao.Update(newUserState).ConfigureAwait(false);
+
+                return
+                    "Вы отписаны от всех рассылок.";
+            }
+            else
+            {
+                var newUserState = new User
+                {
+                    Id = currentUserState.Id,
+                    PreviousDialogState = currentUserState.DialogState,
+                    DialogState = currentUserState.PreviousDialogState.Value,
+                    CityId = currentUserState.CityId,
+                    StateChangeDate = DateTime.UtcNow
+                };
+                await _userDao.Update(newUserState).ConfigureAwait(false);
+
+                return "Вы остались подписаны на рассылку. \n" +
+                       "Если вы хотите отписаться от рассылки напишите 'Отписка'.";
             }
         }
 
         private async Task<string> WithoutState(Message message)
         {
-            var newState = new User
+            var newUserState = new User
             {
                 DialogState = DialogState.ProposedInputCity,
                 Id = message.From.Id,
                 StateChangeDate = DateTime.UtcNow
             };
-            await _dialogStateDao.Create(newState).ConfigureAwait(false);
+            await _userDao.Create(newUserState).ConfigureAwait(false);
 
             return "Пожалуйста введите название своего города (желательно точное название).";
         }

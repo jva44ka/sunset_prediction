@@ -3,7 +3,7 @@ using Domain.Entities;
 
 namespace DataAccess.DAO.Interfaces
 {
-    public interface IDialogStateDao
+    public interface IUserDao
     {
         Task<User?> GetStateByUserId(int userId);
         Task<bool> Create(User userDal);
