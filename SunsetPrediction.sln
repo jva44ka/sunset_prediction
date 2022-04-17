@@ -3,13 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{A09F8F49-132F-469E-B8E9-A0D1FDCBD2B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{A09F8F49-132F-469E-B8E9-A0D1FDCBD2B1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{31B266B2-A9C5-4F62-8944-FE504F84D66C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AE680D69-2F66-48DD-B13D-EE4103157152} = {AE680D69-2F66-48DD-B13D-EE4103157152}
+	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramWorker", "TelegramWorker\TelegramWorker.csproj", "{BA3A231D-AA97-4658-B83F-B7087AA35455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramApi.Worker", "TelegramApi.Worker\TelegramApi.Worker.csproj", "{BA3A231D-AA97-4658-B83F-B7087AA35455}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrator", "Migrator\Migrator.csproj", "{577D0FBF-6393-40D0-9231-1498DF7D3F2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrator", "Migrator\Migrator.csproj", "{577D0FBF-6393-40D0-9231-1498DF7D3F2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{AE680D69-2F66-48DD-B13D-EE4103157152}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramApi.Client", "TelegramApi.Client\TelegramApi.Client.csproj", "{F203F597-0AEC-49F2-9210-852384BFFE70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +40,14 @@ Global
 		{577D0FBF-6393-40D0-9231-1498DF7D3F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{577D0FBF-6393-40D0-9231-1498DF7D3F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{577D0FBF-6393-40D0-9231-1498DF7D3F2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE680D69-2F66-48DD-B13D-EE4103157152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE680D69-2F66-48DD-B13D-EE4103157152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE680D69-2F66-48DD-B13D-EE4103157152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE680D69-2F66-48DD-B13D-EE4103157152}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F203F597-0AEC-49F2-9210-852384BFFE70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F203F597-0AEC-49F2-9210-852384BFFE70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F203F597-0AEC-49F2-9210-852384BFFE70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F203F597-0AEC-49F2-9210-852384BFFE70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

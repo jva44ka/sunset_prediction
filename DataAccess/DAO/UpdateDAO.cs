@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Dapper;
 using DataAccess.ConnectionFactories;
-using DataAccess.DAL;
 using DataAccess.DAO.Interfaces;
+using Domain.Entities;
 
 namespace DataAccess.DAO
 {
@@ -16,7 +16,7 @@ namespace DataAccess.DAO
         }
 
 
-        public async Task<bool> Create(UpdateDal update)
+        public async Task<bool> Create(Update update)
         {
             string sql = 
 @"
@@ -35,7 +35,7 @@ VALUES (
             return rowsInserted == 1;
         }
 
-        public async Task<UpdateDal?> GetLastUpdate()
+        public async Task<Update?> GetLastUpdate()
         {
             string sql =
                 @"
@@ -48,7 +48,7 @@ ORDER BY
 LIMIT 
     1";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
-            var update = await connection.QueryFirstOrDefaultAsync<UpdateDal>(sql).ConfigureAwait(false);
+            var update = await connection.QueryFirstOrDefaultAsync<Update>(sql).ConfigureAwait(false);
             return update;
         }
     }

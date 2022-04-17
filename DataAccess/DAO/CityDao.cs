@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Dapper;
 using DataAccess.ConnectionFactories;
-using DataAccess.DAL;
 using DataAccess.DAO.Interfaces;
+using Domain.Entities;
 
 namespace DataAccess.DAO
 {
@@ -16,7 +16,7 @@ namespace DataAccess.DAO
         }
 
 
-        public async Task<CityDal?> GetCityById(int id)
+        public async Task<City?> GetCityById(int id)
         {
             string sql =
                 @"
@@ -33,14 +33,14 @@ FROM
 WHERE
     id = @id;";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
-            var cityDal = await connection.QueryFirstOrDefaultAsync<CityDal>(sql, new
+            var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
             {
                 id = id
             });
             return cityDal;
         }
         
-        public async Task<bool> Create(CityDal cityDal)
+        public async Task<bool> Create(City cityDal)
         {
             string sql =
                 @"
@@ -69,7 +69,7 @@ VALUES (
             return rowsInserted == 1;
         }
         
-        public async Task<bool> Update(CityDal cityDal)
+        public async Task<bool> Update(City cityDal)
         {
             string sql =
                 @"

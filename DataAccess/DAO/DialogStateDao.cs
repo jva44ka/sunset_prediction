@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Dapper;
 using DataAccess.ConnectionFactories;
-using DataAccess.DAL;
 using DataAccess.DAO.Interfaces;
+using Domain.Entities;
 
 namespace DataAccess.DAO
 {
@@ -16,7 +16,7 @@ namespace DataAccess.DAO
         }
 
 
-        public async Task<UserDal?> GetStateByUserId(int userId)
+        public async Task<User?> GetStateByUserId(int userId)
         {
             string sql =
                 @"
@@ -31,14 +31,14 @@ FROM
 WHERE
     id = @user_id;";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
-            var dialogStateDal = await connection.QueryFirstOrDefaultAsync<UserDal>(sql, new
+            var dialogStateDal = await connection.QueryFirstOrDefaultAsync<User>(sql, new
             {
                 user_id = userId
             });
             return dialogStateDal;
         }
         
-        public async Task<bool> Create(UserDal userDal)
+        public async Task<bool> Create(User userDal)
         {
             string sql =
                 @"
@@ -69,7 +69,7 @@ VALUES (
             return rowsInserted == 1;
         }
         
-        public async Task<bool> Update(UserDal userDal)
+        public async Task<bool> Update(User userDal)
         {
             string sql =
                 @"

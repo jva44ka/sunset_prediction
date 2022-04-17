@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
-using DataAccess.DAL;
+using Domain.Entities;
 
 namespace DataAccess.DAO.Interfaces
 {
     public interface IDialogStateDao
     {
-        Task<UserDal?> GetStateByUserId(int userId);
-        Task<bool> Create(UserDal userDal);
-        Task<bool> Update(UserDal userDal);
+        Task<User?> GetStateByUserId(int userId);
+        Task<bool> Create(User userDal);
+        Task<bool> Update(User userDal);
     }
 }
