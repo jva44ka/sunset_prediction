@@ -24,7 +24,8 @@ namespace Application.Services
             _cityDao = cityDao;
         }
 
-        public Task<string> TransitionState(User? currentUserState, Message message)
+        public Task<TransitionResult> TransitionState(User currentUserState,
+                                                      Message message)
         {
             if (currentUserState == null)
             {
@@ -54,8 +55,35 @@ namespace Application.Services
             }
         }
 
+        public ReplyKeyboardMarkup? BuildeKeyboard(DialogState dialogState)
+        {
+            switch (dialogState)
+            {
+                case DialogState.ProposedInputCity:
+                    return null;
+                case DialogState.ProposedFoundedCity:
+                    return ReplyKeyboardMarkup.CreateFromButtonTexts("Да", "Нет");
+                case DialogState.OfChoosingSubscribeType:
+                    return ReplyKeyboardMarkup.CreateFromButtonTexts("Обычная", "Двойная");
+                case DialogState.SubscribedToEverydayPushes:
+                case DialogState.SubscribedToEverydayDoublePushes:
+                    return null;
+                case DialogState.SubscribedTriesToUnsubscribe:
+                    return ReplyKeyboardMarkup.CreateFromButtonTexts("Да", "Нет");
+                case DialogState.Unsubscribed:
+                    return ReplyKeyboardMarkup.CreateFromButtonTexts("Подписка");
+                case DialogState.UnsubscribedTriesSubscribe:
+                    return ReplyKeyboardMarkup.CreateFromButtonTexts("Обычная", "Двойная");
 
-        private async Task<string> ProposedInputCity(User currentUserState,
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(dialogState),
+                                                          dialogState,
+                                                          null);
+            }
+        }
+
+
+        private async Task<TransitionResult> ProposedInputCity(User currentUserState,
                                                      Message message)
         {
             var cityNotExistInDB = false;
@@ -87,13 +115,23 @@ namespace Application.Services
                 await _userDao.Update(newUserState)
                               .ConfigureAwait(false);
 
-                return $"Ваш город {city.Address}?";
+                return new TransitionResult
+                {
+                    Message = $"Ваш город {city.Address}?",
+                    NewState = newUserState.DialogState
+                };
             }
-
-            return "Город с таким названием не найден. Попробуйте написать точное название вашего города.";
+            else
+            {
+                return new TransitionResult
+                {
+                    Message = "Город с таким названием не найден. Попробуйте написать точное название вашего города.",
+                    NewState = currentUserState.DialogState
+                };
+            }
         }
 
-        private async Task<string> ProposedFoundedCity(User currentUserState,
+        private async Task<TransitionResult> ProposedFoundedCity(User currentUserState,
                                                        Message message)
         {
             if (message.Text.Trim().ToLower() == "да")
@@ -116,9 +154,13 @@ namespace Application.Services
                     await _cityDao.Create(city).ConfigureAwait(false);
                 }
 
-                return "Выбирите и напишите вариант рассылки:\n" +
-                       "1. 'Обычная' - бот присылает одно сообщение за час до заката при высокой вероятности заката \n" +
-                       "2. 'Двойная' - бот присылает одно сообщение с утра, второе сообщение за час до заката при высокой вероятности заката";
+                return new TransitionResult
+                {
+                    Message = "Выбирите и напишите вариант рассылки:\n" +
+                              "1. 'Обычная' - бот присылает одно сообщение за час до заката при высокой вероятности заката \n" +
+                              "2. 'Двойная' - бот присылает одно сообщение с утра, второе сообщение за час до заката при высокой вероятности заката",
+                    NewState = newUserState.DialogState
+                };
             }
             else
             {
@@ -131,11 +173,15 @@ namespace Application.Services
                 };
                 await _userDao.Update(newUserState).ConfigureAwait(false);
 
-                return "Возможно вы ввели неполное название города, попробуйте еще раз.";
+                return new TransitionResult
+                {
+                    Message = "Возможно вы ввели неполное название города, попробуйте еще раз.",
+                    NewState = newUserState.DialogState
+                };
             }
         }
 
-        private async Task<string> OfChoosingSubscribeType(User currentUserState,
+        private async Task<TransitionResult> OfChoosingSubscribeType(User currentUserState,
                                                            Message message)
         {
             switch (message.Text.Trim().ToLower())
@@ -152,9 +198,13 @@ namespace Application.Services
                         };
                         await _userDao.Update(newUserState).ConfigureAwait(false);
 
-                        return
-                            "Вы подписались на обычную рассылку. В случае успешного прогноза заката вам будет отправлено уведомление за час.\n" +
-                            "Если вы хотите отписаться от рассылки напишите 'Отписка'.";
+                        return new TransitionResult
+                        {
+                            Message = "Вы подписались на обычную рассылку. В случае успешного прогноза " +
+                                      "заката вам будет отправлено уведомление за час.\n" +
+                                      "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
+                            NewState = newUserState.DialogState
+                        };
                     }
 
                 case "двойная":
@@ -169,18 +219,27 @@ namespace Application.Services
                         };
                         await _userDao.Update(newUserState).ConfigureAwait(false);
 
-                        return
-                            "Вы подписались на двойную рассылку. В случае успешного прогноза заката вам будет отправлено уведомление утром. " +
-                            "Если вечером того же дня прогноз будет все еще успешен, вам отправится второе уведомление за час до заката. \n" +
-                            "Если вы хотите отписаться от рассылки напишите 'Отписка'.";
+                        return new TransitionResult
+                        {
+                            Message = "Вы подписались на двойную рассылку. В случае успешного прогноза заката вам будет " +
+                                      "отправлено уведомление утром. Если вечером того же дня прогноз будет все еще успешен, " +
+                                      "вам отправится второе уведомление за час до заката. \n" +
+                                      "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
+                            NewState = newUserState.DialogState
+                        };
                     }
 
                 default:
-                    return "Введеный вариант подписки не распознан. Пожалуйста напишите один из вариантов: 'Обычная' или 'Двойная'.";
+                    return new TransitionResult
+                    {
+                        Message = "Введеный вариант подписки не распознан. Пожалуйста напишите один " +
+                                  "из вариантов: 'Обычная' или 'Двойная'.",
+                        NewState = currentUserState.DialogState
+                    };
             }
         }
 
-        private async Task<string> SubscribedToPushes(User currentUserState,
+        private async Task<TransitionResult> SubscribedToPushes(User currentUserState,
                                                       Message message)
         {
             if (message.Text.Trim().ToLower() == "отписка")
@@ -195,14 +254,23 @@ namespace Application.Services
                 };
                 await _userDao.Update(newUserState).ConfigureAwait(false);
 
-                return
-                    "Вы действительно хотите отписаться от рассылки?";
+                return new TransitionResult
+                {
+                    Message = "Вы действительно хотите отписаться от рассылки?",
+                    NewState = newUserState.DialogState
+                };
             }
-
-            return "Если вы хотите отписаться от рассылки напишите 'Отписка'.";
+            else
+            {
+                return new TransitionResult
+                {
+                    Message = "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
+                    NewState = currentUserState.DialogState
+                };
+            }
         }
 
-        private async Task<string> SubscribedTriesToUnsubscribe(User currentUserState,
+        private async Task<TransitionResult> SubscribedTriesToUnsubscribe(User currentUserState,
                                                                 Message message)
         {
             if (message.Text.Trim().ToLower() == "да")
@@ -217,9 +285,12 @@ namespace Application.Services
                 };
                 await _userDao.Update(newUserState).ConfigureAwait(false);
 
-                return
-                    "Вы отписаны от всех рассылок. \n" +
-                    "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'";
+                return new TransitionResult
+                {
+                    Message = "Вы отписаны от всех рассылок. \n" +
+                              "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'",
+                    NewState = newUserState.DialogState
+                };
             }
             else
             {
@@ -233,12 +304,16 @@ namespace Application.Services
                 };
                 await _userDao.Update(newUserState).ConfigureAwait(false);
 
-                return "Вы подписаны на рассылку. \n" +
-                       "Если вы хотите отписаться от рассылки напишите 'Отписка'.";
+                return new TransitionResult
+                {
+                    Message = "Вы подписаны на рассылку. \n" +
+                              "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
+                    NewState = newUserState.DialogState
+                };
             }
         }
 
-        private async Task<string> Unsubscribed(User currentUserState,
+        private async Task<TransitionResult> Unsubscribed(User currentUserState,
                                                 Message message)
         {
             if (message.Text.Trim().ToLower() == "подписка")
@@ -253,14 +328,24 @@ namespace Application.Services
                 };
                 await _userDao.Update(newUserState).ConfigureAwait(false);
 
-                return "Напишите один из вариантов подписки: 'Обычная' или 'Двойная'.";
+                return new TransitionResult
+                {
+                    Message = "Напишите один из вариантов подписки: 'Обычная' или 'Двойная'.",
+                    NewState = newUserState.DialogState
+                };
             }
-
-            return "Вы отписаны от всех рассылок. \n" +
-                   "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'";
+            else
+            {
+                return new TransitionResult
+                {
+                    Message = "Вы отписаны от всех рассылок. \n" +
+                              "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'",
+                    NewState = currentUserState.DialogState
+                };
+            }
         }
 
-        private async Task<string> WithoutState(Message message)
+        private async Task<TransitionResult> WithoutState(Message message)
         {
             var newUserState = new User
             {
@@ -274,7 +359,17 @@ namespace Application.Services
             };
             await _userDao.Create(newUserState).ConfigureAwait(false);
 
-            return "Пожалуйста введите название своего города (желательно точное название).";
+            return new TransitionResult
+            {
+                Message = "Пожалуйста введите название своего города (желательно точное название).",
+                NewState = newUserState.DialogState
+            };
+        }
+
+        public class TransitionResult
+        {
+            public string Message { get; set; }
+            public DialogState NewState { get; set; }
         }
     }
 }

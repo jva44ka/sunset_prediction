@@ -12,6 +12,7 @@ namespace TelegramApi.Client.Entities
         ///     Текст на кнопке. Если ни одно из опциональных полей не использовано, то при нажатии на кнопку
         ///     этот текст будет отправлен боту как простое сообщение.
         /// </summary>
+        [JsonProperty("text")]
         public string Text { get; set; }
 
         /// <summary>

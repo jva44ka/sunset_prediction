@@ -46,13 +46,15 @@ namespace Application.Services
             var userId = update.Message.From.Id;
             var currentState = await _userDao.GetStateByUserId(userId)
                                              .ConfigureAwait(false);
-            var resultMessage = await _dialogStateService.TransitionState(currentState, update.Message)
+            var transitionResult = await _dialogStateService.TransitionState(currentState, update.Message)
                                                          .ConfigureAwait(false);
+            var resultKeyboard = _dialogStateService.BuildeKeyboard(transitionResult.NewState);
 
             return new HandleUpdateResult
             {
                 ChatId = update.Message.Chat.Id, 
-                ResultMessageText = resultMessage
+                MessageText = transitionResult.Message,
+                MessageKeyboard = resultKeyboard
             };
         }
     }

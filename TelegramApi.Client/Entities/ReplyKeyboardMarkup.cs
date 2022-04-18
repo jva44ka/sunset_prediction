@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Linq;
+using System.Threading;
+using Newtonsoft.Json;
 
 namespace TelegramApi.Client.Entities
 {
@@ -10,6 +12,7 @@ namespace TelegramApi.Client.Entities
         /// <summary>
         ///     Массив рядов кнопок, каждый из которых является массивом объектов KeyboardButton
         /// </summary>
+        [JsonProperty("keyboard")]
         public KeyboardButton[][] Keyboard { get; set; }
 
         /// <summary>
@@ -35,6 +38,19 @@ namespace TelegramApi.Client.Entities
         ///     Пример: Пользователь отправляет запрос на смену языка бота. Бот отправляет клавиатуру со списком языков,
         ///     видимую только этому пользователю.
         /// </summary>
+        [JsonProperty("selective")]
         public bool Selective { get; set; }
+
+        public static ReplyKeyboardMarkup CreateFromButtonTexts(params string[] buttonText)
+        {
+            var keyboard = new ReplyKeyboardMarkup();
+            var keyboardRow = buttonText.Select(text => new KeyboardButton
+            {
+                Text = text
+            }).ToArray();
+            keyboard.Keyboard = new KeyboardButton[][] { keyboardRow };
+            keyboard.OneTimeKeyboard = true;
+            return keyboard;
+        }
     }
 }

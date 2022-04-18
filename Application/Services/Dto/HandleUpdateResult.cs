@@ -1,4 +1,6 @@
-﻿namespace Application.Services.Dto
+﻿using TelegramApi.Client.Entities;
+
+namespace Application.Services.Dto
 {
     public class HandleUpdateResult
     {
@@ -15,6 +17,11 @@
         /// <summary>
         ///     Сообщение от бота, которое нужно отправить как результат обработки апдейта
         /// </summary>
-        public string ResultMessageText { get; set; }
+        public string MessageText { get; set; }
+        
+        /// <summary>
+        ///     Клавиатура для последующих вариантов ответов на сообщение
+        /// </summary>
+        public ReplyKeyboardMarkup? MessageKeyboard { get; set; }
     }
 }
