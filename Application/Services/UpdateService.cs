@@ -27,7 +27,8 @@ namespace Application.Services
 
         public async Task<int?> GetLastUpdateId()
         {
-            var lastUpdate = await _updateDao.GetLastUpdate().ConfigureAwait(false);
+            var lastUpdate = await _updateDao.GetLastUpdate()
+                                             .ConfigureAwait(false);
             return lastUpdate?.UpdateId;
         }
 
@@ -44,11 +45,12 @@ namespace Application.Services
             }
 
             var userId = update.Message.From.Id;
-            var currentState = await _userDao.GetStateByUserId(userId)
-                                             .ConfigureAwait(false);
-            var transitionResult = await _dialogStateService.TransitionState(currentState, update.Message)
-                                                         .ConfigureAwait(false);
-            var resultKeyboard = _dialogStateService.BuildeKeyboard(transitionResult.NewState);
+            var user = await _userDao.GetUserById(userId)
+                                     .ConfigureAwait(false);
+            var transitionResult = await _dialogStateService
+                                         .TransitionState(user, update.Message)
+                                         .ConfigureAwait(false);
+            var resultKeyboard = _dialogStateService.BuildKeyboard(transitionResult.NewState);
 
             return new HandleUpdateResult
             {

@@ -9,15 +9,18 @@ namespace Application.Services.Interfaces
     public interface ICitiesParserService
     {
         /// <summary>
-        ///     При совпадении названия города возвращает объект <see cref="City"/>.
-        ///     Иначе возвращает null
+        ///     Получение города по названию.
         /// </summary>
+        /// <remarks>При совпадении названия города возвращает объект <see cref="City"/></remarks>
         Task<City?> FindCity(string searchCityName);
-        
+
         /// <summary>
+        ///     Получение города по id
+        /// </summary>
+        /// <remarks>
         ///     При совпадении id города возвращает объект <see cref="City"/>.
         ///     Иначе возвращает null
-        /// </summary>
+        /// </remarks>
         Task<City?> FindCity(int id);
     }
 }

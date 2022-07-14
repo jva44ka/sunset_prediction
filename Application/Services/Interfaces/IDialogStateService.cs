@@ -5,11 +5,25 @@ using User = Domain.Entities.User;
 
 namespace Application.Services.Interfaces
 {
+    /// <summary>
+    ///     Сервис-таблица переходов состояний диалога
+    /// </summary>
     public interface IDialogStateService
     {
-        Task<DialogStateService.TransitionResult> TransitionState(User currentState,
-                                                                  Message message);
+        /// <summary>
+        ///     Переход на новое состояние диалога в зависимости
+        ///     от присланного сообщения и предыдущего состояния
+        /// </summary>
+        /// <returns>Сообщение в ответ пользователю</returns>
+        Task<DialogStateService.TransitionResult> TransitionState(
+            User? user,
+            Message message);
 
-        ReplyKeyboardMarkup? BuildeKeyboard(DialogState dialogState);
+        /// <summary>
+        ///     Создание клавиатуры для конкретного нового состояния диалога
+        /// </summary>
+        /// <param name="dialogState"></param>
+        /// <returns></returns>
+        ReplyKeyboardMarkup? BuildKeyboard(DialogState dialogState);
     }
 }

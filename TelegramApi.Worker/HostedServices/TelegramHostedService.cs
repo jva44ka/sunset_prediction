@@ -7,12 +7,10 @@ using Application.Services.Dto;
 using Application.Services.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using TelegramApi.Client.Clients.Interfaces;
 using TelegramApi.Client.DTO;
 using TelegramApi.Client.Entities;
-using TelegramApi.Client.Settings;
 
 namespace TelegramApi.Worker.HostedServices
 {
@@ -21,17 +19,14 @@ namespace TelegramApi.Worker.HostedServices
         private readonly ILogger<TelegramBackgroundService> _logger;
         private readonly IUpdateService _updateService;
         private readonly ITelegramBotApiClient _telegramBotApiClient;
-        private readonly IOptions<TelegramApiSettings> _telegramApiSettings;
 
         public TelegramBackgroundService(ILogger<TelegramBackgroundService> logger,
                                          IUpdateService updateService,
-                                         ITelegramBotApiClient telegramBotApiClient,
-                                         IOptions<TelegramApiSettings> telegramApiSettings)
+                                         ITelegramBotApiClient telegramBotApiClient)
         {
             _logger = logger;
             _updateService = updateService;
             _telegramBotApiClient = telegramBotApiClient;
-            _telegramApiSettings = telegramApiSettings;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -70,7 +65,7 @@ namespace TelegramApi.Worker.HostedServices
                     _logger.LogError(e.Message);
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(_telegramApiSettings.Value.LongPoolingTimeoutSec), stoppingToken);
+                //await Task.Delay(TimeSpan.FromSeconds(_telegramApiSettings.Value.LongPoolingTimeoutSec), stoppingToken);
             }
 
             _logger.LogInformation($"Worker stopped at: {DateTimeOffset.UtcNow}");

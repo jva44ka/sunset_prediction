@@ -16,7 +16,7 @@ namespace DataAccess.DAO
         }
 
 
-        public async Task<User?> GetStateByUserId(int userId)
+        public async Task<User?> GetUserById(int userId)
         {
             string sql =
                 @"
@@ -32,7 +32,7 @@ SELECT
 FROM 
     users
 WHERE
-    id = @user_id;";
+    id = @user_id";
             using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
             var dialogStateDal = await connection.QueryFirstOrDefaultAsync<User>(sql, new
             {

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
 using Newtonsoft.Json;
 
 namespace TelegramApi.Client.Entities
@@ -45,9 +44,10 @@ namespace TelegramApi.Client.Entities
         {
             var keyboard = new ReplyKeyboardMarkup();
             var keyboardRow = buttonText.Select(text => new KeyboardButton
-            {
-                Text = text
-            }).ToArray();
+                                                        {
+                                                            Text = text
+                                                        })
+                                        .ToArray();
             keyboard.Keyboard = new KeyboardButton[][] { keyboardRow };
             keyboard.OneTimeKeyboard = true;
             return keyboard;
