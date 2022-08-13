@@ -11,13 +11,13 @@ namespace DataAccess.DAO
         private readonly IConnectionFactory _connectionFactory;
 
         private const string SelectFieldNames = @"
-    id              AS  Id,
-    name            AS  Name,
-    url_name        AS  UrlName,
-    address         AS  Address,
-    country_code    AS  CountryCode,
-    latitude        AS  Latitude,
-    longitude       AS  Longitude
+    c.id              AS  Id,
+    c.name            AS  Name,
+    c.name_for_url    AS  NameForUrl,
+    c.address         AS  Address,
+    c.country_code    AS  CountryCode,
+    c.latitude        AS  Latitude,
+    c.longitude       AS  Longitude
 ";
 
         public CityDao(IConnectionFactory connectionFactory)
@@ -32,9 +32,9 @@ namespace DataAccess.DAO
 SELECT
     {SelectFieldNames}
 FROM 
-    cities
+    cities c
 WHERE
-    id = @Id";
+    c.id = @Id";
             using var connection = await _connectionFactory.CreateConnection();
             var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
             {
@@ -50,9 +50,9 @@ WHERE
 SELECT
     {SelectFieldNames}
 FROM 
-    cities
+    cities c
 WHERE
-    LOWER(cities.name) LIKE CONCAT('%', @СityName, '%')";
+    LOWER(c.name) LIKE CONCAT('%', @СityName, '%')";
             using var connection = await _connectionFactory.CreateConnection();
             var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
             {
@@ -65,12 +65,19 @@ WHERE
         {
             string sql =
                 @"
-INSERT INTO 
-    cities
+INSERT INTO cities (
+    id,
+    name,
+    name_for_url,
+    address,
+    country_code,
+    latitude,
+    longitude
+)
 VALUES (
     @Id,
     @Name,
-    @UrlName,
+    @NameForUrl,
     @Address,
     @CountryCode,
     @Latitude,
@@ -81,7 +88,7 @@ VALUES (
             {
                 cityDal.Id,
                 cityDal.Name,
-                cityDal.UrlName,
+                UrlName = cityDal.NameForUrl,
                 cityDal.Address,
                 cityDal.CountryCode,
                 cityDal.Latitude,
@@ -98,7 +105,7 @@ UPDATE
     cities
 SET
     name = @Name,
-    url_name = @UrlName,
+    name_for_url = @NameForUrl,
     address = @Address,
     country_code = @CountryCode,
     latitude = @Latitude,
@@ -110,7 +117,7 @@ WHERE
             {
                 cityDal.Id,
                 cityDal.Name,
-                cityDal.UrlName,
+                UrlName = cityDal.NameForUrl,
                 cityDal.Address,
                 cityDal.CountryCode,
                 cityDal.Latitude,

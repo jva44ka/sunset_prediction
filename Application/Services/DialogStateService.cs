@@ -31,7 +31,7 @@ namespace Application.Services
                 return WithoutState(message);
             }
 
-            switch (user.DialogState)
+            switch (user.CurrentDialogState)
             {
                 case DialogState.ProposedInputCity:
                     return ProposedInputCity(user, message);
@@ -50,8 +50,8 @@ namespace Application.Services
                     return OfChoosingSubscribeType(user, message);
                 default:
                     throw new ArgumentOutOfRangeException(
-                        nameof(user.DialogState), 
-                        user.DialogState, 
+                        nameof(user.CurrentDialogState), 
+                        user.CurrentDialogState, 
                         null);
 
             }
@@ -101,8 +101,8 @@ namespace Application.Services
             {
                 var userWithNewState = new User
                 {
-                    PreviousDialogState = user.DialogState,
-                    DialogState = DialogState.ProposedFoundedCity,
+                    PreviousDialogState = user.CurrentDialogState,
+                    CurrentDialogState = DialogState.ProposedFoundedCity,
                     Id = user.Id,
                     CityId = city.Id,
                     StateChangeDate = DateTime.UtcNow
@@ -117,7 +117,7 @@ namespace Application.Services
                 return new TransitionResult
                 {
                     Message = $"Ваш город {city.Address}?",
-                    NewState = userWithNewState.DialogState
+                    NewState = userWithNewState.CurrentDialogState
                 };
             }
             else
@@ -125,7 +125,7 @@ namespace Application.Services
                 return new TransitionResult
                 {
                     Message = "Город с таким названием не найден. Попробуйте написать точное название вашего города.",
-                    NewState = user.DialogState
+                    NewState = user.CurrentDialogState
                 };
             }
         }
@@ -139,17 +139,17 @@ namespace Application.Services
                 var userWithNewState = new User
                 {
                     Id = currentUserState.Id,
-                    PreviousDialogState = currentUserState.DialogState,
-                    DialogState = DialogState.OfChoosingSubscribeType,
+                    PreviousDialogState = currentUserState.CurrentDialogState,
+                    CurrentDialogState = DialogState.OfChoosingSubscribeType,
                     CityId = currentUserState.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
                 await _userDao.Update(userWithNewState);
 
-                var city = await _citiesParserService.FindCity(currentUserState.CityId.Value);
-                var cityInDb = await _cityDao.GetCityById(city.Id);
+                var cityInDb = await _cityDao.GetCityById(currentUserState.CityId.Value);
                 if (cityInDb == null)
                 {
+                    var city = await _citiesParserService.FindCity(currentUserState.CityId.Value);
                     await _cityDao.Create(city);
                 }
 
@@ -158,7 +158,7 @@ namespace Application.Services
                     Message = "Выбирите и напишите вариант рассылки:\n" +
                               "1. 'Обычная' - бот присылает одно сообщение за час до заката при высокой вероятности заката \n" +
                               "2. 'Двойная' - бот присылает одно сообщение с утра, второе сообщение за час до заката при высокой вероятности заката",
-                    NewState = userWithNewState.DialogState
+                    NewState = userWithNewState.CurrentDialogState
                 };
             }
             else
@@ -166,8 +166,8 @@ namespace Application.Services
                 var userWithNewState = new User
                 {
                     Id = currentUserState.Id,
-                    PreviousDialogState = currentUserState.DialogState,
-                    DialogState = DialogState.ProposedInputCity,
+                    PreviousDialogState = currentUserState.CurrentDialogState,
+                    CurrentDialogState = DialogState.ProposedInputCity,
                     StateChangeDate = DateTime.UtcNow
                 };
                 await _userDao.Update(userWithNewState);
@@ -175,7 +175,7 @@ namespace Application.Services
                 return new TransitionResult
                 {
                     Message = "Возможно вы ввели неполное название города, попробуйте еще раз.",
-                    NewState = userWithNewState.DialogState
+                    NewState = userWithNewState.CurrentDialogState
                 };
             }
         }
@@ -191,8 +191,8 @@ namespace Application.Services
                         var userWithNewState = new User
                         {
                             Id = user.Id,
-                            PreviousDialogState = user.DialogState,
-                            DialogState = DialogState.SubscribedToEverydayPushes,
+                            PreviousDialogState = user.CurrentDialogState,
+                            CurrentDialogState = DialogState.SubscribedToEverydayPushes,
                             CityId = user.CityId,
                             StateChangeDate = DateTime.UtcNow
                         };
@@ -203,7 +203,7 @@ namespace Application.Services
                             Message = "Вы подписались на обычную рассылку. В случае успешного прогноза " +
                                       "заката вам будет отправлено уведомление за час.\n" +
                                       "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
-                            NewState = userWithNewState.DialogState
+                            NewState = userWithNewState.CurrentDialogState
                         };
                     }
 
@@ -212,8 +212,8 @@ namespace Application.Services
                         var userWithNewState = new User
                         {
                             Id = user.Id,
-                            PreviousDialogState = user.DialogState,
-                            DialogState = DialogState.SubscribedToEverydayDoublePushes,
+                            PreviousDialogState = user.CurrentDialogState,
+                            CurrentDialogState = DialogState.SubscribedToEverydayDoublePushes,
                             CityId = user.CityId,
                             StateChangeDate = DateTime.UtcNow
                         };
@@ -225,7 +225,7 @@ namespace Application.Services
                                       "отправлено уведомление утром. Если вечером того же дня прогноз будет все еще успешен, " +
                                       "вам отправится второе уведомление за час до заката. \n" +
                                       "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
-                            NewState = userWithNewState.DialogState
+                            NewState = userWithNewState.CurrentDialogState
                         };
                     }
 
@@ -234,7 +234,7 @@ namespace Application.Services
                     {
                         Message = "Введеный вариант подписки не распознан. Пожалуйста напишите один " +
                                   "из вариантов: 'Обычная' или 'Двойная'.",
-                        NewState = user.DialogState
+                        NewState = user.CurrentDialogState
                     };
             }
         }
@@ -248,8 +248,8 @@ namespace Application.Services
                 var userWithNewState = new User
                 {
                     Id = user.Id,
-                    PreviousDialogState = user.DialogState,
-                    DialogState = DialogState.SubscribedTriesToUnsubscribe,
+                    PreviousDialogState = user.CurrentDialogState,
+                    CurrentDialogState = DialogState.SubscribedTriesToUnsubscribe,
                     CityId = user.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
@@ -258,7 +258,7 @@ namespace Application.Services
                 return new TransitionResult
                 {
                     Message = "Вы действительно хотите отписаться от рассылки?",
-                    NewState = userWithNewState.DialogState
+                    NewState = userWithNewState.CurrentDialogState
                 };
             }
             else
@@ -266,7 +266,7 @@ namespace Application.Services
                 return new TransitionResult
                 {
                     Message = "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
-                    NewState = user.DialogState
+                    NewState = user.CurrentDialogState
                 };
             }
         }
@@ -280,8 +280,8 @@ namespace Application.Services
                 var userWithNewState = new User
                 {
                     Id = user.Id,
-                    PreviousDialogState = user.DialogState,
-                    DialogState = DialogState.Unsubscribed,
+                    PreviousDialogState = user.CurrentDialogState,
+                    CurrentDialogState = DialogState.Unsubscribed,
                     CityId = user.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
@@ -291,7 +291,7 @@ namespace Application.Services
                 {
                     Message = "Вы отписаны от всех рассылок. \n" +
                               "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'",
-                    NewState = userWithNewState.DialogState
+                    NewState = userWithNewState.CurrentDialogState
                 };
             }
             else
@@ -299,8 +299,8 @@ namespace Application.Services
                 var userWithNewState = new User
                 {
                     Id = user.Id,
-                    PreviousDialogState = user.DialogState,
-                    DialogState = user.PreviousDialogState.Value,
+                    PreviousDialogState = user.CurrentDialogState,
+                    CurrentDialogState = user.PreviousDialogState.Value,
                     CityId = user.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
@@ -310,7 +310,7 @@ namespace Application.Services
                 {
                     Message = "Вы подписаны на рассылку. \n" +
                               "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
-                    NewState = userWithNewState.DialogState
+                    NewState = userWithNewState.CurrentDialogState
                 };
             }
         }
@@ -323,8 +323,8 @@ namespace Application.Services
                 var userWithNewState = new User
                 {
                     Id = user.Id,
-                    PreviousDialogState = user.DialogState,
-                    DialogState = DialogState.UnsubscribedTriesSubscribe,
+                    PreviousDialogState = user.CurrentDialogState,
+                    CurrentDialogState = DialogState.UnsubscribedTriesSubscribe,
                     CityId = user.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
@@ -333,7 +333,7 @@ namespace Application.Services
                 return new TransitionResult
                 {
                     Message = "Напишите один из вариантов подписки: 'Обычная' или 'Двойная'.",
-                    NewState = userWithNewState.DialogState
+                    NewState = userWithNewState.CurrentDialogState
                 };
             }
             else
@@ -342,7 +342,7 @@ namespace Application.Services
                 {
                     Message = "Вы отписаны от всех рассылок. \n" +
                               "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'",
-                    NewState = user.DialogState
+                    NewState = user.CurrentDialogState
                 };
             }
         }
@@ -356,7 +356,7 @@ namespace Application.Services
                 LastName = message.From.LastName,
                 UserName = message.From.Username,
 
-                DialogState = DialogState.ProposedInputCity,
+                CurrentDialogState = DialogState.ProposedInputCity,
                 StateChangeDate = DateTime.UtcNow
             };
             await _userDao.Create(userWithNewState);
@@ -364,7 +364,7 @@ namespace Application.Services
             return new TransitionResult
             {
                 Message = "Пожалуйста введите название своего города (желательно точное название).",
-                NewState = userWithNewState.DialogState
+                NewState = userWithNewState.CurrentDialogState
             };
         }
 

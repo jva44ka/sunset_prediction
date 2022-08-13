@@ -2,20 +2,48 @@
 {
     public class City
     {
+        /// <summary>
+        ///     Идентификатор
+        /// </summary>
         public int Id { get; set; }
-        public string Name { get; set; }
 
         /// <summary>
-        ///     Только имя города без уточнения областей и пробелов
+        ///     Название города + название области при наличии нескольких городов с таким названием
+        /// </summary>
+        /// <example>Санкт-Петербург</example>
+        /// <example>Михайловка (Иркутская область)</example>
+        public string Name { get; set; } = default!;
+
+        /// <summary>
+        ///     Название города без уточнения областей и пробелов
         /// </summary>
         /// <example>
-        ///     Например "Благовещенск" вместо "Благовещенск (Амурская область)"
+        ///     "Михайловка" вместо "Михайловка (Иркутская область)"
         /// </example>
-        public string UrlName { get; set; }
-        public string Address { get; set; }
-        public string CountryCode { get; set; }
+        public string NameForUrl { get; set; } = default!;
 
+        /// <summary>
+        ///     Полный адрес населенного пункста, включая область и страну
+        /// </summary>
+        /// <example>
+        ///     Красногорский (Республика Марий Эл), Республика Марий Эл, Россия
+        /// </example>
+        public string Address { get; set; } = default!;
+
+        /// <summary>
+        ///     Код страны
+        /// </summary>
+        /// <example>RU</example>
+        public string CountryCode { get; set; } = default!;
+
+        /// <summary>
+        ///     Широта
+        /// </summary>
         public double Latitude { get; set; }
+
+        /// <summary>
+        ///     Долгота
+        /// </summary>
         public double Longitude { get; set; }
     }
 }

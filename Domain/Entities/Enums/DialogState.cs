@@ -12,7 +12,7 @@
         ///         <item><see cref="ProposedFoundedCity"/></item>
         ///     </list>
         /// </remarks>
-        ProposedInputCity = 0,
+        ProposedInputCity = 1,
 
         /// <summary>
         ///     Распознан введенный пользователем город. Ожидается подтверждение от пользователя
@@ -29,7 +29,7 @@
         ///         <item><see cref="OfChoosingSubscribeType"/></item>
         ///     </list>
         /// </remarks>
-        ProposedFoundedCity = 1,
+        ProposedFoundedCity = 2,
 
         /// <summary>
         ///     Город пользователя подтвержден. Ожидается выбор типа рассылки
@@ -47,7 +47,7 @@
         ///         <item><see cref="SubscribedToEverydayDoublePushes"/></item>
         ///     </list>
         /// </remarks>
-        OfChoosingSubscribeType = 2,
+        OfChoosingSubscribeType = 3,
 
         /// <summary>
         ///     Выбрана опция рассылки каждый день за час до заката
@@ -64,7 +64,7 @@
         ///         <item><see cref="OfChoosingSubscribeType"/></item>
         ///     </list>
         /// </remarks>
-        SubscribedToEverydayPushes = 3,
+        SubscribedToEverydayPushes = 4,
 
         /// <summary>
         ///     Выбрана опция рассылки каждый день за час до заката и с утра
@@ -81,7 +81,7 @@
         ///         <item><see cref="OfChoosingSubscribeType"/></item>
         ///     </list>
         /// </remarks>
-        SubscribedToEverydayDoublePushes = 4,
+        SubscribedToEverydayDoublePushes = 5,
 
         /// <summary>
         ///     Пользователь инициировал отписку от рассылки. Ожидается подтверждение,
@@ -101,7 +101,7 @@
         ///         <item><see cref="SubscribedToEverydayDoublePushes"/></item>
         ///     </list>
         /// </remarks>
-        SubscribedTriesToUnsubscribe = 5,
+        SubscribedTriesToUnsubscribe = 6,
 
 
         /// <summary>

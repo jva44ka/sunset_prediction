@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Application.Services.Interfaces;
 using Domain.Entities;
@@ -29,7 +30,7 @@ namespace Application.Services
                     Id = cityLocation.Id,
                     Address = string.Join(", ", route.Select(location => location.Name)),
                     Name = cityLocation.Name,
-                    UrlName = cityLocation.Name.Split('(').First().Trim(),
+                    NameForUrl = cityLocation.Name.Split('(').First().Trim(),
                     CountryCode = countryLocation.CountryCode
                 };
             }
@@ -50,7 +51,7 @@ namespace Application.Services
                     Id = cityLocation.Id,
                     Address = string.Join(", ", route.Select(location => location.Name)),
                     Name = cityLocation.Name,
-                    UrlName = cityLocation.Name.Split('(').First().Trim(),
+                    NameForUrl = cityLocation.Name.Split('(').First().Trim(),
                     CountryCode = countryLocation.CountryCode
                 };
             }
@@ -104,7 +105,8 @@ namespace Application.Services
         {
             var textFromFile = await File.ReadAllTextAsync(CitiesJsonPath);
             return JsonConvert.DeserializeObject<Location[]>(textFromFile) 
-                   ?? Array.Empty<Location>();
+                   ?? throw new SerializationException(
+                       "cities.json file deserialization operations returns null");
         }
 
         /// <summary>

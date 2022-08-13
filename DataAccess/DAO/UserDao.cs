@@ -15,28 +15,27 @@ namespace DataAccess.DAO
             _connectionFactory = connectionFactory;
         }
 
-
         public async Task<User?> GetUserById(int userId)
         {
             string sql =
                 @"
 SELECT
-    id                          AS  Id,
-    city_id                     AS  CityId,
-    first_name                  AS  FirstName,
-    last_name                   AS  LastName,
-    user_name                   AS  UserName,
-    previous_dialog_state       AS  PreviousDialogState,
-    dialog_state                AS  DialogState,
-    state_change_date           AS  StateChangeDate
+    u.id                      AS  Id,
+    u.city_id                 AS  CityId,
+    u.first_name              AS  FirstName,
+    u.last_name               AS  LastName,
+    u.user_name               AS  UserName,
+    u.previous_dialog_state   AS  PreviousDialogState,
+    u.current_dialog_state    AS  CurrentDialogState,
+    u.state_change_date       AS  StateChangeDate
 FROM 
-    users
+    users u
 WHERE
-    id = @user_id";
+    u.id = @UserId";
             using var connection = await _connectionFactory.CreateConnection();
             var dialogStateDal = await connection.QueryFirstOrDefaultAsync<User>(sql, new
             {
-                user_id = userId
+                UserId = userId
             });
             return dialogStateDal;
         }
@@ -45,38 +44,37 @@ WHERE
         {
             string sql =
                 @"
-INSERT INTO 
-    users (
-        id,
-        previous_dialog_state,
-        dialog_state,
-        city_id,
-        state_change_date,
-        first_name,
-        last_name,
-        user_name
-    )
+INSERT INTO users (
+    id,
+    city_id,
+    first_name,
+    last_name,
+    user_name,
+    previous_dialog_state,
+    current_dialog_state,
+    state_change_date
+)
 VALUES (
-    @id,
-    @previous_dialog_state,
-    @dialog_state,
-    @city_id,
-    @state_change_date,
-    @first_name,
-    @last_name,
-    @user_name
+    @Id,
+    @CityId,
+    @FirstName,
+    @LastName,
+    @UserName,
+    @PreviousDialogState,
+    @CurrentDialogState,
+    @StateChangeDate
 )";
             using var connection = await _connectionFactory.CreateConnection();
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
-                id = user.Id,
-                previous_dialog_state = user.PreviousDialogState,
-                dialog_state = user.DialogState,
-                city_id = user.CityId,
-                state_change_date = user.StateChangeDate,
-                first_name = user.FirstName,
-                last_name = user.LastName,
-                user_name = user.UserName,
+                user.Id,
+                user.PreviousDialogState,
+                user.CurrentDialogState,
+                user.CityId,
+                user.StateChangeDate,
+                user.FirstName,
+                user.LastName,
+                user.UserName,
             });
             return rowsInserted == 1;
         }
@@ -88,20 +86,20 @@ VALUES (
 UPDATE
     users
 SET
-    previous_dialog_state = @previous_dialog_state,
-    dialog_state = @dialog_state,
-    city_id = @city_id,
-    state_change_date = @state_change_date
+    previous_dialog_state = @PreviousDialogState,
+    current_dialog_state = @CurrentDialogState,
+    city_id = @CityId,
+    state_change_date = @StateChangeDate
 WHERE
-    id = @id";
+    id = @Id";
             using var connection = await _connectionFactory.CreateConnection();
             var rowsUpdated = await connection.ExecuteAsync(sql, new
             {
-                id = user.Id,
-                previous_dialog_state = user.PreviousDialogState,
-                dialog_state = user.DialogState,
-                city_id = user.CityId,
-                state_change_date = user.StateChangeDate
+                user.Id,
+                user.PreviousDialogState,
+                user.CurrentDialogState,
+                user.CityId,
+                user.StateChangeDate
             });
             return rowsUpdated == 1;
         }

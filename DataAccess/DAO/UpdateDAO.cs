@@ -19,8 +19,10 @@ namespace DataAccess.DAO
         {
             string sql =
 @"
-INSERT INTO 
-    updates 
+INSERT INTO updates (
+    update_id,
+    handle_date
+)
 VALUES (
     @UpdateId,
     @HandleDate
@@ -39,11 +41,11 @@ VALUES (
             string sql =
                 @"
 SELECT
-    update_id   AS  UpdateId
+    u.update_id   AS  UpdateId
 FROM
-    updates
+    updates u
 ORDER BY 
-    update_id DESC
+    u.update_id DESC
 LIMIT 
     1";
             using var connection = await _connectionFactory.CreateConnection();

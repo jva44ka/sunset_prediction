@@ -7,10 +7,12 @@ using Application.Services.Dto;
 using Application.Services.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using TelegramApi.Client.Clients.Interfaces;
 using TelegramApi.Client.DTO;
 using TelegramApi.Client.Entities;
+using TelegramApi.Client.Settings;
 
 namespace TelegramApi.Worker.HostedServices
 {
@@ -19,14 +21,18 @@ namespace TelegramApi.Worker.HostedServices
         private readonly ILogger<TelegramBackgroundService> _logger;
         private readonly IUpdateService _updateService;
         private readonly ITelegramBotApiClient _telegramBotApiClient;
+        private readonly TelegramApiSettings _telegramApiSettings;
 
-        public TelegramBackgroundService(ILogger<TelegramBackgroundService> logger,
-                                         IUpdateService updateService,
-                                         ITelegramBotApiClient telegramBotApiClient)
+        public TelegramBackgroundService(
+            ILogger<TelegramBackgroundService> logger,
+            IUpdateService updateService,
+            ITelegramBotApiClient telegramBotApiClient,
+            IOptions<TelegramApiSettings> telegramApiSettingsOptions)
         {
             _logger = logger;
             _updateService = updateService;
             _telegramBotApiClient = telegramBotApiClient;
+            _telegramApiSettings = telegramApiSettingsOptions.Value;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -64,7 +70,9 @@ namespace TelegramApi.Worker.HostedServices
                     _logger.LogError(e.Message);
                 }
 
-                //await Task.Delay(TimeSpan.FromSeconds(_telegramApiSettings.Value.LongPoolingTimeoutSec), stoppingToken);
+                //TODO: Добавить умный вызов умного таймаута для хостедсервиса, который будет выставлять больший таймаут
+                //TODO: если давно не было апдейтов и наоборот меньший/без таймаута при наличии нагрузки.
+                await Task.Delay(TimeSpan.FromSeconds(_telegramApiSettings.LongPoolingTimeoutSec), stoppingToken);
             }
 
             _logger.LogInformation($"Worker stopped at: {DateTimeOffset.UtcNow}");
