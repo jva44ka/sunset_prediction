@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Domain.Entities;
 
-namespace DataAccess.DAO.Interfaces
+namespace DataAccess.Dao.Interfaces
 {
     /// <summary>
     ///     DAO для работы с таблицей users

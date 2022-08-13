@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Dapper;
 using DataAccess.ConnectionFactories;
-using DataAccess.DAO.Interfaces;
+using DataAccess.Dao.Interfaces;
 using Domain.Entities;
 
-namespace DataAccess.DAO
+namespace DataAccess.Dao
 {
     public class UpdateDao : IUpdateDao
     {

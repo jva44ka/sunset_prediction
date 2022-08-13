@@ -15,7 +15,7 @@ namespace Application.Services.Interfaces
         /// </summary>
         /// <returns>Сообщение в ответ пользователю</returns>
         Task<DialogStateService.TransitionResult> TransitionState(
-            int userId, 
+            int userId,
             Message message);
 
         /// <summary>

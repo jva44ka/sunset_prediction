@@ -3,8 +3,8 @@ using Application.Mappers.Interfaces;
 using Application.Services;
 using Application.Services.Interfaces;
 using DataAccess.ConnectionFactories;
-using DataAccess.DAO;
-using DataAccess.DAO.Interfaces;
+using DataAccess.Dao;
+using DataAccess.Dao.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using TelegramApi.Client.Clients;
 using TelegramApi.Client.Clients.Interfaces;
@@ -30,7 +30,7 @@ namespace TelegramApi.Worker.Installers
 
             //application
             serviceCollection.AddSingleton<ICitiesParserService, CitiesParserService>();
-            serviceCollection.AddSingleton<IUpdateHandleService, UpdateHandleHandleService>();
+            serviceCollection.AddSingleton<IUpdateHandleService, UpdateHandleService>();
             serviceCollection.AddSingleton<IDialogStateService, DialogStateService>();
             serviceCollection.AddSingleton<ITelegramUpdatesRequesterService, TelegramUpdatesRequesterService>();
 

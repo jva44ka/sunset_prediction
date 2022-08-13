@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Dapper;
 using DataAccess.ConnectionFactories;
-using DataAccess.DAO.Interfaces;
+using DataAccess.Dao.Interfaces;
 using Domain.Entities;
 
-namespace DataAccess.DAO
+namespace DataAccess.Dao
 {
     public class CityDao : ICityDao
     {
@@ -88,7 +88,7 @@ VALUES (
             {
                 cityDal.Id,
                 cityDal.Name,
-                UrlName = cityDal.NameForUrl,
+                cityDal.NameForUrl,
                 cityDal.Address,
                 cityDal.CountryCode,
                 cityDal.Latitude,
@@ -117,7 +117,7 @@ WHERE
             {
                 cityDal.Id,
                 cityDal.Name,
-                UrlName = cityDal.NameForUrl,
+                cityDal.NameForUrl,
                 cityDal.Address,
                 cityDal.CountryCode,
                 cityDal.Latitude,

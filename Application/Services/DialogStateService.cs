@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Application.Services.Interfaces;
-using DataAccess.DAO.Interfaces;
+using DataAccess.Dao.Interfaces;
 using Domain.Entities.Enums;
 using TelegramApi.Client.Entities;
 using User = Domain.Entities.User;
@@ -25,7 +25,9 @@ namespace Application.Services
             _cityDao = cityDao;
         }
 
-        public async Task<TransitionResult> TransitionState(int userId, Message message)
+        public async Task<TransitionResult> TransitionState(
+            int userId, 
+            Message message)
         {
             var user = await _userDao.GetUserById(userId);
             if (user == null)
@@ -36,20 +38,20 @@ namespace Application.Services
             switch (user.CurrentDialogState)
             {
                 case DialogState.ProposedInputCity:
-                    return await ProposedInputCity(user, message);
+                    return await ProposedInputCity(user, message.Text);
                 case DialogState.ProposedFoundedCity:
-                    return await ProposedFoundedCity(user, message);
+                    return await ProposedFoundedCity(user, message.Text);
                 case DialogState.OfChoosingSubscribeType:
-                    return await OfChoosingSubscribeType(user, message);
+                    return await OfChoosingSubscribeType(user, message.Text);
                 case DialogState.SubscribedToEverydayPushes:
                 case DialogState.SubscribedToEverydayDoublePushes:
-                    return await SubscribedToPushes(user, message);
+                    return await SubscribedToPushes(user, message.Text);
                 case DialogState.SubscribedTriesToUnsubscribe:
-                    return await SubscribedTriesToUnsubscribe(user, message);
+                    return await SubscribedTriesToUnsubscribe(user, message.Text);
                 case DialogState.Unsubscribed:
-                    return await Unsubscribed(user, message);
+                    return await Unsubscribed(user, message.Text);
                 case DialogState.UnsubscribedTriesSubscribe:
-                    return await OfChoosingSubscribeType(user, message);
+                    return await OfChoosingSubscribeType(user, message.Text);
                 default:
                     throw new ArgumentOutOfRangeException(
                         nameof(user.CurrentDialogState), 
@@ -89,14 +91,14 @@ namespace Application.Services
 
         private async Task<TransitionResult> ProposedInputCity(
             User user, 
-            Message message)
+            string messageText)
         {
             var isCityExistsInDb = true;
-            var city = await _cityDao.GetCityByLowerCaseName(message.Text.Trim().ToLower());
+            var city = await _cityDao.GetCityByLowerCaseName(messageText.Trim().ToLower());
             if (city == null)
             {
                 isCityExistsInDb = false;
-                city = await _citiesParserService.FindCity(message.Text);
+                city = await _citiesParserService.FindCity(messageText);
             }
 
             if (city != null)
@@ -134,9 +136,9 @@ namespace Application.Services
 
         private async Task<TransitionResult> ProposedFoundedCity(
             User currentUserState, 
-            Message message)
+            string messageText)
         {
-            if (message.Text.Trim().ToLower() == "да")
+            if (messageText.Trim().ToLower() == "да")
             {
                 var userWithNewState = new User
                 {
@@ -184,9 +186,9 @@ namespace Application.Services
 
         private async Task<TransitionResult> OfChoosingSubscribeType(
             User user, 
-            Message message)
+            string messageText)
         {
-            switch (message.Text.Trim().ToLower())
+            switch (messageText.Trim().ToLower())
             {
                 case "обычная":
                     {
@@ -243,9 +245,9 @@ namespace Application.Services
 
         private async Task<TransitionResult> SubscribedToPushes(
             User user,
-            Message message)
+            string messageText)
         {
-            if (message.Text.Trim().ToLower() == "отписка")
+            if (messageText.Trim().ToLower() == "отписка")
             {
                 var userWithNewState = new User
                 {
@@ -275,9 +277,9 @@ namespace Application.Services
 
         private async Task<TransitionResult> SubscribedTriesToUnsubscribe(
             User user,
-            Message message)
+            string messageText)
         {
-            if (message.Text.Trim().ToLower() == "да")
+            if (messageText.Trim().ToLower() == "да")
             {
                 var userWithNewState = new User
                 {
@@ -319,9 +321,9 @@ namespace Application.Services
 
         private async Task<TransitionResult> Unsubscribed(
             User user,
-            Message message)
+            string messageText)
         {
-            if (message.Text.Trim().ToLower() == "подписка")
+            if (messageText.Trim().ToLower() == "подписка")
             {
                 var userWithNewState = new User
                 {

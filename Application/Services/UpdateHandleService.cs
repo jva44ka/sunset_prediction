@@ -3,17 +3,17 @@ using System.Threading.Tasks;
 using Application.Mappers.Interfaces;
 using Application.Services.Dto;
 using Application.Services.Interfaces;
-using DataAccess.DAO.Interfaces;
+using DataAccess.Dao.Interfaces;
 
 namespace Application.Services
 {
-    public class UpdateHandleHandleService : IUpdateHandleService
+    public class UpdateHandleService : IUpdateHandleService
     {
         private readonly IUpdateDao _updateDao;
         private readonly IDialogStateService _dialogStateService;
         private readonly IMapper<Domain.Entities.Update, TelegramApi.Client.Entities.Update> _updatesMapper;
 
-        public UpdateHandleHandleService(
+        public UpdateHandleService(
             IUpdateDao updateDao,
             IDialogStateService dialogStateService,
             IMapper<Domain.Entities.Update, TelegramApi.Client.Entities.Update> updatesMapper)
@@ -41,8 +41,7 @@ namespace Application.Services
             }
 
             var userId = update.Message.From.Id;
-            var transitionResult = await _dialogStateService
-                                         .TransitionState(userId, update.Message);
+            var transitionResult = await _dialogStateService.TransitionState(userId, update.Message);
             var resultKeyboard = _dialogStateService.BuildKeyboard(transitionResult.NewState);
 
             return new HandleUpdateResult
