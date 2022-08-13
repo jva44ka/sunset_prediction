@@ -7,22 +7,20 @@ using DataAccess.DAO.Interfaces;
 
 namespace Application.Services
 {
-    public class UpdateService : IUpdateService
+    public class UpdateHandleHandleService : IUpdateHandleService
     {
         private readonly IUpdateDao _updateDao;
-        private readonly IMapper<Domain.Entities.Update, TelegramApi.Client.Entities.Update> _updatesMapper;
-        private readonly IUserDao _userDao;
         private readonly IDialogStateService _dialogStateService;
+        private readonly IMapper<Domain.Entities.Update, TelegramApi.Client.Entities.Update> _updatesMapper;
 
-        public UpdateService(IUpdateDao updateDao,
-                             IMapper<Domain.Entities.Update, TelegramApi.Client.Entities.Update> updatesMapper,
-                             IUserDao userDao,
-                             IDialogStateService dialogStateService)
+        public UpdateHandleHandleService(
+            IUpdateDao updateDao,
+            IDialogStateService dialogStateService,
+            IMapper<Domain.Entities.Update, TelegramApi.Client.Entities.Update> updatesMapper)
         {
             _updateDao = updateDao;
-            _updatesMapper = updatesMapper;
-            _userDao = userDao;
             _dialogStateService = dialogStateService;
+            _updatesMapper = updatesMapper;
         }
 
         public async Task<int?> GetLastUpdateId()
@@ -37,15 +35,14 @@ namespace Application.Services
             updateDal.HandleDate = DateTime.UtcNow;
             var creationResult = await _updateDao.Create(updateDal);
 
-            if (!creationResult)
+            if (creationResult == false)
             {
                 throw new Exception($"Failed to create record in table \"updates\" with update_id: {update.UpdateId}");
             }
 
             var userId = update.Message.From.Id;
-            var user = await _userDao.GetUserById(userId);
             var transitionResult = await _dialogStateService
-                                         .TransitionState(user, update.Message);
+                                         .TransitionState(userId, update.Message);
             var resultKeyboard = _dialogStateService.BuildKeyboard(transitionResult.NewState);
 
             return new HandleUpdateResult

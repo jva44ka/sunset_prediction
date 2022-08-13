@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Domain.Entities.Enums;
 using TelegramApi.Client.Entities;
-using User = Domain.Entities.User;
 
 namespace Application.Services.Interfaces
 {
@@ -16,7 +15,7 @@ namespace Application.Services.Interfaces
         /// </summary>
         /// <returns>Сообщение в ответ пользователю</returns>
         Task<DialogStateService.TransitionResult> TransitionState(
-            User? user,
+            int userId, 
             Message message);
 
         /// <summary>

@@ -15,39 +15,41 @@ namespace Application.Services
         private readonly IUserDao _userDao;
         private readonly ICityDao _cityDao;
 
-        public DialogStateService(ICitiesParserService citiesParserService,
-                                  IUserDao userDao,
-                                  ICityDao cityDao)
+        public DialogStateService(
+            ICitiesParserService citiesParserService,
+            IUserDao userDao,
+            ICityDao cityDao)
         {
             _citiesParserService = citiesParserService;
             _userDao = userDao;
             _cityDao = cityDao;
         }
 
-        public Task<TransitionResult> TransitionState(User? user, Message message)
+        public async Task<TransitionResult> TransitionState(int userId, Message message)
         {
+            var user = await _userDao.GetUserById(userId);
             if (user == null)
             {
-                return WithoutState(message);
+                return await WithoutState(message);
             }
 
             switch (user.CurrentDialogState)
             {
                 case DialogState.ProposedInputCity:
-                    return ProposedInputCity(user, message);
+                    return await ProposedInputCity(user, message);
                 case DialogState.ProposedFoundedCity:
-                    return ProposedFoundedCity(user, message);
+                    return await ProposedFoundedCity(user, message);
                 case DialogState.OfChoosingSubscribeType:
-                    return OfChoosingSubscribeType(user, message);
+                    return await OfChoosingSubscribeType(user, message);
                 case DialogState.SubscribedToEverydayPushes:
                 case DialogState.SubscribedToEverydayDoublePushes:
-                    return SubscribedToPushes(user, message);
+                    return await SubscribedToPushes(user, message);
                 case DialogState.SubscribedTriesToUnsubscribe:
-                    return SubscribedTriesToUnsubscribe(user, message);
+                    return await SubscribedTriesToUnsubscribe(user, message);
                 case DialogState.Unsubscribed:
-                    return Unsubscribed(user, message);
+                    return await Unsubscribed(user, message);
                 case DialogState.UnsubscribedTriesSubscribe:
-                    return OfChoosingSubscribeType(user, message);
+                    return await OfChoosingSubscribeType(user, message);
                 default:
                     throw new ArgumentOutOfRangeException(
                         nameof(user.CurrentDialogState), 
@@ -89,11 +91,11 @@ namespace Application.Services
             User user, 
             Message message)
         {
-            var cityNotExistInDB = false;
+            var isCityExistsInDb = true;
             var city = await _cityDao.GetCityByLowerCaseName(message.Text.Trim().ToLower());
             if (city == null)
             {
-                cityNotExistInDB = true;
+                isCityExistsInDb = false;
                 city = await _citiesParserService.FindCity(message.Text);
             }
 
@@ -108,7 +110,7 @@ namespace Application.Services
                     StateChangeDate = DateTime.UtcNow
                 };
 
-                if (cityNotExistInDB)
+                if (isCityExistsInDb == false)
                 {
                     await _cityDao.Create(city);
                 }
@@ -315,8 +317,9 @@ namespace Application.Services
             }
         }
 
-        private async Task<TransitionResult> Unsubscribed(User user,
-                                                Message message)
+        private async Task<TransitionResult> Unsubscribed(
+            User user,
+            Message message)
         {
             if (message.Text.Trim().ToLower() == "подписка")
             {

@@ -4,7 +4,7 @@ using TelegramApi.Client.Entities;
 
 namespace Application.Services.Interfaces
 {
-    public interface IUpdateService
+    public interface IUpdateHandleService
     {
         public Task<int?> GetLastUpdateId();
 
