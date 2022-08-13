@@ -33,7 +33,7 @@ FROM
     users
 WHERE
     id = @user_id";
-            using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
+            using var connection = await _connectionFactory.CreateConnection();
             var dialogStateDal = await connection.QueryFirstOrDefaultAsync<User>(sql, new
             {
                 user_id = userId
@@ -66,7 +66,7 @@ VALUES (
     @last_name,
     @user_name
 )";
-            using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
+            using var connection = await _connectionFactory.CreateConnection();
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
                 id = user.Id,
@@ -94,7 +94,7 @@ SET
     state_change_date = @state_change_date
 WHERE
     id = @id";
-            using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
+            using var connection = await _connectionFactory.CreateConnection();
             var rowsUpdated = await connection.ExecuteAsync(sql, new
             {
                 id = user.Id,

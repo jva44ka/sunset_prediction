@@ -49,7 +49,10 @@ namespace Application.Services
                 case DialogState.UnsubscribedTriesSubscribe:
                     return OfChoosingSubscribeType(user, message);
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(user.DialogState), user.DialogState, null);
+                    throw new ArgumentOutOfRangeException(
+                        nameof(user.DialogState), 
+                        user.DialogState, 
+                        null);
 
             }
         }
@@ -87,13 +90,11 @@ namespace Application.Services
             Message message)
         {
             var cityNotExistInDB = false;
-            var city = await _cityDao.GetCityByLowerCaseName(message.Text.Trim().ToLower())
-                                     .ConfigureAwait(false);
+            var city = await _cityDao.GetCityByLowerCaseName(message.Text.Trim().ToLower());
             if (city == null)
             {
                 cityNotExistInDB = true;
-                city = await _citiesParserService.FindCity(message.Text)
-                                                 .ConfigureAwait(false);
+                city = await _citiesParserService.FindCity(message.Text);
             }
 
             if (city != null)
@@ -109,11 +110,9 @@ namespace Application.Services
 
                 if (cityNotExistInDB)
                 {
-                    await _cityDao.Create(city)
-                                  .ConfigureAwait(false);
+                    await _cityDao.Create(city);
                 }
-                await _userDao.Update(userWithNewState)
-                              .ConfigureAwait(false);
+                await _userDao.Update(userWithNewState);
 
                 return new TransitionResult
                 {
@@ -145,14 +144,13 @@ namespace Application.Services
                     CityId = currentUserState.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
-                await _userDao.Update(userWithNewState).ConfigureAwait(false);
+                await _userDao.Update(userWithNewState);
 
-                var city = await _citiesParserService.FindCity(currentUserState.CityId.Value)
-                                                     .ConfigureAwait(false);
-                var cityInDb = await _cityDao.GetCityById(city.Id).ConfigureAwait(false);
+                var city = await _citiesParserService.FindCity(currentUserState.CityId.Value);
+                var cityInDb = await _cityDao.GetCityById(city.Id);
                 if (cityInDb == null)
                 {
-                    await _cityDao.Create(city).ConfigureAwait(false);
+                    await _cityDao.Create(city);
                 }
 
                 return new TransitionResult
@@ -172,8 +170,7 @@ namespace Application.Services
                     DialogState = DialogState.ProposedInputCity,
                     StateChangeDate = DateTime.UtcNow
                 };
-                await _userDao.Update(userWithNewState)
-                              .ConfigureAwait(false);
+                await _userDao.Update(userWithNewState);
 
                 return new TransitionResult
                 {
@@ -199,8 +196,7 @@ namespace Application.Services
                             CityId = user.CityId,
                             StateChangeDate = DateTime.UtcNow
                         };
-                        await _userDao.Update(userWithNewState)
-                                      .ConfigureAwait(false);
+                        await _userDao.Update(userWithNewState);
 
                         return new TransitionResult
                         {
@@ -221,8 +217,7 @@ namespace Application.Services
                             CityId = user.CityId,
                             StateChangeDate = DateTime.UtcNow
                         };
-                        await _userDao.Update(userWithNewState)
-                                      .ConfigureAwait(false);
+                        await _userDao.Update(userWithNewState);
 
                         return new TransitionResult
                         {
@@ -258,8 +253,7 @@ namespace Application.Services
                     CityId = user.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
-                await _userDao.Update(userWithNewState)
-                              .ConfigureAwait(false);
+                await _userDao.Update(userWithNewState);
 
                 return new TransitionResult
                 {
@@ -291,8 +285,7 @@ namespace Application.Services
                     CityId = user.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
-                await _userDao.Update(userWithNewState)
-                              .ConfigureAwait(false);
+                await _userDao.Update(userWithNewState);
 
                 return new TransitionResult
                 {
@@ -311,8 +304,7 @@ namespace Application.Services
                     CityId = user.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
-                await _userDao.Update(userWithNewState)
-                              .ConfigureAwait(false);
+                await _userDao.Update(userWithNewState);
 
                 return new TransitionResult
                 {
@@ -336,8 +328,7 @@ namespace Application.Services
                     CityId = user.CityId,
                     StateChangeDate = DateTime.UtcNow
                 };
-                await _userDao.Update(userWithNewState)
-                              .ConfigureAwait(false);
+                await _userDao.Update(userWithNewState);
 
                 return new TransitionResult
                 {
@@ -368,8 +359,7 @@ namespace Application.Services
                 DialogState = DialogState.ProposedInputCity,
                 StateChangeDate = DateTime.UtcNow
             };
-            await _userDao.Create(userWithNewState)
-                          .ConfigureAwait(false);
+            await _userDao.Create(userWithNewState);
 
             return new TransitionResult
             {

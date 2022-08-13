@@ -18,8 +18,7 @@ namespace DataAccess.ConnectionFactories
         public async Task<IDbConnection> CreateConnection()
         {
             var connection = new NpgsqlConnection(_settings.ConnectionString);
-
-            await connection.OpenAsync().ConfigureAwait(false);
+            await connection.OpenAsync();
 
             return connection;
         }

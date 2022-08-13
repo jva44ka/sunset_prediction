@@ -34,11 +34,11 @@ SELECT
 FROM 
     cities
 WHERE
-    id = @id";
-            using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
+    id = @Id";
+            using var connection = await _connectionFactory.CreateConnection();
             var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
             {
-                id = id
+                Id = id
             });
             return cityDal;
         }
@@ -52,11 +52,11 @@ SELECT
 FROM 
     cities
 WHERE
-    LOWER(cities.name) LIKE CONCAT('%', @cityName, '%')";
-            using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
+    LOWER(cities.name) LIKE CONCAT('%', @СityName, '%')";
+            using var connection = await _connectionFactory.CreateConnection();
             var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
             {
-                cityName = cityName
+                СityName = cityName
             });
             return cityDal;
         }
@@ -68,24 +68,24 @@ WHERE
 INSERT INTO 
     cities
 VALUES (
-    @id,
-    @name,
-    @url_name,
-    @address,
-    @country_code,
-    @latitude,
-    @longitude
+    @Id,
+    @Name,
+    @UrlName,
+    @Address,
+    @CountryCode,
+    @Latitude,
+    @Longitude
 )";
-            using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
+            using var connection = await _connectionFactory.CreateConnection();
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
-                id = cityDal.Id,
-                name = cityDal.Name,
-                url_name = cityDal.UrlName,
-                address = cityDal.Address,
-                country_code = cityDal.CountryCode,
-                latitude = cityDal.Latitude,
-                longitude = cityDal.Longitude
+                cityDal.Id,
+                cityDal.Name,
+                cityDal.UrlName,
+                cityDal.Address,
+                cityDal.CountryCode,
+                cityDal.Latitude,
+                cityDal.Longitude
             });
             return rowsInserted == 1;
         }
@@ -97,24 +97,24 @@ VALUES (
 UPDATE
     cities
 SET
-    name = @name,
-    url_name = @url_name,
-    address = @address,
-    country_code = @country_code,
-    latitude = @latitude,
-    longitude = @longitude
+    name = @Name,
+    url_name = @UrlName,
+    address = @Address,
+    country_code = @CountryCode,
+    latitude = @Latitude,
+    longitude = @Longitude
 WHERE
-    id = @id";
-            using var connection = await _connectionFactory.CreateConnection().ConfigureAwait(false);
+    id = @Id";
+            using var connection = await _connectionFactory.CreateConnection();
             var rowsUpdated = await connection.ExecuteAsync(sql, new
             {
-                id = cityDal.Id,
-                name = cityDal.Name,
-                url_name = cityDal.UrlName,
-                address = cityDal.Address,
-                country_code = cityDal.CountryCode,
-                latitude = cityDal.Latitude,
-                longitude = cityDal.Longitude
+                cityDal.Id,
+                cityDal.Name,
+                cityDal.UrlName,
+                cityDal.Address,
+                cityDal.CountryCode,
+                cityDal.Latitude,
+                cityDal.Longitude
             });
             return rowsUpdated == 1;
         }

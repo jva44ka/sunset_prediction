@@ -39,8 +39,7 @@ namespace TelegramApi.Worker.HostedServices
 
                 try
                 {
-                    var lastHandledUpdateId = await _updateService.GetLastUpdateId()
-                                                                  .ConfigureAwait(false);
+                    var lastHandledUpdateId = await _updateService.GetLastUpdateId();
                     var response = await _telegramBotApiClient.GetUpdates(lastHandledUpdateId, stoppingToken);
 
                     if (response.IsSuccessStatusCode)
@@ -50,8 +49,8 @@ namespace TelegramApi.Worker.HostedServices
 
                         if (responseDto.Ok && responseDto.Result.Length > 0)
                         {
-                            var updateHandleResults = await UpdatesHandle(responseDto.Result).ConfigureAwait(false);
-                            await SendUpdateHandleResults(updateHandleResults, stoppingToken).ConfigureAwait(false);
+                            var updateHandleResults = await UpdatesHandle(responseDto.Result);
+                            await SendUpdateHandleResults(updateHandleResults, stoppingToken);
                         }
                     }
                     else

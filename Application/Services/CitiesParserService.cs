@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Application.Services
 
         public async Task<City?> FindCity(string searchCityName)
         {
-            var route = await SearchRoute(searchCityName).ConfigureAwait(false);
+            var route = await SearchRoute(searchCityName);
 
             if (route != null)
             {
@@ -38,7 +39,7 @@ namespace Application.Services
         
         public async Task<City?> FindCity(int cityId)
         {
-            var route = await SearchRoute(cityId).ConfigureAwait(false);
+            var route = await SearchRoute(cityId);
 
             if (route != null)
             {
@@ -63,7 +64,7 @@ namespace Application.Services
         /// </summary>
         private async Task<List<Location>?> SearchRoute(string searchLocationName)
         {
-            _locations ??= await GetLocationsFromFile().ConfigureAwait(false);
+            _locations ??= await GetLocationsFromFile();
 
             foreach (var location in _locations)
             {
@@ -84,7 +85,7 @@ namespace Application.Services
         /// </summary>
         private async Task<List<Location>?> SearchRoute(int cityId)
         {
-            _locations ??= await GetLocationsFromFile().ConfigureAwait(false);
+            _locations ??= await GetLocationsFromFile();
 
             foreach (var location in _locations)
             {
@@ -101,9 +102,9 @@ namespace Application.Services
 
         private async Task<Location[]> GetLocationsFromFile()
         {
-            var textFromFile = await File.ReadAllTextAsync(CitiesJsonPath)
-                                         .ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<Location[]>(textFromFile);
+            var textFromFile = await File.ReadAllTextAsync(CitiesJsonPath);
+            return JsonConvert.DeserializeObject<Location[]>(textFromFile) 
+                   ?? Array.Empty<Location>();
         }
 
         /// <summary>
