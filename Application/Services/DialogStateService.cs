@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Application.Services.Interfaces;
 using DataAccess.Dao.Interfaces;
 using Domain.Entities.Enums;
-using TelegramApi.Client.Entities;
+using TelegramApi.Client.Dtos;
 using User = Domain.Entities.User;
 
 namespace Application.Services

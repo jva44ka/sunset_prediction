@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using TelegramApi.Client.Clients.Interfaces;
-using TelegramApi.Client.DTO;
+using TelegramApi.Client.Dtos;
 using TelegramApi.Client.Settings;
 
 namespace TelegramApi.Client.Clients
@@ -12,13 +12,13 @@ namespace TelegramApi.Client.Clients
     public class TelegramBotApiClient : ITelegramBotApiClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IOptions<TelegramApiSettings> _telegramApiSettings;
+        private readonly TelegramApiSettings _telegramApiSettings;
 
         public TelegramBotApiClient(IHttpClientFactory httpClientFactory,
-                                    IOptions<TelegramApiSettings> telegramApiSettings)
+                                    IOptions<TelegramApiSettings> telegramApiSettingsOptions)
         {
             _httpClientFactory = httpClientFactory;
-            _telegramApiSettings = telegramApiSettings;
+            _telegramApiSettings = telegramApiSettingsOptions.Value;
         }
 
         public Task<HttpResponseMessage> GetUpdates(int? lastHandledUpdateId, CancellationToken stoppingToken)
@@ -28,7 +28,7 @@ namespace TelegramApi.Client.Clients
             return httpClient.GetAsync(getUpdatesUrl, stoppingToken);
         }
         
-        public async Task<HttpResponseMessage> SendMessage(TelegramSendMessageRequest request, CancellationToken stoppingToken)
+        public async Task<HttpResponseMessage> SendMessage(SendMessageRequest request, CancellationToken stoppingToken)
         {
             var httpClient = _httpClientFactory.CreateClient();
             var url = SendMessageUrl();
@@ -41,8 +41,8 @@ namespace TelegramApi.Client.Clients
         /// </summary>
         private string GetUpdatesUrl(int? lastHandledUpdateId)
         {
-            var getUpdatesUrl = $"{_telegramApiSettings.Value.Url}/bot{_telegramApiSettings.Value.BotToken}/getUpdates";
-            getUpdatesUrl += $"?timeout={_telegramApiSettings.Value.LongPoolingTimeoutSec}";
+            var getUpdatesUrl = $"{_telegramApiSettings.Url}/bot{_telegramApiSettings.BotToken}/getUpdates";
+            getUpdatesUrl += $"?timeout={_telegramApiSettings.LongPoolingTimeoutSec}";
             if (lastHandledUpdateId != null)
             {
                 getUpdatesUrl += $"&offset={lastHandledUpdateId.Value + 1}";
@@ -56,7 +56,7 @@ namespace TelegramApi.Client.Clients
         /// </summary>
         private string SendMessageUrl()
         {
-            return $"{_telegramApiSettings.Value.Url}/bot{_telegramApiSettings.Value.BotToken}/sendMessage";
+            return $"{_telegramApiSettings.Url}/bot{_telegramApiSettings.BotToken}/sendMessage";
         }
     }
 }

@@ -1,9 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using TelegramApi.Worker.HostedServices;
+using OpenWeatherMap.Worker.HostedServices;
+using OpenWeatherMap.Worker.Installers;
 using TelegramApi.Worker.Installers;
 
-namespace TelegramApi.Worker
+namespace OpenWeatherMap.Worker
 {
     public class Program
     {
@@ -14,7 +13,7 @@ namespace TelegramApi.Worker
                 {
                     OptionsInstaller.ConfigureServices(services, hostContext.Configuration);
                     ServicesInstaller.ConfigureServices(services);
-                    services.AddHostedService<TelegramBackgroundService>();
+                    services.AddHostedService<OpenWeatherMapHostedService>();
                 })
                 .Build();
 

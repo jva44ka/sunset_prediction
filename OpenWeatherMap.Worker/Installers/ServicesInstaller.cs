@@ -6,6 +6,8 @@ using DataAccess.ConnectionFactories;
 using DataAccess.Dao;
 using DataAccess.Dao.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using OpenWeatherMap.Client.Clients;
+using OpenWeatherMap.Client.Clients.Interfaces;
 using TelegramApi.Client.Clients;
 using TelegramApi.Client.Clients.Interfaces;
 using TelegramApi.Client.Dtos;
@@ -35,7 +37,8 @@ namespace TelegramApi.Worker.Installers
             serviceCollection.AddSingleton<ITelegramUpdatesRequesterService, TelegramUpdatesRequesterService>();
 
             //telegram api
-            serviceCollection.AddSingleton<ITelegramBotApiClient, TelegramBotApiClient>();
+            serviceCollection.AddSingleton<IForecastClient, ForecastClient>();
+            serviceCollection.AddSingleton<IGeocodingClient, GeocodingClient>();
             serviceCollection.AddHttpClient();
             return serviceCollection;
         }

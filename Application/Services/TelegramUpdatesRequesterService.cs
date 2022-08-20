@@ -8,7 +8,7 @@ using Application.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TelegramApi.Client.Clients.Interfaces;
-using TelegramApi.Client.DTO;
+using TelegramApi.Client.Dtos;
 
 namespace Application.Services
 {
@@ -36,7 +36,7 @@ namespace Application.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContentString = await response.Content.ReadAsStringAsync(cancellationToken);
-                var newUpdatesResponse = JsonConvert.DeserializeObject<TelegramGetUpdatesResult>(responseContentString);
+                var newUpdatesResponse = JsonConvert.DeserializeObject<GetUpdatesResult>(responseContentString);
 
                 if (newUpdatesResponse.Ok && newUpdatesResponse.Result.Length > 0)
                 {
@@ -55,7 +55,7 @@ namespace Application.Services
         /// </summary>
         /// <param name="updates"></param>
         private async Task<List<HandleUpdateResult>> UpdatesHandle(
-            TelegramApi.Client.Entities.Update[] updates)
+            Update[] updates)
         {
             //TODO: Может уперется в количество соединений в БД при большом количестве обновлений у бота
             var tasks = updates.Select(u => _updateHandleService.HandleUpdate(u));
@@ -80,7 +80,7 @@ namespace Application.Services
         {
             foreach (var handleUpdateResult in updateHandleResults)
             {
-                var sendMessageRequest = new TelegramSendMessageRequest
+                var sendMessageRequest = new SendMessageRequest
                 {
                     ChatId = handleUpdateResult.ChatId,
                     Text = handleUpdateResult.MessageText,

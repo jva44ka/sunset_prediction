@@ -1,10 +1,11 @@
 ﻿using Application.Mappers.Interfaces;
+using TelegramApi.Client.Dtos;
 
 namespace Application.Mappers
 {
-    public class UpdateMapper : IMapper<Domain.Entities.Update, TelegramApi.Client.Entities.Update>
+    public class UpdateMapper : IMapper<Domain.Entities.Update, Update>
     {
-        public Domain.Entities.Update? ToEntity(TelegramApi.Client.Entities.Update? dal)
+        public Domain.Entities.Update? ToEntity(Update? dal)
         {
             if (dal == null)
             {
@@ -17,7 +18,7 @@ namespace Application.Mappers
             };
         }
 
-        public TelegramApi.Client.Entities.Update? ToDto(Domain.Entities.Update? entity)
+        public Update? ToDto(Domain.Entities.Update? entity)
         {
             if (entity == null)
             {

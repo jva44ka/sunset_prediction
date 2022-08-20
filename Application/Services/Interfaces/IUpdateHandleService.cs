@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Application.Services.Dto;
-using TelegramApi.Client.Entities;
+using TelegramApi.Client.Dtos;
 
 namespace Application.Services.Interfaces
 {

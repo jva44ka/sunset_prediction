@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32126.315
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{A09F8F49-132F-469E-B8E9-A0D1FDCBD2B1}"
 EndProject
@@ -14,9 +14,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramApi.Worker", "Teleg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrator", "Migrator\Migrator.csproj", "{577D0FBF-6393-40D0-9231-1498DF7D3F2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{AE680D69-2F66-48DD-B13D-EE4103157152}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{AE680D69-2F66-48DD-B13D-EE4103157152}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramApi.Client", "TelegramApi.Client\TelegramApi.Client.csproj", "{F203F597-0AEC-49F2-9210-852384BFFE70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramApi.Client", "TelegramApi.Client\TelegramApi.Client.csproj", "{F203F597-0AEC-49F2-9210-852384BFFE70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeatherMap.Client", "OpenWeatherMap.Client\OpenWeatherMap.Client.csproj", "{5C63F294-2ED0-496C-BA79-16EB0D6E7C33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeatherMap.Worker", "OpenWeatherMap.Worker\OpenWeatherMap.Worker.csproj", "{D6958858-DE22-40ED-923D-831A48C7AB1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +52,14 @@ Global
 		{F203F597-0AEC-49F2-9210-852384BFFE70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F203F597-0AEC-49F2-9210-852384BFFE70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F203F597-0AEC-49F2-9210-852384BFFE70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C63F294-2ED0-496C-BA79-16EB0D6E7C33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C63F294-2ED0-496C-BA79-16EB0D6E7C33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C63F294-2ED0-496C-BA79-16EB0D6E7C33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C63F294-2ED0-496C-BA79-16EB0D6E7C33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6958858-DE22-40ED-923D-831A48C7AB1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6958858-DE22-40ED-923D-831A48C7AB1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6958858-DE22-40ED-923D-831A48C7AB1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6958858-DE22-40ED-923D-831A48C7AB1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

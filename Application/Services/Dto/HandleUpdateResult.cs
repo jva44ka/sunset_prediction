@@ -1,4 +1,4 @@
-﻿using TelegramApi.Client.Entities;
+﻿using TelegramApi.Client.Dtos;
 
 namespace Application.Services.Dto
 {
