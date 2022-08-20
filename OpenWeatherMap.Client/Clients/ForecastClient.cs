@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using OpenWeatherMap.Client.Clients.Interfaces;
-using OpenWeatherMap.Client.Dtos;
 using OpenWeatherMap.Client.Settings;
 
 namespace OpenWeatherMap.Client.Clients;
@@ -8,10 +7,10 @@ namespace OpenWeatherMap.Client.Clients;
 public class ForecastClient : IForecastClient
 {
     private const string GetHourlyEndpoint = "/data/2.5/forecast?lat={lat}&lon={lon}&cnt={cnt}&appid={appid}";
-    private const string LatitudeParamName = "lat";
-    private const string LongitudeParamName = "lon";
-    private const string ForecastsCountParamName = "cnt";
-    private const string ApiTokenParamName = "appid";
+    private const string LatitudeParamName = "{lat}";
+    private const string LongitudeParamName = "{lon}";
+    private const string ForecastsCountParamName = "{cnt}";
+    private const string ApiTokenParamName = "{appid}";
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly OpenWeatherMapApiSettings _openWeatherMapApiSettings;
@@ -28,18 +27,18 @@ public class ForecastClient : IForecastClient
         GetHourlyUrl = _openWeatherMapApiSettings.Host + GetHourlyEndpoint;
     }
 
-    public async Task<HourlyForecastResponse> GetHourly(
+    public Task<HttpResponseMessage> GetHourly(
         double latitude, 
-        double longitude, 
+        double longitude,
         int forecastsCount, 
-        CancellationToken stoppingToken = default)
+        CancellationToken cancellationToken = default)
     {
         var httpClient = _httpClientFactory.CreateClient();
-        var getHourlyUrl = GetHourlyUrl.Replace(LatitudeParamName, latitude.ToString())
-                                       .Replace(LongitudeParamName, longitude.ToString())
-                                       .Replace(ForecastsCountParamName, forecastsCount.ToString())
-                                       .Replace(ApiTokenParamName, _openWeatherMapApiSettings.ApiToken);
+        var url = GetHourlyUrl.Replace(LatitudeParamName, latitude.ToString())
+                              .Replace(LongitudeParamName, longitude.ToString())
+                              .Replace(ForecastsCountParamName, forecastsCount.ToString())
+                              .Replace(ApiTokenParamName, _openWeatherMapApiSettings.ApiToken);
 
-        var response = await httpClient.GetAsync(getHourlyUrl, stoppingToken);
+        return httpClient.GetAsync(url, cancellationToken);
     }
 }

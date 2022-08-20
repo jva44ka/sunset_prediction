@@ -5,11 +5,8 @@ using Application.Services.Interfaces;
 using DataAccess.ConnectionFactories;
 using DataAccess.Dao;
 using DataAccess.Dao.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using OpenWeatherMap.Client.Clients;
 using OpenWeatherMap.Client.Clients.Interfaces;
-using TelegramApi.Client.Clients;
-using TelegramApi.Client.Clients.Interfaces;
 using TelegramApi.Client.Dtos;
 
 namespace TelegramApi.Worker.Installers
