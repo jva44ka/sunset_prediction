@@ -3,6 +3,6 @@
     public class GetUpdatesResult
     {
         public bool Ok { get; set; }
-        public Update[] Result { get; set; }
+        public UpdateDto[] Result { get; set; }
     }
 }

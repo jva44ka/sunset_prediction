@@ -5,7 +5,7 @@ namespace TelegramApi.Client.Dtos
     /// <summary>
     ///     Этот объект представляет аудиозапись, которую клиенты Telegram воспинимают как музыкальный трек.
     /// </summary>
-    public class Audio
+    public class AudioDto
     {
         /// <summary>
         ///     Уникальный идентификатор файла

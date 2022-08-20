@@ -22,6 +22,6 @@ namespace Application.Services.Dto
         /// <summary>
         ///     Клавиатура для последующих вариантов ответов на сообщение
         /// </summary>
-        public ReplyKeyboardMarkup? MessageKeyboard { get; set; }
+        public ReplyKeyboardMarkupDto? MessageKeyboard { get; set; }
     }
 }

@@ -16,13 +16,13 @@ namespace Application.Services.Interfaces
         /// <returns>Сообщение в ответ пользователю</returns>
         Task<DialogStateService.TransitionResult> TransitionState(
             int userId,
-            Message message);
+            MessageDto message);
 
         /// <summary>
         ///     Создание клавиатуры для конкретного нового состояния диалога
         /// </summary>
         /// <param name="dialogState"></param>
         /// <returns></returns>
-        ReplyKeyboardMarkup? BuildKeyboard(DialogState dialogState);
+        ReplyKeyboardMarkupDto? BuildKeyboard(DialogState dialogState);
     }
 }

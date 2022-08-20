@@ -8,7 +8,7 @@ namespace TelegramApi.Client.Dtos
     ///     пока не будет принудительно отправлена новая или скрыта старая клавиатура. Исключение составляют
     ///     одноразовые клавиатуры, которые скрываются сразу после нажатия на какую-либо кнопку (см. ReplyKeyboardMarkup).
     /// </summary>
-    public class ReplyKeyboardHide
+    public class ReplyKeyboardHideDto
     {
         /// <summary>
         ///     Указание клиенту скрыть клавиатуру бота

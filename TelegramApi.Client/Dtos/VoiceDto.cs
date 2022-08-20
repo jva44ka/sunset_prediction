@@ -5,7 +5,7 @@ namespace TelegramApi.Client.Dtos
     /// <summary>
     ///     Этот объект представляет голосовое сообщение.
     /// </summary>
-    public class Voice
+    public class VoiceDto
     {
         /// <summary>
         ///     Уникальный идентификатор файла

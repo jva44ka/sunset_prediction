@@ -5,7 +5,7 @@ namespace TelegramApi.Client.Dtos
     /// <summary>
     ///     Этот объект представляет бота или пользователя Telegram.
     /// </summary>
-    public class User
+    public class UserDto
     {
         /// <summary>
         ///     Уникальный идентификатор пользователя или бота

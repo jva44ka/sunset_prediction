@@ -3,7 +3,7 @@
     /// <summary>
     ///     Этот объект представляет точку на карте.
     /// </summary>
-    public class Location
+    public class LocationDto
     {
         /// <summary>
         ///     Долгота, заданная отправителем

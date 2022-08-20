@@ -11,7 +11,7 @@ namespace TelegramApi.Client.Dtos
         public string Text { get; set; } = default!;
 
         [JsonProperty("reply_markup")]
-        public ReplyKeyboardMarkup? ReplyMarkup { get; set; }
+        public ReplyKeyboardMarkupDto? ReplyMarkup { get; set; }
 
         public string ToJson()
         {

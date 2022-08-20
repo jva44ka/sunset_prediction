@@ -6,7 +6,7 @@ namespace TelegramApi.Client.Dtos
     /// <summary>
     ///     Этот объект представляет собой сообщение.
     /// </summary>
-    public class Message
+    public class MessageDto
     {
         /// <summary>
         /// 	Уникальный идентификатор сообщения
@@ -17,7 +17,7 @@ namespace TelegramApi.Client.Dtos
         /// <summary>
         /// 	Опционально. Отправитель. Может быть пустым в каналах.
         /// </summary>
-        public User From { get; set; } = default!;
+        public UserDto From { get; set; } = default!;
 
         /// <summary>
         ///     Дата отправки сообщения (Unix time)
@@ -27,13 +27,13 @@ namespace TelegramApi.Client.Dtos
         /// <summary>
         /// 	Диалог, в котором было отправлено сообщение
         /// </summary>
-        public Chat Chat { get; set; } = default!;
+        public ChatDto Chat { get; set; } = default!;
 
         /// <summary>
         /// 	Опционально. Для пересланных сообщений: отправитель оригинального сообщения
         /// </summary>
         [JsonProperty("forward_from")]
-        public User? ForwardFrom { get; set; }
+        public UserDto? ForwardFrom { get; set; }
 
         /// <summary>
         /// 	Опционально. Для пересланных сообщений: дата отправки оригинального сообщения
@@ -47,7 +47,7 @@ namespace TelegramApi.Client.Dtos
         ///     further reply_to_message fields even if it itself is a reply.
         /// </summary>
         [JsonProperty("reply_to_message")]
-        public Message? ReplyToMessage { get; set; }
+        public MessageDto? ReplyToMessage { get; set; }
 
         /// <summary>
         /// 	Опционально. Для текстовых сообщений: текст сообщения, 0-4096 символов
@@ -57,37 +57,37 @@ namespace TelegramApi.Client.Dtos
         /// <summary>
         ///     Опционально. Для текстовых сообщений: особые сущности в тексте сообщения.
         /// </summary>
-        public MessageEntity[]? Entities { get; set; }
+        public MessageEntityDto[]? Entities { get; set; }
 
         /// <summary>
         /// 	Опционально. Информация об аудиофайле
         /// </summary>
-        public Audio? Audio { get; set; }
+        public AudioDto? Audio { get; set; }
 
         /// <summary>
         ///     Опционально. Информация о файле
         /// </summary>
-        public Document? Document { get; set; }
+        public DocumentDto? Document { get; set; }
 
         /// <summary>
         ///     Опционально. Доступные размеры фото
         /// </summary>
-        public PhotoSize[]? Photo { get; set; }
+        public PhotoSizeDto[]? Photo { get; set; }
 
         /// <summary>
         /// 	Опционально. Информация о стикере
         /// </summary>
-        public Sticker? Sticker { get; set; }
+        public StickerDto? Sticker { get; set; }
 
         /// <summary>
         /// 	Опционально. Информация о видеозаписи
         /// </summary>
-        public Video? Video { get; set; }
+        public VideoDto? Video { get; set; }
 
         /// <summary>
         ///     Опционально. Информация о голосовом сообщении
         /// </summary>
-        public Voice? Voice { get; set; }
+        public VoiceDto? Voice { get; set; }
 
         /// <summary>
         ///     Опционально. Подпись к файлу, фото или видео, 0-200 символов
@@ -97,29 +97,29 @@ namespace TelegramApi.Client.Dtos
         /// <summary>
         /// 	Опционально. Информация об отправленном контакте
         /// </summary>
-        public Contact? Contact { get; set; }
+        public ContactDto? Contact { get; set; }
 
         /// <summary>
         /// 	Опционально. Информация о местоположении
         /// </summary>
-        public Location? Location { get; set; }
+        public LocationDto? Location { get; set; }
 
         /// <summary>
         /// 	Опционально. Информация о месте на карте
         /// </summary>
-        public Venue? Venue { get; set; }
+        public VenueDto? Venue { get; set; }
 
         /// <summary>
         ///     Опционально. Информация о пользователе, добавленном в группу
         /// </summary>
         [JsonProperty("new_chat_member")]
-        public User? NewChatMember { get; set; }
+        public UserDto? NewChatMember { get; set; }
 
         /// <summary>
         /// 	Опционально. Информация о пользователе, удалённом из группы
         /// </summary>
         [JsonProperty("left_chat_member")]
-        public User? LeftChatMember { get; set; }
+        public UserDto? LeftChatMember { get; set; }
 
         /// <summary>
         ///     Опционально. Название группы было изменено на это поле
@@ -131,7 +131,7 @@ namespace TelegramApi.Client.Dtos
         ///     Опционально. Фото группы было изменено на это поле
         /// </summary>
         [JsonProperty("new_chat_photo")]
-        public PhotoSize[]? NewChatPhoto { get; set; }
+        public PhotoSizeDto[]? NewChatPhoto { get; set; }
 
         /// <summary>
         ///     Опционально. Сервисное сообщение: фото группы было удалено
@@ -175,7 +175,7 @@ namespace TelegramApi.Client.Dtos
         ///     fields even if it is itself a reply.
         /// </summary>
         [JsonProperty("pinned_message")]
-        public Message? PinnedMessage { get; set; }
+        public MessageDto? PinnedMessage { get; set; }
 
 
         public DateTime GetDateUnixAsDate()

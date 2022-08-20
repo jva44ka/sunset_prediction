@@ -5,12 +5,12 @@ namespace TelegramApi.Client.Dtos
     /// <summary>
     ///     Этот объект представляет объект на карте.
     /// </summary>
-    public class Venue
+    public class VenueDto
     {
         /// <summary>
         ///     Координаты объекта
         /// </summary>
-        public Location Location { get; set; } = default!;
+        public LocationDto Location { get; set; } = default!;
 
         /// <summary>
         ///     Название объекта

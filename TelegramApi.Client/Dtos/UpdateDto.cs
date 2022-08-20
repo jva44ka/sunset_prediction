@@ -8,7 +8,7 @@ namespace TelegramApi.Client.Dtos
     ///
     ///     Только один из необязательных параметров может присутствовать в каждом обновлении.
     /// </summary>
-    public class Update
+    public class UpdateDto
     {
         /// <summary>
         ///     The update‘s unique identifier. Update identifiers start from a certain
@@ -24,13 +24,13 @@ namespace TelegramApi.Client.Dtos
         ///     Опционально. New incoming message of any kind — text, photo, sticker, etc.
         /// </summary>
         /// <remarks>message</remarks>
-        public Message? Message { get; set; }
+        public MessageDto? Message { get; set; }
 
         /// <summary>
         ///     Опционально. New incoming callback query
         /// </summary>
         /// <remarks>callback_query</remarks>
         [JsonProperty("callback_query")]
-        public CallbackQuery? CallbackQuery { get; set; }
+        public CallbackQueryDto? CallbackQuery { get; set; }
     }
 }

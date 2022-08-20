@@ -12,12 +12,12 @@ namespace Application.Services
     {
         private readonly IUpdateDao _updateDao;
         private readonly IDialogStateService _dialogStateService;
-        private readonly IMapper<Domain.Entities.Update, Update> _updatesMapper;
+        private readonly IMapper<Domain.Entities.Update, UpdateDto> _updatesMapper;
 
         public UpdateHandleService(
             IUpdateDao updateDao,
             IDialogStateService dialogStateService,
-            IMapper<Domain.Entities.Update, Update> updatesMapper)
+            IMapper<Domain.Entities.Update, UpdateDto> updatesMapper)
         {
             _updateDao = updateDao;
             _dialogStateService = dialogStateService;
@@ -30,7 +30,7 @@ namespace Application.Services
             return lastUpdate?.UpdateId;
         }
 
-        public async Task<HandleUpdateResult> HandleUpdate(Update update)
+        public async Task<HandleUpdateResult> HandleUpdate(UpdateDto update)
         {
             var updateDal = _updatesMapper.ToEntity(update);
             updateDal.HandleDate = DateTime.UtcNow;

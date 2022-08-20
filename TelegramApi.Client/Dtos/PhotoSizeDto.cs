@@ -5,7 +5,7 @@ namespace TelegramApi.Client.Dtos
     /// <summary>
     ///     Этот объект представляет изображение определённого размера или превью файла / стикера.
     /// </summary>
-    public class PhotoSize
+    public class PhotoSizeDto
     {
         /// <summary>
         /// 	Уникальный идентификатор файла

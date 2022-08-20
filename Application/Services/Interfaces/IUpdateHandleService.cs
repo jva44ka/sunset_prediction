@@ -9,9 +9,9 @@ namespace Application.Services.Interfaces
         public Task<int?> GetLastUpdateId();
 
         /// <summary>
-        ///     Обрабатывает <see cref="Update"/>
+        ///     Обрабатывает <see cref="UpdateDto"/>
         /// </summary>
         /// <returns>Сообщение, которое нужно отправить пользователю в ответ</returns>
-        public Task<HandleUpdateResult> HandleUpdate(Update update);
+        public Task<HandleUpdateResult> HandleUpdate(UpdateDto update);
     }
 }

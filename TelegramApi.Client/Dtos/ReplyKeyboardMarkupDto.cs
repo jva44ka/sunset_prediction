@@ -6,13 +6,13 @@ namespace TelegramApi.Client.Dtos
     /// <summary>
     ///     Этот объект представляет клавиатуру с опциями ответа (см. описание ботов).
     /// </summary>
-    public class ReplyKeyboardMarkup
+    public class ReplyKeyboardMarkupDto
     {
         /// <summary>
-        ///     Массив рядов кнопок, каждый из которых является массивом объектов KeyboardButton
+        ///     Массив рядов кнопок, каждый из которых является массивом объектов KeyboardButtonDto
         /// </summary>
         [JsonProperty("keyboard")]
-        public KeyboardButton[][] Keyboard { get; set; } = default!;
+        public KeyboardButtonDto[][] Keyboard { get; set; } = default!;
 
         /// <summary>
         ///     Опционально. Указывает клиенту подогнать высоту клавиатуры под количество кнопок
@@ -40,15 +40,15 @@ namespace TelegramApi.Client.Dtos
         [JsonProperty("selective")]
         public bool? Selective { get; set; }
 
-        public static ReplyKeyboardMarkup CreateFromButtonTexts(params string[] buttonText)
+        public static ReplyKeyboardMarkupDto CreateFromButtonTexts(params string[] buttonText)
         {
-            var keyboard = new ReplyKeyboardMarkup();
-            var keyboardRow = buttonText.Select(text => new KeyboardButton
+            var keyboard = new ReplyKeyboardMarkupDto();
+            var keyboardRow = buttonText.Select(text => new KeyboardButtonDto
             {
                 Text = text
             })
                                         .ToArray();
-            keyboard.Keyboard = new KeyboardButton[][] { keyboardRow };
+            keyboard.Keyboard = new KeyboardButtonDto[][] { keyboardRow };
             keyboard.OneTimeKeyboard = true;
             return keyboard;
         }

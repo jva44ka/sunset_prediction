@@ -5,7 +5,7 @@ namespace TelegramApi.Client.Dtos
     /// <summary>
     ///     Этот объект представляет собой чат.
     /// </summary>
-    public class Chat
+    public class ChatDto
     {
         /// <summary>
         ///     Уникальный идентификатор чата. Абсолютное значение не превышает 1e13
@@ -14,6 +14,7 @@ namespace TelegramApi.Client.Dtos
 
         /// <summary>
         ///     Тип чата: “private”, “group”, “supergroup” или “channel”
+        ///     TODO: To enum
         /// </summary>
         public ChatType Type { get; set; }
 

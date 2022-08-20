@@ -5,7 +5,7 @@ namespace TelegramApi.Client.Dtos
     /// <summary>
     ///     Этот объект представляет контакт с номером телефона.
     /// </summary>
-    public class Contact
+    public class ContactDto
     {
         /// <summary>
         ///     Номер телефона

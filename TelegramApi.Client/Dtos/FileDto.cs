@@ -7,7 +7,7 @@ namespace TelegramApi.Client.Dtos
     ///     https://api.telegram.org/file/bot<token>/<file_path>. Ссылка будет действительна как минимум
     ///     в течение 1 часа. По истечении этого срока она может быть запрошена заново с помощью метода getFile.
     /// </summary>
-    public class File
+    public class FileDto
     {
         /// <summary>
         ///     Уникальный идентификатор файла

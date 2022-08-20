@@ -8,7 +8,7 @@ namespace TelegramApi.Client.Dtos
     ///     Если кнопка была показана в сообщении, отправленном при помощи встроенного режима, в запросе будет присутствовать
     ///     поле inline_message_id.
     /// </summary>
-    public class CallbackQuery
+    public class CallbackQueryDto
     {
         /// <summary>
         ///     Уникальный идентификатор запроса
@@ -18,13 +18,13 @@ namespace TelegramApi.Client.Dtos
         /// <summary>
         ///     Отправитель
         /// </summary>
-        public User From { get; set; } = default!;
+        public UserDto From { get; set; } = default!;
 
         /// <summary>
         ///     Опционально. Сообщение, к которому была привязана вызвавшая запрос кнопка.
         ///     Обратите внимание: если сообщение слишком старое, содержание сообщения и дата отправки будут недоступны.
         /// </summary>
-        public Message? Message { get; set; }
+        public MessageDto? Message { get; set; }
 
         /// <summary>
         ///     Опционально. Идентификатор сообщения, отправленного через вашего бота во встроенном режиме

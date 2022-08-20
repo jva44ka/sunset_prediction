@@ -3,9 +3,9 @@
 namespace TelegramApi.Client.Dtos
 {
     /// <summary>
-    ///     Этот объект представляет видеозапись.
+    ///     Этот объект представляет стикер.
     /// </summary>
-    public class Video
+    public class StickerDto
     {
         /// <summary>
         ///     Уникальный идентификатор файла
@@ -14,30 +14,19 @@ namespace TelegramApi.Client.Dtos
         public string FileId { get; set; } = default!;
 
         /// <summary>
-        /// 	Ширина видео, заданная отправителем
+        /// 	Ширина стикера
         /// </summary>
         public int Width { get; set; }
 
         /// <summary>
-        /// 	Высота видео, заданная отправителем
+        /// 	Высота стикера
         /// </summary>
         public int Height { get; set; }
 
         /// <summary>
-        /// 	Продолжительность видео, заданная отправителем
-        /// </summary>
-        public int Duration { get; set; }
-
-        /// <summary>
         /// 	Опционально. Превью стикера в формате .webp или .jpg
         /// </summary>
-        public PhotoSize? Thumb { get; set; }
-
-        /// <summary>
-        /// 	Опционально. MIME файла, заданный отправителем
-        /// </summary>
-        [JsonProperty("mime_type")]
-        public string? MimeType { get; set; }
+        public PhotoSizeDto? Thumb { get; set; }
 
         /// <summary>
         /// 	Опционально. Размер файла

@@ -55,7 +55,7 @@ namespace Application.Services
         /// </summary>
         /// <param name="updates"></param>
         private async Task<List<HandleUpdateResult>> UpdatesHandle(
-            Update[] updates)
+            UpdateDto[] updates)
         {
             //TODO: Может уперется в количество соединений в БД при большом количестве обновлений у бота
             var tasks = updates.Select(u => _updateHandleService.HandleUpdate(u));

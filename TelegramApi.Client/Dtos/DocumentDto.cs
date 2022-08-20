@@ -5,7 +5,7 @@ namespace TelegramApi.Client.Dtos
     /// <summary>
     ///     Этот объект представляет файл, не являющийся фотографией, голосовым сообщением или аудиозаписью.
     /// </summary>
-    public class Document
+    public class DocumentDto
     {
         /// <summary>
         ///     Unique file identifier
@@ -14,9 +14,9 @@ namespace TelegramApi.Client.Dtos
         public string FileId { get; set; } = default!;
 
         /// <summary>
-        ///     Опционально. Document thumbnail as defined by sender
+        ///     Опционально. DocumentDto thumbnail as defined by sender
         /// </summary>
-        public PhotoSize? Thumb { get; set; }
+        public PhotoSizeDto? Thumb { get; set; }
 
         /// <summary>
         /// 	Опционально. Original filename as defined by sender

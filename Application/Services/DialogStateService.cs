@@ -27,7 +27,7 @@ namespace Application.Services
 
         public async Task<TransitionResult> TransitionState(
             int userId, 
-            Message message)
+            MessageDto message)
         {
             var user = await _userDao.GetUserById(userId);
             if (user == null)
@@ -61,25 +61,25 @@ namespace Application.Services
             }
         }
 
-        public ReplyKeyboardMarkup? BuildKeyboard(DialogState dialogState)
+        public ReplyKeyboardMarkupDto? BuildKeyboard(DialogState dialogState)
         {
             switch (dialogState)
             {
                 case DialogState.ProposedInputCity:
                     return null;
                 case DialogState.ProposedFoundedCity:
-                    return ReplyKeyboardMarkup.CreateFromButtonTexts("Да", "Нет");
+                    return ReplyKeyboardMarkupDto.CreateFromButtonTexts("Да", "Нет");
                 case DialogState.OfChoosingSubscribeType:
-                    return ReplyKeyboardMarkup.CreateFromButtonTexts("Обычная", "Двойная");
+                    return ReplyKeyboardMarkupDto.CreateFromButtonTexts("Обычная", "Двойная");
                 case DialogState.SubscribedToEverydayPushes:
                 case DialogState.SubscribedToEverydayDoublePushes:
                     return null;
                 case DialogState.SubscribedTriesToUnsubscribe:
-                    return ReplyKeyboardMarkup.CreateFromButtonTexts("Да", "Нет");
+                    return ReplyKeyboardMarkupDto.CreateFromButtonTexts("Да", "Нет");
                 case DialogState.Unsubscribed:
-                    return ReplyKeyboardMarkup.CreateFromButtonTexts("Подписка");
+                    return ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка");
                 case DialogState.UnsubscribedTriesSubscribe:
-                    return ReplyKeyboardMarkup.CreateFromButtonTexts("Обычная", "Двойная");
+                    return ReplyKeyboardMarkupDto.CreateFromButtonTexts("Обычная", "Двойная");
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dialogState),
@@ -352,7 +352,7 @@ namespace Application.Services
             }
         }
 
-        private async Task<TransitionResult> WithoutState(Message message)
+        private async Task<TransitionResult> WithoutState(MessageDto message)
         {
             var userWithNewState = new User
             {

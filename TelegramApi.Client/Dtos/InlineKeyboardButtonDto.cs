@@ -6,7 +6,7 @@ namespace TelegramApi.Client.Dtos
     ///     Этот объект представляет одну кнопку встроенной клавиатуры.
     ///     Вы обязательно должны задействовать ровно одно опциональное поле.
     /// </summary>
-    public class InlineKeyboardButton
+    public class InlineKeyboardButtonDto
     {
         /// <summary>
         ///     Текст на кнопке

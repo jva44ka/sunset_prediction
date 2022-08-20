@@ -4,7 +4,7 @@
     ///     Этот объект представляет одну из особых сущностей в текстовом сообщении.
     ///     Например: хештеги, имена пользователей, ссылки итд.
     /// </summary>
-    public class MessageEntity
+    public class MessageEntityDto
     {
         /// <summary>
         ///     Type of the entity. One of mention (@username), hashtag, bot_command, url, email, bold (bold text),

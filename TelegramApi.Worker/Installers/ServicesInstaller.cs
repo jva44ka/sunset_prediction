@@ -26,7 +26,7 @@ namespace TelegramApi.Worker.Installers
             serviceCollection.AddSingleton<ICityDao, CityDao>();
 
             //domain
-            serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, Update>, UpdateMapper>();
+            serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, UpdateDto>, UpdateMapper>();
 
             //application
             serviceCollection.AddSingleton<ICitiesParserService, CitiesParserService>();
