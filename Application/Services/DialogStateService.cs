@@ -29,7 +29,7 @@ namespace Application.Services
             int userId, 
             MessageDto message)
         {
-            var user = await _userDao.GetUserById(userId);
+            var user = await _userDao.GetByExternalId(userId);
             if (user == null)
             {
                 return await WithoutState(message);
@@ -58,33 +58,6 @@ namespace Application.Services
                         user.CurrentDialogState, 
                         null);
 
-            }
-        }
-
-        public ReplyKeyboardMarkupDto? BuildKeyboard(DialogState dialogState)
-        {
-            switch (dialogState)
-            {
-                case DialogState.ProposedInputCity:
-                    return null;
-                case DialogState.ProposedFoundedCity:
-                    return ReplyKeyboardMarkupDto.CreateFromButtonTexts("Да", "Нет");
-                case DialogState.OfChoosingSubscribeType:
-                    return ReplyKeyboardMarkupDto.CreateFromButtonTexts("Обычная", "Двойная");
-                case DialogState.SubscribedToEverydayPushes:
-                case DialogState.SubscribedToEverydayDoublePushes:
-                    return null;
-                case DialogState.SubscribedTriesToUnsubscribe:
-                    return ReplyKeyboardMarkupDto.CreateFromButtonTexts("Да", "Нет");
-                case DialogState.Unsubscribed:
-                    return ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка");
-                case DialogState.UnsubscribedTriesSubscribe:
-                    return ReplyKeyboardMarkupDto.CreateFromButtonTexts("Обычная", "Двойная");
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(dialogState),
-                                                          dialogState,
-                                                          null);
             }
         }
 
@@ -120,7 +93,7 @@ namespace Application.Services
 
                 return new TransitionResult
                 {
-                    Message = $"Ваш город {city.Address}?",
+                    AnswerMessageType = AnswerMessageType.ProposedCityName,
                     NewState = userWithNewState.CurrentDialogState
                 };
             }
@@ -128,7 +101,7 @@ namespace Application.Services
             {
                 return new TransitionResult
                 {
-                    Message = "Город с таким названием не найден. Попробуйте написать точное название вашего города.",
+                    AnswerMessageType = AnswerMessageType.CityNameNotFound,
                     NewState = user.CurrentDialogState
                 };
             }
@@ -159,9 +132,7 @@ namespace Application.Services
 
                 return new TransitionResult
                 {
-                    Message = "Выбирите и напишите вариант рассылки:\n" +
-                              "1. 'Обычная' - бот присылает одно сообщение за час до заката при высокой вероятности заката \n" +
-                              "2. 'Двойная' - бот присылает одно сообщение с утра, второе сообщение за час до заката при высокой вероятности заката",
+                    AnswerMessageType = AnswerMessageType.ProposedSubscribeTypes,
                     NewState = userWithNewState.CurrentDialogState
                 };
             }
@@ -178,7 +149,7 @@ namespace Application.Services
 
                 return new TransitionResult
                 {
-                    Message = "Возможно вы ввели неполное название города, попробуйте еще раз.",
+                    AnswerMessageType = AnswerMessageType.ProposedCityNameWrong,
                     NewState = userWithNewState.CurrentDialogState
                 };
             }
@@ -204,9 +175,7 @@ namespace Application.Services
 
                         return new TransitionResult
                         {
-                            Message = "Вы подписались на обычную рассылку. В случае успешного прогноза " +
-                                      "заката вам будет отправлено уведомление за час.\n" +
-                                      "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
+                            AnswerMessageType = AnswerMessageType.SubscribedToEverydayPushes,
                             NewState = userWithNewState.CurrentDialogState
                         };
                     }
@@ -225,10 +194,7 @@ namespace Application.Services
 
                         return new TransitionResult
                         {
-                            Message = "Вы подписались на двойную рассылку. В случае успешного прогноза заката вам будет " +
-                                      "отправлено уведомление утром. Если вечером того же дня прогноз будет все еще успешен, " +
-                                      "вам отправится второе уведомление за час до заката. \n" +
-                                      "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
+                            AnswerMessageType = AnswerMessageType.SubscribedToEverydayDoublePushes,
                             NewState = userWithNewState.CurrentDialogState
                         };
                     }
@@ -236,8 +202,7 @@ namespace Application.Services
                 default:
                     return new TransitionResult
                     {
-                        Message = "Введеный вариант подписки не распознан. Пожалуйста напишите один " +
-                                  "из вариантов: 'Обычная' или 'Двойная'.",
+                        AnswerMessageType = AnswerMessageType.InputSubscribeNameWrong,
                         NewState = user.CurrentDialogState
                     };
             }
@@ -261,7 +226,7 @@ namespace Application.Services
 
                 return new TransitionResult
                 {
-                    Message = "Вы действительно хотите отписаться от рассылки?",
+                    AnswerMessageType = AnswerMessageType.UnsubscribeWarning,
                     NewState = userWithNewState.CurrentDialogState
                 };
             }
@@ -269,7 +234,7 @@ namespace Application.Services
             {
                 return new TransitionResult
                 {
-                    Message = "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
+                    AnswerMessageType = AnswerMessageType.StaysSubscribed,
                     NewState = user.CurrentDialogState
                 };
             }
@@ -293,8 +258,7 @@ namespace Application.Services
 
                 return new TransitionResult
                 {
-                    Message = "Вы отписаны от всех рассылок. \n" +
-                              "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'",
+                    AnswerMessageType = AnswerMessageType.Unsubscribed,
                     NewState = userWithNewState.CurrentDialogState
                 };
             }
@@ -312,8 +276,7 @@ namespace Application.Services
 
                 return new TransitionResult
                 {
-                    Message = "Вы подписаны на рассылку. \n" +
-                              "Если вы хотите отписаться от рассылки напишите 'Отписка'.",
+                    AnswerMessageType = AnswerMessageType.StaysSubscribed,
                     NewState = userWithNewState.CurrentDialogState
                 };
             }
@@ -337,7 +300,7 @@ namespace Application.Services
 
                 return new TransitionResult
                 {
-                    Message = "Напишите один из вариантов подписки: 'Обычная' или 'Двойная'.",
+                    AnswerMessageType = AnswerMessageType.ProposedSubscribeTypes,
                     NewState = userWithNewState.CurrentDialogState
                 };
             }
@@ -345,8 +308,7 @@ namespace Application.Services
             {
                 return new TransitionResult
                 {
-                    Message = "Вы отписаны от всех рассылок. \n" +
-                              "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'",
+                    AnswerMessageType = AnswerMessageType.Unsubscribed,
                     NewState = user.CurrentDialogState
                 };
             }
@@ -368,14 +330,14 @@ namespace Application.Services
 
             return new TransitionResult
             {
-                Message = "Пожалуйста введите название своего города (желательно точное название).",
+                AnswerMessageType = AnswerMessageType.InputCity,
                 NewState = userWithNewState.CurrentDialogState
             };
         }
 
         public class TransitionResult
         {
-            public string Message { get; set; }
+            public AnswerMessageType AnswerMessageType { get; set; }
             public DialogState NewState { get; set; }
         }
     }

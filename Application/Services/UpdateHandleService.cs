@@ -12,15 +12,18 @@ namespace Application.Services
     {
         private readonly IUpdateDao _updateDao;
         private readonly IDialogStateService _dialogStateService;
+        private readonly IAnswerService _answerService;
         private readonly IMapper<Domain.Entities.Update, UpdateDto> _updatesMapper;
 
         public UpdateHandleService(
             IUpdateDao updateDao,
             IDialogStateService dialogStateService,
+            IAnswerService answerService,
             IMapper<Domain.Entities.Update, UpdateDto> updatesMapper)
         {
             _updateDao = updateDao;
             _dialogStateService = dialogStateService;
+            _answerService = answerService;
             _updatesMapper = updatesMapper;
         }
 
@@ -43,13 +46,14 @@ namespace Application.Services
 
             var userId = update.Message.From.Id;
             var transitionResult = await _dialogStateService.TransitionState(userId, update.Message);
-            var resultKeyboard = _dialogStateService.BuildKeyboard(transitionResult.NewState);
+            var messageText = _answerService.GenerateAnswerText(transitionResult.AnswerMessageType);
+            var keyboard = _answerService.GenerateKeyboard(transitionResult.AnswerMessageType);
 
             return new HandleUpdateResult
             {
                 ChatId = update.Message.Chat.Id, 
-                MessageText = transitionResult.Message,
-                MessageKeyboard = resultKeyboard
+                MessageText = messageText,
+                MessageKeyboard = keyboard
             };
         }
     }

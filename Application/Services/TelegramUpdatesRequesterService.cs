@@ -40,7 +40,7 @@ namespace Application.Services
 
                 if (newUpdatesResponse.Ok && newUpdatesResponse.Result.Length > 0)
                 {
-                    var updateHandleResults = await UpdatesHandle(newUpdatesResponse.Result);
+                    var updateHandleResults = await HandleUpdates(newUpdatesResponse.Result);
                     await SendUpdateHandleResults(updateHandleResults, cancellationToken);
                 }
             }
@@ -54,28 +54,28 @@ namespace Application.Services
         ///     Обработка обновлений
         /// </summary>
         /// <param name="updates"></param>
-        private async Task<List<HandleUpdateResult>> UpdatesHandle(
+        private async Task<HandleUpdateResult[]> HandleUpdates(
             UpdateDto[] updates)
         {
             //TODO: Может уперется в количество соединений в БД при большом количестве обновлений у бота
-            var tasks = updates.Select(u => _updateHandleService.HandleUpdate(u));
-            var handleResults = await Task.WhenAll(tasks);
-
-            var chatForUpdateIds = handleResults.Select(hr => hr.ChatId).Distinct();
-
-            var handleUpdateResults = new List<HandleUpdateResult>();
+            var chatForUpdateIds = updates.Select(u => u.Message.Chat.Id).Distinct();
+            var updatesToHandle = new List<UpdateDto>();
             foreach (var chatId in chatForUpdateIds)
             {
-                var lastUpdateInChat = handleResults
-                                       .Where(hr => hr.ChatId == chatId)
-                                       .OrderByDescending(hr => hr.RequestMessageId)
+                var lastUpdateInChat = updates
+                                       .Where(u => u.Message.Chat.Id == chatId)
+                                       .OrderByDescending(u => u.Message.MessageId)
                                        .First();
-                handleUpdateResults.Add(lastUpdateInChat);
+                updatesToHandle.Add(lastUpdateInChat);
             }
-            return handleUpdateResults;
+
+            var tasks = updatesToHandle.Select(u => _updateHandleService.HandleUpdate(u));
+            var handleResults = await Task.WhenAll(tasks);
+            return handleResults.ToArray();
         }
 
-        private async Task SendUpdateHandleResults(List<HandleUpdateResult> updateHandleResults,
+        private async Task SendUpdateHandleResults(
+            HandleUpdateResult[] updateHandleResults,
             CancellationToken stoppingToken)
         {
             foreach (var handleUpdateResult in updateHandleResults)

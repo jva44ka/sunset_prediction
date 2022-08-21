@@ -6,9 +6,14 @@ namespace Domain.Entities
     public class User
     {
         /// <summary>
-        ///     Идентификатор пользователя в Telegram
+        ///     Идентификатор пользователя
         /// </summary>
         public int Id { get; set; }
+
+        /// <summary>
+        ///     Идентификатор пользователя в Telegram
+        /// </summary>
+        public long ExternalId { get; set; }
 
         /// <summary>
         ///     Идентификатор города, который выбрал пользователь

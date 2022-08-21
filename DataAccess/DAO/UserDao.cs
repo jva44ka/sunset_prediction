@@ -15,12 +15,13 @@ namespace DataAccess.Dao
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<User?> GetUserById(int userId)
+        public async Task<User?> GetByExternalId(int externalId)
         {
             string sql =
                 @"
 SELECT
     u.id                      AS  Id,
+    u.external_id             AS  ExternalId,
     u.city_id                 AS  CityId,
     u.first_name              AS  FirstName,
     u.last_name               AS  LastName,
@@ -31,11 +32,11 @@ SELECT
 FROM 
     users u
 WHERE
-    u.id = @UserId";
+    u.external_id = @ExternalId";
             using var connection = await _connectionFactory.CreateConnection();
             var dialogStateDal = await connection.QueryFirstOrDefaultAsync<User>(sql, new
             {
-                UserId = userId
+                ExternalId = externalId
             });
             return dialogStateDal;
         }
@@ -46,6 +47,7 @@ WHERE
                 @"
 INSERT INTO users (
     id,
+    external_id,
     city_id,
     first_name,
     last_name,
@@ -56,6 +58,7 @@ INSERT INTO users (
 )
 VALUES (
     @Id,
+    @ExternalId
     @CityId,
     @FirstName,
     @LastName,
@@ -68,6 +71,7 @@ VALUES (
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
                 user.Id,
+                user.ExternalId,
                 user.PreviousDialogState,
                 user.CurrentDialogState,
                 user.CityId,

@@ -13,15 +13,16 @@ namespace Migrator.Migrations
                 .WithColumn("name_for_url").AsString()
                 .WithColumn("address").AsString()
                 .WithColumn("country_code").AsString()
-                .WithColumn("latitude").AsString()
-                .WithColumn("longitude").AsString();
+                .WithColumn("latitude").AsDouble().Nullable()
+                .WithColumn("longitude").AsDouble().Nullable();
 
             Create.Table("updates")
                 .WithColumn("update_id").AsInt32().PrimaryKey()
                 .WithColumn("handle_date").AsDateTime();
 
             Create.Table("users")
-                .WithColumn("id").AsInt32().PrimaryKey()
+                .WithColumn("id").AsInt32().PrimaryKey().Identity()
+                .WithColumn("external_id").AsInt64().Unique()
                 .WithColumn("first_name").AsString().Nullable()
                 .WithColumn("last_name").AsString().Nullable()
                 .WithColumn("user_name").AsString().NotNullable()

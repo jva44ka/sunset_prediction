@@ -17,12 +17,5 @@ namespace Application.Services.Interfaces
         Task<DialogStateService.TransitionResult> TransitionState(
             int userId,
             MessageDto message);
-
-        /// <summary>
-        ///     Создание клавиатуры для конкретного нового состояния диалога
-        /// </summary>
-        /// <param name="dialogState"></param>
-        /// <returns></returns>
-        ReplyKeyboardMarkupDto? BuildKeyboard(DialogState dialogState);
     }
 }

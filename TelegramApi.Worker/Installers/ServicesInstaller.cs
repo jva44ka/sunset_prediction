@@ -32,6 +32,7 @@ namespace TelegramApi.Worker.Installers
             serviceCollection.AddSingleton<ICitiesParserService, CitiesParserService>();
             serviceCollection.AddSingleton<IUpdateHandleService, UpdateHandleService>();
             serviceCollection.AddSingleton<IDialogStateService, DialogStateService>();
+            serviceCollection.AddSingleton<IAnswerService, AnswerService>();
             serviceCollection.AddSingleton<ITelegramUpdatesRequesterService, TelegramUpdatesRequesterService>();
 
             //telegram api

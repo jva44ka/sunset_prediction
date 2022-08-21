@@ -1,6 +1,5 @@
 ﻿using OpenWeatherMap.Client.Clients.Interfaces;
 using OpenWeatherMap.Client.Settings;
-using System.Net.Http;
 using Microsoft.Extensions.Options;
 
 namespace OpenWeatherMap.Client.Clients;
