@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Domain.Entities.Enums;
 using TelegramApi.Client.Dtos;
 
 namespace Application.Services.Interfaces

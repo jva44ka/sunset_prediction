@@ -46,7 +46,6 @@ WHERE
             string sql =
                 @"
 INSERT INTO users (
-    id,
     external_id,
     city_id,
     first_name,
@@ -57,8 +56,7 @@ INSERT INTO users (
     state_change_date
 )
 VALUES (
-    @Id,
-    @ExternalId
+    @ExternalId,
     @CityId,
     @FirstName,
     @LastName,
@@ -70,7 +68,6 @@ VALUES (
             using var connection = await _connectionFactory.CreateConnection();
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
-                user.Id,
                 user.ExternalId,
                 user.PreviousDialogState,
                 user.CurrentDialogState,

@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Application.Services.Interfaces;
 using Domain.Entities.Enums;
 using TelegramApi.Client.Dtos;
 
@@ -16,7 +17,7 @@ public class AnswerService : IAnswerService
         },
         {
             AnswerMessageType.ProposedCityName,
-            "Ваш город {cityAddress}?"
+            "Ваш город {0}?"
         },
         {
             AnswerMessageType.CityNameNotFound,
@@ -95,16 +96,26 @@ public class AnswerService : IAnswerService
     public AnswerService()
     { }
 
-    public string GenerateAnswerText(AnswerMessageType messageType)
+    public string GenerateAnswerText(AnswerMessageType messageType, params string[] args)
     {
         var messageText = _messageTexts[messageType];
-        return messageText
-               ?? throw new ArgumentOutOfRangeException(
-                   nameof(messageType));
+        
+        args.Where(arg => string.IsNullOrEmpty(arg) == false)
+            .Select((arg, index) => messageText = messageText.Replace($"{{{index}}}", arg))
+            .ToArray();
+
+        return messageText;
     }
 
     public ReplyKeyboardMarkupDto? GenerateKeyboard(AnswerMessageType messageType)
     {
-        return _messageKeyboards[messageType];
+        try
+        {
+            return _messageKeyboards[messageType];
+        }
+        catch (KeyNotFoundException)
+        {
+            return null;
+        }
     }
 }

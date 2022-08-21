@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Enums;
 using TelegramApi.Client.Dtos;
 
-namespace Application.Services;
+namespace Application.Services.Interfaces;
 
 /// <summary>
 ///     Сервис генерации ответных сообщений
@@ -12,8 +12,11 @@ public interface IAnswerService
     ///     Созщдать текст сообщения по типу сообщения
     /// </summary>
     /// <param name="messageType"></param>
+    /// <param name="args"></param>
     /// <returns></returns>
-    public string GenerateAnswerText(AnswerMessageType messageType);
+    public string GenerateAnswerText(
+        AnswerMessageType messageType,
+        params string[] args);
 
     /// <summary>
     ///     Создать клавиатуру по типу сообщения (если требуется)

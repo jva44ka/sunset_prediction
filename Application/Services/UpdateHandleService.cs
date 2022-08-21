@@ -46,7 +46,10 @@ namespace Application.Services
 
             var userId = update.Message.From.Id;
             var transitionResult = await _dialogStateService.TransitionState(userId, update.Message);
-            var messageText = _answerService.GenerateAnswerText(transitionResult.AnswerMessageType);
+            //TODO: Рефакторинг параметров
+            var messageText = _answerService.GenerateAnswerText(
+                transitionResult.AnswerMessageType,
+                transitionResult.CityAddress ?? string.Empty);
             var keyboard = _answerService.GenerateKeyboard(transitionResult.AnswerMessageType);
 
             return new HandleUpdateResult

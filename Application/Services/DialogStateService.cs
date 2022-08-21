@@ -8,7 +8,6 @@ using User = Domain.Entities.User;
 
 namespace Application.Services
 {
-
     public class DialogStateService : IDialogStateService
     {
         private readonly ICitiesParserService _citiesParserService;
@@ -94,7 +93,8 @@ namespace Application.Services
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.ProposedCityName,
-                    NewState = userWithNewState.CurrentDialogState
+                    NewState = userWithNewState.CurrentDialogState,
+                    CityAddress = city.Address
                 };
             }
             else
@@ -318,7 +318,7 @@ namespace Application.Services
         {
             var userWithNewState = new User
             {
-                Id = message.From.Id,
+                ExternalId = message.From.Id,
                 FirstName = message.From.FirstName,
                 LastName = message.From.LastName,
                 UserName = message.From.Username,
@@ -339,6 +339,7 @@ namespace Application.Services
         {
             public AnswerMessageType AnswerMessageType { get; set; }
             public DialogState NewState { get; set; }
+            public string? CityAddress { get; set; }
         }
     }
 }
