@@ -1,6 +1,8 @@
 ﻿using Application.Mappers;
 using Application.Mappers.Interfaces;
 using Application.Services;
+using Application.Services.EntityServices;
+using Application.Services.EntityServices.Interfaces;
 using Application.Services.Interfaces;
 using DataAccess.ConnectionFactories;
 using DataAccess.Dao;
@@ -27,6 +29,10 @@ namespace TelegramApi.Worker.Installers
 
             //domain
             serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, UpdateDto>, UpdateMapper>();
+
+            //entity services
+            serviceCollection.AddSingleton<IUserService, UserService>();
+            serviceCollection.AddSingleton<ICityService, CityService>();
 
             //application
             serviceCollection.AddSingleton<ICitiesParserService, CitiesParserService>();

@@ -27,10 +27,10 @@ namespace Application.Services
             _updatesMapper = updatesMapper;
         }
 
-        public async Task<int?> GetLastUpdateId()
+        public async Task<long?> GetLastUpdateExternalId()
         {
             var lastUpdate = await _updateDao.GetLastUpdate();
-            return lastUpdate?.UpdateId;
+            return lastUpdate?.ExternalId;
         }
 
         public async Task<HandleUpdateResult> HandleUpdate(UpdateDto update)

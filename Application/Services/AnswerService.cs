@@ -8,7 +8,7 @@ namespace Application.Services;
 
 public class AnswerService : IAnswerService
 {
-    private Dictionary<AnswerMessageType, string> _messageTexts 
+    private readonly Dictionary<AnswerMessageType, string> _messageTexts 
         = new Dictionary<AnswerMessageType, string>
     {
         {
@@ -72,7 +72,7 @@ public class AnswerService : IAnswerService
         }
     };
 
-    private Dictionary<AnswerMessageType, ReplyKeyboardMarkupDto> _messageKeyboards 
+    private readonly Dictionary<AnswerMessageType, ReplyKeyboardMarkupDto> _messageKeyboards 
         = new Dictionary<AnswerMessageType, ReplyKeyboardMarkupDto>
     {
         {
@@ -84,6 +84,14 @@ public class AnswerService : IAnswerService
             ReplyKeyboardMarkupDto.CreateFromButtonTexts("Обычная", "Двойная")
         },
         {
+            AnswerMessageType.SubscribedToEverydayPushes,
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка")
+        },
+        {
+            AnswerMessageType.SubscribedToEverydayDoublePushes,
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка")
+        },
+        {
             AnswerMessageType.UnsubscribeWarning, 
             ReplyKeyboardMarkupDto.CreateFromButtonTexts("Да", "Нет")
         },
@@ -92,9 +100,6 @@ public class AnswerService : IAnswerService
             ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка")
         }
     };
-
-    public AnswerService()
-    { }
 
     public string GenerateAnswerText(AnswerMessageType messageType, params string[] args)
     {

@@ -30,7 +30,7 @@ namespace Application.Services
         
         public async Task HandleNewUpdates(CancellationToken cancellationToken)
         {
-            var lastHandledUpdateId = await _updateHandleService.GetLastUpdateId();
+            var lastHandledUpdateId = await _updateHandleService.GetLastUpdateExternalId();
             var response = await _telegramBotApiClient.GetUpdates(lastHandledUpdateId, cancellationToken);
 
             if (response.IsSuccessStatusCode)

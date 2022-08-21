@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Application.Services.Dto;
 using TelegramApi.Client.Dtos;
 
 namespace Application.Services.Interfaces
@@ -13,7 +14,7 @@ namespace Application.Services.Interfaces
         ///     от присланного сообщения и предыдущего состояния
         /// </summary>
         /// <returns>Сообщение в ответ пользователю</returns>
-        Task<DialogStateService.TransitionResult> TransitionState(
+        Task<TransitionResult> TransitionState(
             int userId,
             MessageDto message);
     }

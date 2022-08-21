@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Dapper;
 using DataAccess.ConnectionFactories;
 using DataAccess.Dao.Interfaces;
 using Domain.Entities;
+using Domain.Entities.Enums;
 
 namespace DataAccess.Dao
 {
@@ -15,7 +17,7 @@ namespace DataAccess.Dao
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<User?> GetByExternalId(int externalId)
+        public async Task<User?> GetByExternalId(long externalId)
         {
             string sql =
                 @"
@@ -80,7 +82,11 @@ VALUES (
             return rowsInserted == 1;
         }
         
-        public async Task<bool> Update(User user)
+        public async Task<bool> UpdateState(
+            int userId,
+            DialogState previousState,
+            DialogState currentState,
+            DateTime stateChangeDate)
         {
             string sql =
                 @"
@@ -89,18 +95,37 @@ UPDATE
 SET
     previous_dialog_state = @PreviousDialogState,
     current_dialog_state = @CurrentDialogState,
-    city_id = @CityId,
     state_change_date = @StateChangeDate
 WHERE
-    id = @Id";
+    id = @UserId";
             using var connection = await _connectionFactory.CreateConnection();
             var rowsUpdated = await connection.ExecuteAsync(sql, new
             {
-                user.Id,
-                user.PreviousDialogState,
-                user.CurrentDialogState,
-                user.CityId,
-                user.StateChangeDate
+                UserId = userId,
+                PreviousDialogState = previousState,
+                CurrentDialogState = currentState,
+                StateChangeDate = stateChangeDate
+            });
+            return rowsUpdated == 1;
+        }
+        
+        public async Task<bool> UpdateCity(
+            int userId, 
+            int? cityId)
+        {
+            string sql =
+                @"
+UPDATE
+    users
+SET
+    city_id = @CityId
+WHERE
+    id = @UserId";
+            using var connection = await _connectionFactory.CreateConnection();
+            var rowsUpdated = await connection.ExecuteAsync(sql, new
+            {
+                UserId = userId,
+                CityId = cityId
             });
             return rowsUpdated == 1;
         }

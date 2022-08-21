@@ -6,7 +6,7 @@ namespace Application.Services.Interfaces
 {
     public interface IUpdateHandleService
     {
-        public Task<int?> GetLastUpdateId();
+        public Task<long?> GetLastUpdateExternalId();
 
         /// <summary>
         ///     Обрабатывает <see cref="UpdateDto"/>

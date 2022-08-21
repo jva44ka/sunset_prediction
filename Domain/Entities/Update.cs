@@ -7,7 +7,12 @@ namespace Domain.Entities
         /// <summary>
         ///     Идентификатор
         /// </summary>
-        public int UpdateId { get; set; }
+        public int Id { get; set; }
+        
+        /// <summary>
+        ///     Идентификатор
+        /// </summary>
+        public long ExternalId { get; set; }
 
         /// <summary>
         ///     Дата обработки обновления ботом

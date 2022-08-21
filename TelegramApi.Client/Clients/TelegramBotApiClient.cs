@@ -21,7 +21,7 @@ namespace TelegramApi.Client.Clients
             _telegramApiSettings = telegramApiSettingsOptions.Value;
         }
 
-        public Task<HttpResponseMessage> GetUpdates(int? lastHandledUpdateId, CancellationToken stoppingToken)
+        public Task<HttpResponseMessage> GetUpdates(long? lastHandledUpdateId, CancellationToken stoppingToken)
         {
             var httpClient = _httpClientFactory.CreateClient();
             var getUpdatesUrl = GetUpdatesUrl(lastHandledUpdateId);
@@ -39,7 +39,7 @@ namespace TelegramApi.Client.Clients
         /// <summary>
         ///     Строит URL для запроса к апи-методу "getUpdates"
         /// </summary>
-        private string GetUpdatesUrl(int? lastHandledUpdateId)
+        private string GetUpdatesUrl(long? lastHandledUpdateId)
         {
             var getUpdatesUrl = $"{_telegramApiSettings.Url}/bot{_telegramApiSettings.BotToken}/getUpdates";
             getUpdatesUrl += $"?timeout={_telegramApiSettings.LongPoolingTimeoutSec}";

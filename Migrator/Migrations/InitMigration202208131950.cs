@@ -17,8 +17,9 @@ namespace Migrator.Migrations
                 .WithColumn("longitude").AsDouble().Nullable();
 
             Create.Table("updates")
-                .WithColumn("update_id").AsInt32().PrimaryKey()
-                .WithColumn("handle_date").AsDateTime();
+                .WithColumn("id").AsInt32().PrimaryKey().Identity()
+                .WithColumn("external_id").AsInt64().Unique()
+                .WithColumn("handle_date").AsDateTime().Indexed();
 
             Create.Table("users")
                 .WithColumn("id").AsInt32().PrimaryKey().Identity()

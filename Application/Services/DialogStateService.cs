@@ -1,34 +1,32 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Application.Services.Dto;
+using Application.Services.EntityServices.Interfaces;
 using Application.Services.Interfaces;
-using DataAccess.Dao.Interfaces;
+using Domain.Entities;
 using Domain.Entities.Enums;
 using TelegramApi.Client.Dtos;
-using User = Domain.Entities.User;
 
 namespace Application.Services
 {
     public class DialogStateService : IDialogStateService
     {
-        private readonly ICitiesParserService _citiesParserService;
-        private readonly IUserDao _userDao;
-        private readonly ICityDao _cityDao;
+        private readonly IUserService _userService;
+        private readonly ICityService _cityService;
 
         public DialogStateService(
-            ICitiesParserService citiesParserService,
-            IUserDao userDao,
-            ICityDao cityDao)
+            IUserService userService,
+            ICityService cityService)
         {
-            _citiesParserService = citiesParserService;
-            _userDao = userDao;
-            _cityDao = cityDao;
+            _userService = userService;
+            _cityService = cityService;
         }
 
         public async Task<TransitionResult> TransitionState(
-            int userId, 
+            int userId,
             MessageDto message)
         {
-            var user = await _userDao.GetByExternalId(userId);
+            var user = await _userService.GetByExternalId(userId);
             if (user == null)
             {
                 return await WithoutState(message);
@@ -53,8 +51,8 @@ namespace Application.Services
                     return await OfChoosingSubscribeType(user, message.Text);
                 default:
                     throw new ArgumentOutOfRangeException(
-                        nameof(user.CurrentDialogState), 
-                        user.CurrentDialogState, 
+                        nameof(user.CurrentDialogState),
+                        user.CurrentDialogState,
                         null);
 
             }
@@ -62,38 +60,20 @@ namespace Application.Services
 
 
         private async Task<TransitionResult> ProposedInputCity(
-            User user, 
+            User user,
             string messageText)
         {
-            var isCityExistsInDb = true;
-            var city = await _cityDao.GetCityByLowerCaseName(messageText.Trim().ToLower());
-            if (city == null)
-            {
-                isCityExistsInDb = false;
-                city = await _citiesParserService.FindCity(messageText);
-            }
-
+            var city = await _cityService.GetCityByLowerCaseName(messageText);
             if (city != null)
             {
-                var userWithNewState = new User
-                {
-                    PreviousDialogState = user.CurrentDialogState,
-                    CurrentDialogState = DialogState.ProposedFoundedCity,
-                    Id = user.Id,
-                    CityId = city.Id,
-                    StateChangeDate = DateTime.UtcNow
-                };
-
-                if (isCityExistsInDb == false)
-                {
-                    await _cityDao.Create(city);
-                }
-                await _userDao.Update(userWithNewState);
+                var newState = DialogState.ProposedFoundedCity;
+                await _userService.UpdateState(user.ExternalId, newState);
+                await _userService.UpdateCity(user.ExternalId, city.Id);
 
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.ProposedCityName,
-                    NewState = userWithNewState.CurrentDialogState,
+                    NewState = newState,
                     CityAddress = city.Address
                 };
             }
@@ -108,94 +88,61 @@ namespace Application.Services
         }
 
         private async Task<TransitionResult> ProposedFoundedCity(
-            User currentUserState, 
+            User user,
             string messageText)
         {
             if (messageText.Trim().ToLower() == "да")
             {
-                var userWithNewState = new User
-                {
-                    Id = currentUserState.Id,
-                    PreviousDialogState = currentUserState.CurrentDialogState,
-                    CurrentDialogState = DialogState.OfChoosingSubscribeType,
-                    CityId = currentUserState.CityId,
-                    StateChangeDate = DateTime.UtcNow
-                };
-                await _userDao.Update(userWithNewState);
-
-                var cityInDb = await _cityDao.GetCityById(currentUserState.CityId.Value);
-                if (cityInDb == null)
-                {
-                    var city = await _citiesParserService.FindCity(currentUserState.CityId.Value);
-                    await _cityDao.Create(city);
-                }
+                var newState = DialogState.OfChoosingSubscribeType;
+                await _userService.UpdateState(user.ExternalId, newState);
 
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.ProposedSubscribeTypes,
-                    NewState = userWithNewState.CurrentDialogState
+                    NewState = newState
                 };
             }
             else
             {
-                var userWithNewState = new User
-                {
-                    Id = currentUserState.Id,
-                    PreviousDialogState = currentUserState.CurrentDialogState,
-                    CurrentDialogState = DialogState.ProposedInputCity,
-                    StateChangeDate = DateTime.UtcNow
-                };
-                await _userDao.Update(userWithNewState);
+                var newState = DialogState.ProposedInputCity;
+                await _userService.UpdateState(user.ExternalId, newState);
+                await _userService.UpdateCity(user.ExternalId, null);
 
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.ProposedCityNameWrong,
-                    NewState = userWithNewState.CurrentDialogState
+                    NewState = newState
                 };
             }
         }
 
         private async Task<TransitionResult> OfChoosingSubscribeType(
-            User user, 
+            User user,
             string messageText)
         {
             switch (messageText.Trim().ToLower())
             {
                 case "обычная":
                     {
-                        var userWithNewState = new User
-                        {
-                            Id = user.Id,
-                            PreviousDialogState = user.CurrentDialogState,
-                            CurrentDialogState = DialogState.SubscribedToEverydayPushes,
-                            CityId = user.CityId,
-                            StateChangeDate = DateTime.UtcNow
-                        };
-                        await _userDao.Update(userWithNewState);
+                        var newState = DialogState.SubscribedToEverydayPushes;
+                        await _userService.UpdateState(user.ExternalId, newState);
 
                         return new TransitionResult
                         {
                             AnswerMessageType = AnswerMessageType.SubscribedToEverydayPushes,
-                            NewState = userWithNewState.CurrentDialogState
+                            NewState = newState
                         };
                     }
 
                 case "двойная":
                     {
-                        var userWithNewState = new User
-                        {
-                            Id = user.Id,
-                            PreviousDialogState = user.CurrentDialogState,
-                            CurrentDialogState = DialogState.SubscribedToEverydayDoublePushes,
-                            CityId = user.CityId,
-                            StateChangeDate = DateTime.UtcNow
-                        };
-                        await _userDao.Update(userWithNewState);
+                        var newState = DialogState.SubscribedToEverydayDoublePushes;
+                        await _userService.UpdateState(user.ExternalId, newState);
 
                         return new TransitionResult
                         {
                             AnswerMessageType = AnswerMessageType.SubscribedToEverydayDoublePushes,
-                            NewState = userWithNewState.CurrentDialogState
+                            NewState = newState
                         };
                     }
 
@@ -214,20 +161,13 @@ namespace Application.Services
         {
             if (messageText.Trim().ToLower() == "отписка")
             {
-                var userWithNewState = new User
-                {
-                    Id = user.Id,
-                    PreviousDialogState = user.CurrentDialogState,
-                    CurrentDialogState = DialogState.SubscribedTriesToUnsubscribe,
-                    CityId = user.CityId,
-                    StateChangeDate = DateTime.UtcNow
-                };
-                await _userDao.Update(userWithNewState);
+                var newState = DialogState.SubscribedTriesToUnsubscribe;
+                await _userService.UpdateState(user.ExternalId, newState);
 
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.UnsubscribeWarning,
-                    NewState = userWithNewState.CurrentDialogState
+                    NewState = newState
                 };
             }
             else
@@ -246,38 +186,26 @@ namespace Application.Services
         {
             if (messageText.Trim().ToLower() == "да")
             {
-                var userWithNewState = new User
-                {
-                    Id = user.Id,
-                    PreviousDialogState = user.CurrentDialogState,
-                    CurrentDialogState = DialogState.Unsubscribed,
-                    CityId = user.CityId,
-                    StateChangeDate = DateTime.UtcNow
-                };
-                await _userDao.Update(userWithNewState);
+                var newState = DialogState.Unsubscribed;
+                await _userService.UpdateState(user.ExternalId, newState);
 
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.Unsubscribed,
-                    NewState = userWithNewState.CurrentDialogState
+                    NewState = newState
                 };
             }
             else
             {
-                var userWithNewState = new User
-                {
-                    Id = user.Id,
-                    PreviousDialogState = user.CurrentDialogState,
-                    CurrentDialogState = user.PreviousDialogState.Value,
-                    CityId = user.CityId,
-                    StateChangeDate = DateTime.UtcNow
-                };
-                await _userDao.Update(userWithNewState);
+                var newState = user.PreviousDialogState
+                               ?? throw new Exception(
+                                   $"User has not previous state with external id: {user.ExternalId}");
+                await _userService.UpdateState(user.ExternalId, newState);
 
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.StaysSubscribed,
-                    NewState = userWithNewState.CurrentDialogState
+                    NewState = newState
                 };
             }
         }
@@ -288,20 +216,13 @@ namespace Application.Services
         {
             if (messageText.Trim().ToLower() == "подписка")
             {
-                var userWithNewState = new User
-                {
-                    Id = user.Id,
-                    PreviousDialogState = user.CurrentDialogState,
-                    CurrentDialogState = DialogState.UnsubscribedTriesSubscribe,
-                    CityId = user.CityId,
-                    StateChangeDate = DateTime.UtcNow
-                };
-                await _userDao.Update(userWithNewState);
+                var newState = DialogState.UnsubscribedTriesSubscribe;
+                await _userService.UpdateState(user.ExternalId, newState);
 
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.ProposedSubscribeTypes,
-                    NewState = userWithNewState.CurrentDialogState
+                    NewState = newState
                 };
             }
             else
@@ -316,7 +237,7 @@ namespace Application.Services
 
         private async Task<TransitionResult> WithoutState(MessageDto message)
         {
-            var userWithNewState = new User
+            var user = new User
             {
                 ExternalId = message.From.Id,
                 FirstName = message.From.FirstName,
@@ -326,20 +247,13 @@ namespace Application.Services
                 CurrentDialogState = DialogState.ProposedInputCity,
                 StateChangeDate = DateTime.UtcNow
             };
-            await _userDao.Create(userWithNewState);
+            await _userService.Create(user);
 
             return new TransitionResult
             {
                 AnswerMessageType = AnswerMessageType.InputCity,
-                NewState = userWithNewState.CurrentDialogState
+                NewState = user.CurrentDialogState
             };
-        }
-
-        public class TransitionResult
-        {
-            public AnswerMessageType AnswerMessageType { get; set; }
-            public DialogState NewState { get; set; }
-            public string? CityAddress { get; set; }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Application.Mappers
 
             return new Domain.Entities.Update
             {
-                UpdateId = dal.UpdateId
+                ExternalId = dal.UpdateId
             };
         }
 
@@ -27,7 +27,7 @@ namespace Application.Mappers
 
             return new UpdateDto
             {
-                UpdateId = entity.UpdateId
+                UpdateId = entity.ExternalId
             };
         }
     }

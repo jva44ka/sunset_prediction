@@ -18,7 +18,7 @@ namespace TelegramApi.Client.Dtos
         /// </summary>
         /// <remarks>update_id</remarks>
         [JsonProperty("update_id")]
-        public int UpdateId { get; set; }
+        public long UpdateId { get; set; }
 
         /// <summary>
         ///     Опционально. New incoming message of any kind — text, photo, sticker, etc.

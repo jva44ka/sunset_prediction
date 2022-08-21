@@ -10,7 +10,7 @@ namespace TelegramApi.Client.Clients.Interfaces
         /// <summary>
         ///     Получение новых Update
         /// </summary>
-        Task<HttpResponseMessage> GetUpdates(int? lastHandledUpdateId, CancellationToken stoppingToken);
+        Task<HttpResponseMessage> GetUpdates(long? lastHandledUpdateId, CancellationToken stoppingToken);
 
         /// <summary>
         ///     Запрос на отправку ботом сообщения в чат
