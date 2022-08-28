@@ -1,6 +1,4 @@
-﻿using OpenWeatherMap.Client.Dtos;
-
-namespace OpenWeatherMap.Client.Clients.Interfaces;
+﻿namespace OpenWeatherMap.Client.Clients.Interfaces;
 
 /// <summary>
 ///     Клиент для поиска местоположений при работе с географическими названиями и координатами.

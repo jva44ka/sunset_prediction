@@ -4,104 +4,92 @@ using DataAccess.ConnectionFactories;
 using DataAccess.Dao.Interfaces;
 using Domain.Entities;
 
-namespace DataAccess.Dao
+namespace DataAccess.Dao;
+
+public class UserDao : IUserDao
 {
-    public class UserDao : IUserDao
+    private readonly IConnectionFactory _connectionFactory;
+
+    public UserDao(IConnectionFactory connectionFactory)
     {
-        private readonly IConnectionFactory _connectionFactory;
+        _connectionFactory = connectionFactory;
+    }
 
-        public UserDao(IConnectionFactory connectionFactory)
-        {
-            _connectionFactory = connectionFactory;
-        }
-
-        public async Task<User?> GetUserById(int userId)
-        {
-            string sql =
-                @"
+    public async Task<User?> GetByExternalId(long externalId)
+    {
+        string sql =
+            @"
 SELECT
-    u.id                      AS  Id,
-    u.city_id                 AS  CityId,
-    u.first_name              AS  FirstName,
-    u.last_name               AS  LastName,
-    u.user_name               AS  UserName,
-    u.previous_dialog_state   AS  PreviousDialogState,
-    u.current_dialog_state    AS  CurrentDialogState,
-    u.state_change_date       AS  StateChangeDate
+    u.id            AS  Id,
+    u.external_id   AS  ExternalId,
+    u.city_id       AS  CityId,
+    u.first_name    AS  FirstName,
+    u.last_name     AS  LastName,
+    u.user_name     AS  UserName,
+    u.chat_id       AS  ChatId
 FROM 
     users u
 WHERE
-    u.id = @UserId";
-            using var connection = await _connectionFactory.CreateConnection();
-            var dialogStateDal = await connection.QueryFirstOrDefaultAsync<User>(sql, new
-            {
-                UserId = userId
-            });
-            return dialogStateDal;
-        }
-        
-        public async Task<bool> Create(User user)
+    u.external_id = @ExternalId";
+        using var connection = await _connectionFactory.CreateConnection();
+        var user = await connection.QueryFirstOrDefaultAsync<User>(sql, new
         {
-            string sql =
-                @"
+            ExternalId = externalId
+        });
+        return user;
+    }
+        
+    public async Task<bool> Create(User user)
+    {
+        string sql =
+            @"
 INSERT INTO users (
-    id,
+    external_id,
     city_id,
     first_name,
     last_name,
     user_name,
-    previous_dialog_state,
-    current_dialog_state,
-    state_change_date
+    chat_id
 )
 VALUES (
-    @Id,
+    @ExternalId,
     @CityId,
     @FirstName,
     @LastName,
     @UserName,
-    @PreviousDialogState,
-    @CurrentDialogState,
-    @StateChangeDate
+    @ChatId
 )";
-            using var connection = await _connectionFactory.CreateConnection();
-            var rowsInserted = await connection.ExecuteAsync(sql, new
-            {
-                user.Id,
-                user.PreviousDialogState,
-                user.CurrentDialogState,
-                user.CityId,
-                user.StateChangeDate,
-                user.FirstName,
-                user.LastName,
-                user.UserName,
-            });
-            return rowsInserted == 1;
-        }
-        
-        public async Task<bool> Update(User user)
+        using var connection = await _connectionFactory.CreateConnection();
+        var rowsInserted = await connection.ExecuteAsync(sql, new
         {
-            string sql =
-                @"
+            user.ExternalId,
+            user.CityId,
+            user.FirstName,
+            user.LastName,
+            user.UserName,
+            user.ChatId
+        });
+        return rowsInserted == 1;
+    }
+
+    public async Task<bool> UpdateCity(
+        int userId, 
+        int? cityId)
+    {
+        string sql =
+            @"
 UPDATE
     users
 SET
-    previous_dialog_state = @PreviousDialogState,
-    current_dialog_state = @CurrentDialogState,
-    city_id = @CityId,
-    state_change_date = @StateChangeDate
+    city_id = @CityId
 WHERE
-    id = @Id";
-            using var connection = await _connectionFactory.CreateConnection();
-            var rowsUpdated = await connection.ExecuteAsync(sql, new
-            {
-                user.Id,
-                user.PreviousDialogState,
-                user.CurrentDialogState,
-                user.CityId,
-                user.StateChangeDate
-            });
-            return rowsUpdated == 1;
-        }
+    id = @UserId";
+        using var connection = await _connectionFactory.CreateConnection();
+        var rowsUpdated = await connection.ExecuteAsync(sql, new
+        {
+            UserId = userId,
+            CityId = cityId
+        });
+        return rowsUpdated == 1;
     }
 }

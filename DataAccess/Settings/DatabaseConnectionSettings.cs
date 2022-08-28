@@ -1,7 +1,6 @@
-﻿namespace DataAccess.Settings
+﻿namespace DataAccess.Settings;
+
+public class DatabaseConnectionSettings
 {
-    public class DatabaseConnectionSettings
-    {
-        public string ConnectionString { get; set; } = default!;
-    }
+    public string ConnectionString { get; set; } = default!;
 }

@@ -1,48 +1,39 @@
-﻿using System;
-using Domain.Entities.Enums;
+﻿namespace Domain.Entities;
 
-namespace Domain.Entities
+public class User
 {
-    public class User
-    {
-        /// <summary>
-        ///     Идентификатор пользователя в Telegram
-        /// </summary>
-        public int Id { get; set; }
+    /// <summary>
+    ///     Идентификатор пользователя
+    /// </summary>
+    public int Id { get; set; }
 
-        /// <summary>
-        ///     Идентификатор города, который выбрал пользователь
-        /// </summary>
-        public int? CityId { get; set; }
+    /// <summary>
+    ///     Идентификатор пользователя в Telegram
+    /// </summary>
+    public long ExternalId { get; set; }
 
-        /// <summary>
-        ///     Имя пользователя в Telegram
-        /// </summary>
-        public string? FirstName { get; set; }
+    /// <summary>
+    ///     Идентификатор города, который выбрал пользователь
+    /// </summary>
+    public int? CityId { get; set; }
 
-        /// <summary>
-        ///     Фамилия пользователя в Telegram
-        /// </summary>
-        public string? LastName { get; set; }
+    /// <summary>
+    ///     Имя пользователя в Telegram
+    /// </summary>
+    public string? FirstName { get; set; }
 
-        /// <summary>
-        ///     Никнейм пользователя в Telegram
-        /// </summary>
-        public string UserName { get; set; } = default!;
+    /// <summary>
+    ///     Фамилия пользователя в Telegram
+    /// </summary>
+    public string? LastName { get; set; }
 
-        /// <summary>
-        ///     Предыдущее состояние диалога бота с пользователем
-        /// </summary>
-        public DialogState? PreviousDialogState { get; set; }
+    /// <summary>
+    ///     Никнейм пользователя в Telegram
+    /// </summary>
+    public string UserName { get; set; } = default!;
 
-        /// <summary>
-        ///     Текущее состояние диалога бота с пользователем
-        /// </summary>
-        public DialogState CurrentDialogState { get; set; }
-
-        /// <summary>
-        ///     Дата последнего изменения состояния диалога
-        /// </summary>
-        public DateTime StateChangeDate { get; set; }
-    }
+    /// <summary>
+    ///     Идентификатор чата с пользователем
+    /// </summary>
+    public int ChatId { get; set; }
 }

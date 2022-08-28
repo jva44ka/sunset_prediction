@@ -1,10 +1,9 @@
 ﻿using System.Data;
 using System.Threading.Tasks;
 
-namespace DataAccess.ConnectionFactories
+namespace DataAccess.ConnectionFactories;
+
+public interface IConnectionFactory
 {
-    public interface IConnectionFactory
-    {
-        Task<IDbConnection> CreateConnection();
-    }
+    Task<IDbConnection> CreateConnection();
 }

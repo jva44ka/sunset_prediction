@@ -4,53 +4,54 @@ using DataAccess.ConnectionFactories;
 using DataAccess.Dao.Interfaces;
 using Domain.Entities;
 
-namespace DataAccess.Dao
+namespace DataAccess.Dao;
+
+public class UpdateDao : IUpdateDao
 {
-    public class UpdateDao : IUpdateDao
+    private readonly IConnectionFactory _connectionFactory;
+
+    public UpdateDao(IConnectionFactory connectionFactory)
     {
-        private readonly IConnectionFactory _connectionFactory;
+        _connectionFactory = connectionFactory;
+    }
 
-        public UpdateDao(IConnectionFactory connectionFactory)
-        {
-            _connectionFactory = connectionFactory;
-        }
-
-        public async Task<bool> Create(Update update)
-        {
-            string sql =
-@"
+    public async Task<bool> Create(Update update)
+    {
+        string sql =
+            @"
 INSERT INTO updates (
-    update_id,
-    handle_date
+    external_id,
+    handled_at
 )
 VALUES (
-    @UpdateId,
-    @HandleDate
+    @ExternalId,
+    @HandledAt
 );";
-            using var connection = await _connectionFactory.CreateConnection();
-            var rowsInserted = await connection.ExecuteAsync(sql, new
-            {
-                update.UpdateId,
-                update.HandleDate
-            });
-            return rowsInserted == 1;
-        }
-
-        public async Task<Update?> GetLastUpdate()
+        using var connection = await _connectionFactory.CreateConnection();
+        var rowsInserted = await connection.ExecuteAsync(sql, new
         {
-            string sql =
-                @"
+            update.ExternalId,
+            update.HandledAt
+        });
+        return rowsInserted == 1;
+    }
+
+    public async Task<Update?> GetLastUpdate()
+    {
+        string sql =
+            @"
 SELECT
-    u.update_id   AS  UpdateId
+    u.id            AS  Id,
+    u.external_id   AS  ExternalId,
+    u.handled_at    AS  HandledAt
 FROM
     updates u
 ORDER BY 
-    u.update_id DESC
+    u.id DESC
 LIMIT 
     1";
-            using var connection = await _connectionFactory.CreateConnection();
-            var update = await connection.QueryFirstOrDefaultAsync<Update>(sql);
-            return update;
-        }
+        using var connection = await _connectionFactory.CreateConnection();
+        var update = await connection.QueryFirstOrDefaultAsync<Update?>(sql);
+        return update;
     }
 }

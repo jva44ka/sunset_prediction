@@ -4,13 +4,13 @@ using DataAccess.ConnectionFactories;
 using DataAccess.Dao.Interfaces;
 using Domain.Entities;
 
-namespace DataAccess.Dao
-{
-    public class CityDao : ICityDao
-    {
-        private readonly IConnectionFactory _connectionFactory;
+namespace DataAccess.Dao;
 
-        private const string SelectFieldNames = @"
+public class CityDao : ICityDao
+{
+    private readonly IConnectionFactory _connectionFactory;
+
+    private const string SelectFieldNames = @"
     c.id              AS  Id,
     c.name            AS  Name,
     c.name_for_url    AS  NameForUrl,
@@ -20,51 +20,51 @@ namespace DataAccess.Dao
     c.longitude       AS  Longitude
 ";
 
-        public CityDao(IConnectionFactory connectionFactory)
-        {
-            _connectionFactory = connectionFactory;
-        }
+    public CityDao(IConnectionFactory connectionFactory)
+    {
+        _connectionFactory = connectionFactory;
+    }
 
-        public async Task<City?> GetCityById(int id)
-        {
-            string sql =
-                $@"
+    public async Task<City?> GetCityById(int id)
+    {
+        string sql =
+            $@"
 SELECT
     {SelectFieldNames}
 FROM 
     cities c
 WHERE
     c.id = @Id";
-            using var connection = await _connectionFactory.CreateConnection();
-            var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
-            {
-                Id = id
-            });
-            return cityDal;
-        }
-        
-        public async Task<City?> GetCityByLowerCaseName(string cityName)
+        using var connection = await _connectionFactory.CreateConnection();
+        var city = await connection.QueryFirstOrDefaultAsync<City>(sql, new
         {
-            string sql =
-                $@"
+            Id = id
+        });
+        return city;
+    }
+        
+    public async Task<City?> GetCityByLowerCaseName(string cityName)
+    {
+        string sql =
+            $@"
 SELECT
     {SelectFieldNames}
 FROM 
     cities c
 WHERE
     LOWER(c.name) LIKE CONCAT('%', @СityName, '%')";
-            using var connection = await _connectionFactory.CreateConnection();
-            var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
-            {
-                СityName = cityName
-            });
-            return cityDal;
-        }
-        
-        public async Task<bool> Create(City cityDal)
+        using var connection = await _connectionFactory.CreateConnection();
+        var city = await connection.QueryFirstOrDefaultAsync<City>(sql, new
         {
-            string sql =
-                @"
+            СityName = cityName
+        });
+        return city;
+    }
+        
+    public async Task<bool> Create(City city)
+    {
+        string sql =
+            @"
 INSERT INTO cities (
     id,
     name,
@@ -83,24 +83,24 @@ VALUES (
     @Latitude,
     @Longitude
 )";
-            using var connection = await _connectionFactory.CreateConnection();
-            var rowsInserted = await connection.ExecuteAsync(sql, new
-            {
-                cityDal.Id,
-                cityDal.Name,
-                cityDal.NameForUrl,
-                cityDal.Address,
-                cityDal.CountryCode,
-                cityDal.Latitude,
-                cityDal.Longitude
-            });
-            return rowsInserted == 1;
-        }
-        
-        public async Task<bool> Update(City cityDal)
+        using var connection = await _connectionFactory.CreateConnection();
+        var rowsInserted = await connection.ExecuteAsync(sql, new
         {
-            string sql =
-                @"
+            city.Id,
+            city.Name,
+            city.NameForUrl,
+            city.Address,
+            city.CountryCode,
+            city.Latitude,
+            city.Longitude
+        });
+        return rowsInserted == 1;
+    }
+        
+    public async Task<bool> Update(City city)
+    {
+        string sql =
+            @"
 UPDATE
     cities
 SET
@@ -112,18 +112,17 @@ SET
     longitude = @Longitude
 WHERE
     id = @Id";
-            using var connection = await _connectionFactory.CreateConnection();
-            var rowsUpdated = await connection.ExecuteAsync(sql, new
-            {
-                cityDal.Id,
-                cityDal.Name,
-                cityDal.NameForUrl,
-                cityDal.Address,
-                cityDal.CountryCode,
-                cityDal.Latitude,
-                cityDal.Longitude
-            });
-            return rowsUpdated == 1;
-        }
+        using var connection = await _connectionFactory.CreateConnection();
+        var rowsUpdated = await connection.ExecuteAsync(sql, new
+        {
+            city.Id,
+            city.Name,
+            city.NameForUrl,
+            city.Address,
+            city.CountryCode,
+            city.Latitude,
+            city.Longitude
+        });
+        return rowsUpdated == 1;
     }
 }

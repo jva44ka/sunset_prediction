@@ -1,34 +1,33 @@
 ﻿using Application.Mappers.Interfaces;
 using TelegramApi.Client.Dtos;
 
-namespace Application.Mappers
+namespace Application.Mappers;
+
+public class UpdateMapper : IMapper<Domain.Entities.Update, UpdateDto>
 {
-    public class UpdateMapper : IMapper<Domain.Entities.Update, UpdateDto>
+    public Domain.Entities.Update? ToEntity(UpdateDto? dal)
     {
-        public Domain.Entities.Update? ToEntity(UpdateDto? dal)
+        if (dal == null)
         {
-            if (dal == null)
-            {
-                return null;
-            }
-
-            return new Domain.Entities.Update
-            {
-                UpdateId = dal.UpdateId
-            };
+            return null;
         }
 
-        public UpdateDto? ToDto(Domain.Entities.Update? entity)
+        return new Domain.Entities.Update
         {
-            if (entity == null)
-            {
-                return null;
-            }
+            ExternalId = dal.UpdateId
+        };
+    }
 
-            return new UpdateDto
-            {
-                UpdateId = entity.UpdateId
-            };
+    public UpdateDto? ToDto(Domain.Entities.Update? entity)
+    {
+        if (entity == null)
+        {
+            return null;
         }
+
+        return new UpdateDto
+        {
+            UpdateId = entity.ExternalId
+        };
     }
 }
