@@ -17,37 +17,39 @@ public class OfChoosingSubscribeTypeState : IChatState
 
     public async Task<AnswerDto> HandleTextMessage()
     {
-        switch (_chatContext.MessageText.Trim().ToLower())
+        _chatContext.ValidateMessageText();
+        _chatContext.ValidateExistingChat();
+
+        switch (_chatContext.MessageText!.Trim().ToLower())
         {
             case "обычная":
             {
-                var newState = ChatStateType.SubscribedToEverydayPushes;
-                await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
+                await _chatContext.ChatService.UpdateState(
+                    _chatContext.ExistingChat!.ExternalId, 
+                    ChatStateType.SubscribedToEverydayPushes);
 
                 return new AnswerDto
                 {
-                    MessageType = AnswerMessageType.SubscribedToEverydayPushes,
-                    NewState = newState
+                    MessageType = AnswerMessageType.SubscribedToEverydayPushes
                 };
             }
 
             case "двойная":
             {
-                var newState = ChatStateType.SubscribedToEverydayDoublePushes;
-                await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
+                await _chatContext.ChatService.UpdateState(
+                    _chatContext.ExistingChat!.ExternalId, 
+                    ChatStateType.SubscribedToEverydayDoublePushes);
 
                 return new AnswerDto
                 {
-                    MessageType = AnswerMessageType.SubscribedToEverydayDoublePushes,
-                    NewState = newState
+                    MessageType = AnswerMessageType.SubscribedToEverydayDoublePushes
                 };
             }
 
             default:
                 return new AnswerDto
                 {
-                    MessageType = AnswerMessageType.InputSubscribeNameWrong,
-                    NewState = _chatContext.ExistingChat.CurrentState
+                    MessageType = AnswerMessageType.InputSubscribeNameWrong
                 };
         }
     }

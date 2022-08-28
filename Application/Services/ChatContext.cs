@@ -1,4 +1,5 @@
-﻿using Application.Services.EntityServices.Interfaces;
+﻿using System;
+using Application.Services.EntityServices.Interfaces;
 using Domain.Entities;
 using TelegramApi.Client.Dtos;
 
@@ -22,8 +23,8 @@ public class ChatContext
         string? messageText,
         Chat? existingChat,
         User? existingUser,
-        ICityService cityService, 
-        IUserService userService, 
+        ICityService cityService,
+        IUserService userService,
         IChatService chatService)
     {
         ChatExternalId = chatExternalId;
@@ -35,5 +36,32 @@ public class ChatContext
         CityService = cityService;
         UserService = userService;
         ChatService = chatService;
+    }
+
+    public void ValidateMessageText()
+    {
+        if (MessageText == null)
+        {
+            throw new Exception(
+                "Validation of MessageText failed");
+        }
+    }
+
+    public void ValidateExistingChat()
+    {
+        if (ExistingChat == null)
+        {
+            throw new Exception(
+                "Validation of ExistingChat failed");
+        }
+    }
+
+    public void ValidateExistingUser()
+    {
+        if (ExistingUser == null)
+        {
+            throw new Exception(
+                "Validation of ExistingUser failed");
+        }
     }
 }

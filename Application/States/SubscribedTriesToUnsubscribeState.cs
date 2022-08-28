@@ -18,28 +18,30 @@ public class SubscribedTriesToUnsubscribeState : IChatState
 
     public async Task<AnswerDto> HandleTextMessage()
     {
-        if (_chatContext.MessageText.Trim().ToLower() == "да")
+        _chatContext.ValidateMessageText();
+        _chatContext.ValidateExistingChat();
+
+        if (_chatContext.MessageText!.Trim().ToLower() == "да")
         {
-            var newState = ChatStateType.Unsubscribed;
-            await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
+            await _chatContext.ChatService.UpdateState(
+                _chatContext.ExistingChat!.ExternalId, 
+                ChatStateType.Unsubscribed);
 
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.Unsubscribed,
-                NewState = newState
+                MessageType = AnswerMessageType.Unsubscribed
             };
         }
         else
         {
-            var newState = _chatContext.ExistingChat.PreviousState
+            var newState = _chatContext.ExistingChat!.PreviousState
                            ?? throw new Exception(
                                $"User has not previous state with external id: {_chatContext.ExistingChat.ExternalId}");
             await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
 
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.StaysSubscribed,
-                NewState = newState
+                MessageType = AnswerMessageType.StaysSubscribed
             };
         }
     }

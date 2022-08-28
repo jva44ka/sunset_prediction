@@ -17,27 +17,32 @@ public class ProposedFoundedCityState : IChatState
 
     public async Task<AnswerDto> HandleTextMessage()
     {
-        if (_chatContext.MessageText.Trim().ToLower() == "да")
+        _chatContext.ValidateMessageText();
+        _chatContext.ValidateExistingChat();
+        _chatContext.ValidateExistingUser();
+
+        if (_chatContext.MessageText!.Trim().ToLower() == "да")
         {
-            var newState = ChatStateType.OfChoosingSubscribeType;
-            await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
+            await _chatContext.ChatService.UpdateState(
+                _chatContext.ExistingChat!.ExternalId, 
+                ChatStateType.OfChoosingSubscribeType);
 
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.ProposedSubscribeTypes,
-                NewState = newState
+                MessageType = AnswerMessageType.ProposedSubscribeTypes
             };
         }
         else
         {
-            var newState = ChatStateType.ProposedInputCity;
-            await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
-            await _chatContext.UserService.UpdateCity(_chatContext.ExistingUser.ExternalId, null);
+            await _chatContext.ChatService.UpdateState(
+                _chatContext.ExistingChat!.ExternalId, 
+                ChatStateType.ProposedInputCity);
+            await _chatContext.UserService.UpdateCity(
+                _chatContext.ExistingUser!.ExternalId, null);
 
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.ProposedCityNameWrong,
-                NewState = newState
+                MessageType = AnswerMessageType.ProposedCityNameWrong
             };
         }
     }

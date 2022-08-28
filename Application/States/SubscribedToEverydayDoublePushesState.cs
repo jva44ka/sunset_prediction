@@ -17,23 +17,25 @@ public class SubscribedToEverydayDoublePushesState : IChatState
 
     public async Task<AnswerDto> HandleTextMessage()
     {
-        if (_chatContext.MessageText.Trim().ToLower() == "отписка")
+        _chatContext.ValidateMessageText();
+        _chatContext.ValidateExistingChat();
+
+        if (_chatContext.MessageText!.Trim().ToLower() == "отписка")
         {
-            var newState = ChatStateType.SubscribedTriesToUnsubscribe;
-            await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
+            await _chatContext.ChatService.UpdateState(
+                _chatContext.ExistingChat!.ExternalId, 
+                ChatStateType.SubscribedTriesToUnsubscribe);
 
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.UnsubscribeWarning,
-                NewState = newState
+                MessageType = AnswerMessageType.UnsubscribeWarning
             };
         }
         else
         {
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.StaysSubscribed,
-                NewState = _chatContext.ExistingChat.CurrentState
+                MessageType = AnswerMessageType.StaysSubscribed
             };
         }
     }

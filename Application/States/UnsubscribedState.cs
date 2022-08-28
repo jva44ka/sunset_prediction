@@ -17,23 +17,25 @@ public class UnsubscribedState : IChatState
 
     public async Task<AnswerDto> HandleTextMessage()
     {
-        if (_chatContext.MessageText.Trim().ToLower() == "подписка")
+        _chatContext.ValidateMessageText();
+        _chatContext.ValidateExistingChat();
+
+        if (_chatContext.MessageText!.Trim().ToLower() == "подписка")
         {
-            var newState = ChatStateType.UnsubscribedTriesSubscribe;
-            await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
+            await _chatContext.ChatService.UpdateState(
+                _chatContext.ExistingChat!.ExternalId, 
+                ChatStateType.UnsubscribedTriesSubscribe);
 
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.ProposedSubscribeTypes,
-                NewState = newState
+                MessageType = AnswerMessageType.ProposedSubscribeTypes
             };
         }
         else
         {
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.Unsubscribed,
-                NewState = _chatContext.ExistingChat.CurrentState
+                MessageType = AnswerMessageType.Unsubscribed
             };
         }
     }
