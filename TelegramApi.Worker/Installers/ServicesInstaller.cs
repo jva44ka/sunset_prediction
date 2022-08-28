@@ -39,8 +39,9 @@ namespace TelegramApi.Worker.Installers
             serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, UpdateDto>, UpdateMapper>();
             serviceCollection.AddSingleton<ICitiesStoreService, CitiesStoreService>();
             serviceCollection.AddSingleton<IUpdateHandleService, UpdateHandleService>();
-            serviceCollection.AddSingleton<IDialogStateService, DialogStateService>();
+            serviceCollection.AddSingleton<IChatStateService, ChatStateService>();
             serviceCollection.AddSingleton<IAnswerService, AnswerService>();
+            serviceCollection.AddSingleton<IChatStateFactory, ChatStateFactory>();
 
             //telegram api
             serviceCollection.AddSingleton<ITelegramBotApiClient, TelegramBotApiClient>();

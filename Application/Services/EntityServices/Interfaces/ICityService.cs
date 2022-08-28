@@ -9,8 +9,8 @@ namespace Application.Services.EntityServices.Interfaces
 
         public Task<City?> GetCityByLowerCaseName(string cityName);
 
-        public Task<bool> Create(City cityDal);
+        public Task<bool> Create(City city);
 
-        public Task<bool> Update(City cityDal);
+        public Task<bool> Update(City city);
     }
 }

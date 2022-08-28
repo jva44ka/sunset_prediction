@@ -36,11 +36,11 @@ FROM
 WHERE
     c.id = @Id";
             using var connection = await _connectionFactory.CreateConnection();
-            var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
+            var city = await connection.QueryFirstOrDefaultAsync<City>(sql, new
             {
                 Id = id
             });
-            return cityDal;
+            return city;
         }
         
         public async Task<City?> GetCityByLowerCaseName(string cityName)
@@ -54,14 +54,14 @@ FROM
 WHERE
     LOWER(c.name) LIKE CONCAT('%', @СityName, '%')";
             using var connection = await _connectionFactory.CreateConnection();
-            var cityDal = await connection.QueryFirstOrDefaultAsync<City>(sql, new
+            var city = await connection.QueryFirstOrDefaultAsync<City>(sql, new
             {
                 СityName = cityName
             });
-            return cityDal;
+            return city;
         }
         
-        public async Task<bool> Create(City cityDal)
+        public async Task<bool> Create(City city)
         {
             string sql =
                 @"
@@ -86,18 +86,18 @@ VALUES (
             using var connection = await _connectionFactory.CreateConnection();
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
-                cityDal.Id,
-                cityDal.Name,
-                cityDal.NameForUrl,
-                cityDal.Address,
-                cityDal.CountryCode,
-                cityDal.Latitude,
-                cityDal.Longitude
+                city.Id,
+                city.Name,
+                city.NameForUrl,
+                city.Address,
+                city.CountryCode,
+                city.Latitude,
+                city.Longitude
             });
             return rowsInserted == 1;
         }
         
-        public async Task<bool> Update(City cityDal)
+        public async Task<bool> Update(City city)
         {
             string sql =
                 @"
@@ -115,13 +115,13 @@ WHERE
             using var connection = await _connectionFactory.CreateConnection();
             var rowsUpdated = await connection.ExecuteAsync(sql, new
             {
-                cityDal.Id,
-                cityDal.Name,
-                cityDal.NameForUrl,
-                cityDal.Address,
-                cityDal.CountryCode,
-                cityDal.Latitude,
-                cityDal.Longitude
+                city.Id,
+                city.Name,
+                city.NameForUrl,
+                city.Address,
+                city.CountryCode,
+                city.Latitude,
+                city.Longitude
             });
             return rowsUpdated == 1;
         }

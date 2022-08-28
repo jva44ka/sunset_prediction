@@ -33,7 +33,7 @@ public class ChatService : IChatService
         return await _chatDao.Create(chat);
     }
 
-    public async Task<bool> UpdateState(long externalId, ChatState newState)
+    public async Task<bool> UpdateState(long externalId, ChatStateType newState)
     {
         var chat = await _chatDao.GetByExternalId(externalId);
 

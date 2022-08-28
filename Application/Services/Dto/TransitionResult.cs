@@ -6,6 +6,6 @@ namespace Application.Services.Dto;
 public class TransitionResult
 {
     public AnswerMessageType AnswerMessageType { get; set; }
-    public ChatState NewState { get; set; }
+    public ChatStateType NewState { get; set; }
     public string[] AnswerMessageArgs { get; set; } = Array.Empty<string>();
 }

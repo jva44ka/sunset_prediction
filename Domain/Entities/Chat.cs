@@ -18,12 +18,12 @@ public class Chat
     /// <summary>
     ///     Предыдущее состояние чата 
     /// </summary>
-    public ChatState? PreviousState { get; set; }
+    public ChatStateType? PreviousState { get; set; }
 
     /// <summary>
     ///     Текущее состояние чата
     /// </summary>
-    public ChatState CurrentState { get; set; }
+    public ChatStateType CurrentState { get; set; }
 
     /// <summary>
     ///     Дата последнего изменения состояния чата

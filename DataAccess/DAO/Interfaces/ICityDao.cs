@@ -7,7 +7,7 @@ namespace DataAccess.Dao.Interfaces
     {
         Task<City?> GetCityById(int id);
         Task<City?> GetCityByLowerCaseName(string cityName);
-        Task<bool> Create(City cityDal);
-        Task<bool> Update(City cityDal);
+        Task<bool> Create(City city);
+        Task<bool> Update(City city);
     }
 }

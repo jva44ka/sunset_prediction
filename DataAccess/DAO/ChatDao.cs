@@ -61,7 +61,7 @@ VALUES (
         {
             chat.ExternalId,
             chat.PreviousState,
-            chat.CurrentState,
+            CurrentState = chat.CurrentState,
             chat.StateChangedAt,
         });
         return rowsInserted == 1;
@@ -69,8 +69,8 @@ VALUES (
 
     public async Task<bool> UpdateState(
         int chatId,
-        ChatState previousState,
-        ChatState currentState,
+        ChatStateType previousState,
+        ChatStateType currentState,
         DateTime stateChangeDate)
     {
         string sql =
@@ -78,8 +78,8 @@ VALUES (
 UPDATE
     chats
 SET
-    previous_state = @PreviousDialogState,
-    current_state = @CurrentDialogState,
+    previous_state = @PreviousState,
+    current_state = @CurrentState,
     state_changed_at = @StateChangedAt
 WHERE
     id = @ChatId";
@@ -87,8 +87,8 @@ WHERE
         var rowsUpdated = await connection.ExecuteAsync(sql, new
         {
             ChatId = chatId,
-            PreviousDialogState = previousState,
-            CurrentDialogState = currentState,
+            PreviousState = previousState,
+            CurrentState = currentState,
             StateChangedAt = stateChangeDate
         });
         return rowsUpdated == 1;

@@ -10,5 +10,5 @@ public interface IChatService
 
     Task<bool> Create(Chat chat);
 
-    Task<bool> UpdateState(long externalId, ChatState newState);
+    Task<bool> UpdateState(long externalId, ChatStateType newState);
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Application.Mappers.Interfaces;
 using Application.Services.Dto;
@@ -12,18 +11,18 @@ namespace Application.Services
     public class UpdateHandleService : IUpdateHandleService
     {
         private readonly IUpdateDao _updateDao;
-        private readonly IDialogStateService _dialogStateService;
+        private readonly IChatStateService _chatStateService;
         private readonly IAnswerService _answerService;
         private readonly IMapper<Domain.Entities.Update, UpdateDto> _updatesMapper;
 
         public UpdateHandleService(
             IUpdateDao updateDao,
-            IDialogStateService dialogStateService,
+            IChatStateService chatStateService,
             IAnswerService answerService,
             IMapper<Domain.Entities.Update, UpdateDto> updatesMapper)
         {
             _updateDao = updateDao;
-            _dialogStateService = dialogStateService;
+            _chatStateService = chatStateService;
             _answerService = answerService;
             _updatesMapper = updatesMapper;
         }
@@ -46,7 +45,7 @@ namespace Application.Services
             }
 
             var userId = updateDto.Message.From.Id;
-            var transitionResult = await _dialogStateService.TransitionState(
+            var transitionResult = await _chatStateService.Transit(
                 updateDto.Message);
             //TODO: Рефакторинг параметров
             var messageText = _answerService.GenerateAnswerText(

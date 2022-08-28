@@ -13,7 +13,7 @@ public interface IChatDao
 
     Task<bool> UpdateState(
         int chatId,
-        ChatState previousState,
-        ChatState currentState,
+        ChatStateType previousState,
+        ChatStateType currentState,
         DateTime stateChangeDate);
 }

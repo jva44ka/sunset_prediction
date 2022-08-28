@@ -32,11 +32,11 @@ FROM
 WHERE
     u.external_id = @ExternalId";
             using var connection = await _connectionFactory.CreateConnection();
-            var dialogStateDal = await connection.QueryFirstOrDefaultAsync<User>(sql, new
+            var user = await connection.QueryFirstOrDefaultAsync<User>(sql, new
             {
                 ExternalId = externalId
             });
-            return dialogStateDal;
+            return user;
         }
         
         public async Task<bool> Create(User user)
