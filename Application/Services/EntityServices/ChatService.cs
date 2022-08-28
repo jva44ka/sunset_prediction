@@ -21,16 +21,16 @@ public class ChatService : IChatService
         return _chatDao.GetByExternalId(externalId);
     }
 
-    public Task<bool> Create(Chat chat)
+    public async Task<bool> Create(Chat chat)
     {
-        var existingChat = _chatDao.GetByExternalId(chat.ExternalId);
+        var existingChat = await _chatDao.GetByExternalId(chat.ExternalId);
         if (existingChat != null)
         {
             throw new Exception(
                 $"Chat is already exists in database with external id: {chat.ExternalId}");
         }
 
-        return _chatDao.Create(chat);
+        return await _chatDao.Create(chat);
     }
 
     public async Task<bool> UpdateState(long externalId, ChatState newState)

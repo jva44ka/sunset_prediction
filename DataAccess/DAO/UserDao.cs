@@ -20,12 +20,13 @@ namespace DataAccess.Dao
             string sql =
                 @"
 SELECT
-    u.id                      AS  Id,
-    u.external_id             AS  ExternalId,
-    u.city_id                 AS  CityId,
-    u.first_name              AS  FirstName,
-    u.last_name               AS  LastName,
-    u.user_name               AS  UserName
+    u.id            AS  Id,
+    u.external_id   AS  ExternalId,
+    u.city_id       AS  CityId,
+    u.first_name    AS  FirstName,
+    u.last_name     AS  LastName,
+    u.user_name     AS  UserName,
+    u.chat_id       AS  ChatId
 FROM 
     users u
 WHERE
@@ -47,14 +48,16 @@ INSERT INTO users (
     city_id,
     first_name,
     last_name,
-    user_name
+    user_name,
+    chat_id
 )
 VALUES (
     @ExternalId,
     @CityId,
     @FirstName,
     @LastName,
-    @UserName
+    @UserName,
+    @ChatId
 )";
             using var connection = await _connectionFactory.CreateConnection();
             var rowsInserted = await connection.ExecuteAsync(sql, new
@@ -64,6 +67,7 @@ VALUES (
                 user.FirstName,
                 user.LastName,
                 user.UserName,
+                user.ChatId
             });
             return rowsInserted == 1;
         }

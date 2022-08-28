@@ -28,7 +28,7 @@ SELECT
     c.current_state     AS  CurrentState,
     c.state_changed_at  AS  StateChangedAt
 FROM 
-    chats u
+    chats c
 WHERE
     c.external_id = @ExternalId";
         using var connection = await _connectionFactory.CreateConnection();
@@ -45,10 +45,10 @@ WHERE
         string sql =
             @"
 INSERT INTO chats (
-    c.external_id,
-    c.previous_state,
-    c.current_state,
-    c.state_changed_at
+    external_id,
+    previous_state,
+    current_state,
+    state_changed_at
 )
 VALUES (
     @ExternalId,

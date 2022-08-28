@@ -21,16 +21,17 @@ namespace DataAccess.Dao
 @"
 INSERT INTO updates (
     external_id,
-    handle_date
+    handled_at
 )
 VALUES (
     @ExternalId,
-    @HandleDate
+    @HandledAt
 );";
             using var connection = await _connectionFactory.CreateConnection();
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
-                update.ExternalId, HandleDate = update.HandledAt
+                update.ExternalId,
+                update.HandledAt
             });
             return rowsInserted == 1;
         }
@@ -42,7 +43,7 @@ VALUES (
 SELECT
     u.id            AS  Id,
     u.external_id   AS  ExternalId,
-    u.handle_date   AS  HandleDate
+    u.handled_at    AS  HandledAt
 FROM
     updates u
 ORDER BY 

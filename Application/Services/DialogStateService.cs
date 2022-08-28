@@ -248,21 +248,24 @@ namespace Application.Services
             long chatExternalId,
             UserDto userDto)
         {
-            var user = new User
-            {
-                ExternalId = userDto.Id,
-                FirstName = userDto.FirstName,
-                LastName = userDto.LastName,
-                UserName = userDto.Username
-            };
             var chat = new Chat
             {
                 ExternalId = chatExternalId,
                 CurrentState = ChatState.ProposedInputCity,
                 StateChangedAt = DateTime.UtcNow
             };
-            await _userService.Create(user);
             await _chatService.Create(chat);
+
+            var existingChat = await _chatService.GetByExternalId(chatExternalId);
+            var user = new User
+            {
+                ExternalId = userDto.Id,
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                UserName = userDto.Username,
+                ChatId = existingChat.Id
+            };
+            await _userService.Create(user);
 
             return new TransitionResult
             {

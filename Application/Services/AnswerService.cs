@@ -85,11 +85,11 @@ public class AnswerService : IAnswerService
         },
         {
             AnswerMessageType.SubscribedToEverydayPushes,
-            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка")
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Отписка")
         },
         {
             AnswerMessageType.SubscribedToEverydayDoublePushes,
-            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка")
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Отписка")
         },
         {
             AnswerMessageType.UnsubscribeWarning, 

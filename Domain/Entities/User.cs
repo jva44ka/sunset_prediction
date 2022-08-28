@@ -31,5 +31,10 @@
         ///     Никнейм пользователя в Telegram
         /// </summary>
         public string UserName { get; set; } = default!;
+
+        /// <summary>
+        ///     Идентификатор чата с пользователем
+        /// </summary>
+        public int ChatId { get; set; }
     }
 }

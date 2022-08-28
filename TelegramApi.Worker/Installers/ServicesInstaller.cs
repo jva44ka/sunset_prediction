@@ -28,6 +28,7 @@ namespace TelegramApi.Worker.Installers
             serviceCollection.AddSingleton<IUpdateDao, UpdateDao>();
             serviceCollection.AddSingleton<IUserDao, UserDao>();
             serviceCollection.AddSingleton<ICityDao, CityDao>();
+            serviceCollection.AddSingleton<IChatDao, ChatDao>();
 
             //entity services
             serviceCollection.AddSingleton<IUserService, UserService>();
