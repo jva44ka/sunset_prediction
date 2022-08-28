@@ -1,12 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Services.Interfaces
+namespace TelegramApi.Worker.Services.Interfaces
 {
     /// <summary>
     ///     Сервис, запрашивающий и обрабатывающий новые обновления бота
     /// </summary>
-    public interface ITelegramUpdatesRequesterService
+    public interface ITelegramRequesterService
     {
         /// <summary>
         ///     Запрос и обработка новых обновлений

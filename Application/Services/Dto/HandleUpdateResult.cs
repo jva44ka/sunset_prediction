@@ -7,7 +7,7 @@ namespace Application.Services.Dto
         /// <summary>
         ///     Идентификатор чата, с которого пришел апдейт
         /// </summary>
-        public int ChatId { get; set; }
+        public long ChatId { get; set; }
 
         /// <summary>
         ///     Идентификатор сообщения, по которому отправился нам апдейт
@@ -17,8 +17,8 @@ namespace Application.Services.Dto
         /// <summary>
         ///     Сообщение от бота, которое нужно отправить как результат обработки апдейта
         /// </summary>
-        public string MessageText { get; set; }
-        
+        public string MessageText { get; set; } = default!;
+
         /// <summary>
         ///     Клавиатура для последующих вариантов ответов на сообщение
         /// </summary>

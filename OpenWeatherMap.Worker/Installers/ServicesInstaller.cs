@@ -28,10 +28,9 @@ namespace TelegramApi.Worker.Installers
             serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, UpdateDto>, UpdateMapper>();
 
             //application
-            serviceCollection.AddSingleton<ICitiesParserService, CitiesParserService>();
+            serviceCollection.AddSingleton<ICitiesStoreService, CitiesStoreService>();
             serviceCollection.AddSingleton<IUpdateHandleService, UpdateHandleService>();
             serviceCollection.AddSingleton<IDialogStateService, DialogStateService>();
-            serviceCollection.AddSingleton<ITelegramUpdatesRequesterService, TelegramUpdatesRequesterService>();
 
             //telegram api
             serviceCollection.AddSingleton<IForecastClient, ForecastClient>();

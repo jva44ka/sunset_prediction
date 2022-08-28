@@ -8,14 +8,14 @@ namespace Application.Services.EntityServices
 {
     public class CityService : ICityService
     {
-        private readonly ICitiesParserService _citiesParserService;
+        private readonly ICitiesStoreService _citiesStoreService;
         private readonly ICityDao _cityDao;
 
         public CityService(
-            ICitiesParserService citiesParserService,
+            ICitiesStoreService citiesStoreService,
             ICityDao cityDao)
         {
-            _citiesParserService = citiesParserService;
+            _citiesStoreService = citiesStoreService;
             _cityDao = cityDao;
         }
 
@@ -27,7 +27,7 @@ namespace Application.Services.EntityServices
             if (city == null)
             {
                 cityExistsInDb = false;
-                city = await _citiesParserService.FindCity(id);
+                city = await _citiesStoreService.FindCity(id);
             }
 
             if (city == null)
@@ -54,7 +54,7 @@ namespace Application.Services.EntityServices
             {
                 //TODO: Поменять на cityLowerCaseName для единства
                 cityExistsInDb = false;
-                city = await _citiesParserService.FindCity(cityName);
+                city = await _citiesStoreService.FindCity(cityName);
             }
 
             if (city == null)

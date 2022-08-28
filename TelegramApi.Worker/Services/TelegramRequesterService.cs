@@ -9,19 +9,20 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TelegramApi.Client.Clients.Interfaces;
 using TelegramApi.Client.Dtos;
+using TelegramApi.Worker.Services.Interfaces;
 
-namespace Application.Services
+namespace TelegramApi.Worker.Services
 {
-    public class TelegramUpdatesRequesterService : ITelegramUpdatesRequesterService
+    public class TelegramRequesterService : ITelegramRequesterService
     {
         private readonly IUpdateHandleService _updateHandleService;
         private readonly ITelegramBotApiClient _telegramBotApiClient;
-        private readonly ILogger<TelegramUpdatesRequesterService> _logger;
+        private readonly ILogger<TelegramRequesterService> _logger;
 
-        public TelegramUpdatesRequesterService(
+        public TelegramRequesterService(
             IUpdateHandleService updateHandleService,
             ITelegramBotApiClient telegramBotApiClient,
-            ILogger<TelegramUpdatesRequesterService> logger)
+            ILogger<TelegramRequesterService> logger)
         {
             _updateHandleService = updateHandleService;
             _telegramBotApiClient = telegramBotApiClient;

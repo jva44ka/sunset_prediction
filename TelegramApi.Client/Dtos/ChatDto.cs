@@ -10,7 +10,7 @@ namespace TelegramApi.Client.Dtos
         /// <summary>
         ///     Уникальный идентификатор чата. Абсолютное значение не превышает 1e13
         /// </summary>
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         ///     Тип чата: “private”, “group”, “supergroup” или “channel”

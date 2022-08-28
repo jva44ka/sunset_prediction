@@ -4,19 +4,20 @@ using System.Threading.Tasks;
 using Application.Services.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TelegramApi.Worker.Services.Interfaces;
 
 namespace TelegramApi.Worker.HostedServices
 {
     public class TelegramBackgroundService : BackgroundService
     {
-        private readonly ITelegramUpdatesRequesterService _telegramUpdatesRequesterService;
+        private readonly ITelegramRequesterService _telegramRequesterService;
         private readonly ILogger<TelegramBackgroundService> _logger;
 
         public TelegramBackgroundService(
-            ITelegramUpdatesRequesterService telegramUpdatesRequesterService,
+            ITelegramRequesterService telegramRequesterService,
             ILogger<TelegramBackgroundService> logger)
         {
-            _telegramUpdatesRequesterService = telegramUpdatesRequesterService;
+            _telegramRequesterService = telegramRequesterService;
             _logger = logger;
         }
 
@@ -30,7 +31,7 @@ namespace TelegramApi.Worker.HostedServices
 
                 try
                 {
-                    await _telegramUpdatesRequesterService
+                    await _telegramRequesterService
                           .HandleNewUpdates(
                               stoppingToken);
                 }

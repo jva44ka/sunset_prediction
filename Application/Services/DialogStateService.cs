@@ -12,47 +12,54 @@ namespace Application.Services
     public class DialogStateService : IDialogStateService
     {
         private readonly IUserService _userService;
+        private readonly IChatService _chatService;
         private readonly ICityService _cityService;
 
         public DialogStateService(
             IUserService userService,
+            IChatService chatService,
             ICityService cityService)
         {
             _userService = userService;
+            _chatService = chatService;
             _cityService = cityService;
         }
 
         public async Task<TransitionResult> TransitionState(
-            int userId,
-            MessageDto message)
+            MessageDto messageDto)
         {
-            var user = await _userService.GetByExternalId(userId);
-            if (user == null)
+            var chatExternalId = messageDto.Chat.Id; 
+            var userDto = messageDto.From;
+            var messageText = messageDto.Text;
+
+            var chat = await _chatService.GetByExternalId(chatExternalId);
+            var user = await _userService.GetByExternalId(userDto.Id);
+            if (chat == null)
             {
-                return await WithoutState(message);
+                return await WithoutState(chatExternalId, userDto);
             }
 
-            switch (user.CurrentDialogState)
+            switch (chat.CurrentState)
             {
-                case DialogState.ProposedInputCity:
-                    return await ProposedInputCity(user, message.Text);
-                case DialogState.ProposedFoundedCity:
-                    return await ProposedFoundedCity(user, message.Text);
-                case DialogState.OfChoosingSubscribeType:
-                    return await OfChoosingSubscribeType(user, message.Text);
-                case DialogState.SubscribedToEverydayPushes:
-                case DialogState.SubscribedToEverydayDoublePushes:
-                    return await SubscribedToPushes(user, message.Text);
-                case DialogState.SubscribedTriesToUnsubscribe:
-                    return await SubscribedTriesToUnsubscribe(user, message.Text);
-                case DialogState.Unsubscribed:
-                    return await Unsubscribed(user, message.Text);
-                case DialogState.UnsubscribedTriesSubscribe:
-                    return await OfChoosingSubscribeType(user, message.Text);
+                case ChatState.ProposedInputCity:
+                    return await ProposedInputCity(chat, user, messageText);
+                case ChatState.ProposedFoundedCity:
+                    return await ProposedFoundedCity(chat, user, messageText);
+                case ChatState.OfChoosingSubscribeType:
+                    return await OfChoosingSubscribeType(chat, messageText);
+                case ChatState.SubscribedToEverydayPushes:
+                case ChatState.SubscribedToEverydayDoublePushes:
+                    return await SubscribedToPushes(chat, messageText);
+                case ChatState.SubscribedTriesToUnsubscribe:
+                    return await SubscribedTriesToUnsubscribe(chat, messageText);
+                case ChatState.Unsubscribed:
+                    return await Unsubscribed(chat, messageText);
+                case ChatState.UnsubscribedTriesSubscribe:
+                    return await OfChoosingSubscribeType(chat, messageText);
                 default:
                     throw new ArgumentOutOfRangeException(
-                        nameof(user.CurrentDialogState),
-                        user.CurrentDialogState,
+                        nameof(chat.CurrentState),
+                        chat.CurrentState,
                         null);
 
             }
@@ -60,21 +67,22 @@ namespace Application.Services
 
 
         private async Task<TransitionResult> ProposedInputCity(
+            Chat chat,
             User user,
             string messageText)
         {
             var city = await _cityService.GetCityByLowerCaseName(messageText);
             if (city != null)
             {
-                var newState = DialogState.ProposedFoundedCity;
-                await _userService.UpdateState(user.ExternalId, newState);
+                var newState = ChatState.ProposedFoundedCity;
+                await _chatService.UpdateState(chat.ExternalId, newState);
                 await _userService.UpdateCity(user.ExternalId, city.Id);
 
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.ProposedCityName,
                     NewState = newState,
-                    CityAddress = city.Address
+                    AnswerMessageArgs = new[] { city.Address }
                 };
             }
             else
@@ -82,19 +90,20 @@ namespace Application.Services
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.CityNameNotFound,
-                    NewState = user.CurrentDialogState
+                    NewState = chat.CurrentState
                 };
             }
         }
 
         private async Task<TransitionResult> ProposedFoundedCity(
+            Chat chat,
             User user,
             string messageText)
         {
             if (messageText.Trim().ToLower() == "да")
             {
-                var newState = DialogState.OfChoosingSubscribeType;
-                await _userService.UpdateState(user.ExternalId, newState);
+                var newState = ChatState.OfChoosingSubscribeType;
+                await _chatService.UpdateState(chat.ExternalId, newState);
 
                 return new TransitionResult
                 {
@@ -104,8 +113,8 @@ namespace Application.Services
             }
             else
             {
-                var newState = DialogState.ProposedInputCity;
-                await _userService.UpdateState(user.ExternalId, newState);
+                var newState = ChatState.ProposedInputCity;
+                await _chatService.UpdateState(chat.ExternalId, newState);
                 await _userService.UpdateCity(user.ExternalId, null);
 
                 return new TransitionResult
@@ -117,15 +126,15 @@ namespace Application.Services
         }
 
         private async Task<TransitionResult> OfChoosingSubscribeType(
-            User user,
+            Chat chat,
             string messageText)
         {
             switch (messageText.Trim().ToLower())
             {
                 case "обычная":
                     {
-                        var newState = DialogState.SubscribedToEverydayPushes;
-                        await _userService.UpdateState(user.ExternalId, newState);
+                        var newState = ChatState.SubscribedToEverydayPushes;
+                        await _chatService.UpdateState(chat.ExternalId, newState);
 
                         return new TransitionResult
                         {
@@ -136,8 +145,8 @@ namespace Application.Services
 
                 case "двойная":
                     {
-                        var newState = DialogState.SubscribedToEverydayDoublePushes;
-                        await _userService.UpdateState(user.ExternalId, newState);
+                        var newState = ChatState.SubscribedToEverydayDoublePushes;
+                        await _chatService.UpdateState(chat.ExternalId, newState);
 
                         return new TransitionResult
                         {
@@ -150,19 +159,19 @@ namespace Application.Services
                     return new TransitionResult
                     {
                         AnswerMessageType = AnswerMessageType.InputSubscribeNameWrong,
-                        NewState = user.CurrentDialogState
+                        NewState = chat.CurrentState
                     };
             }
         }
 
         private async Task<TransitionResult> SubscribedToPushes(
-            User user,
+            Chat chat,
             string messageText)
         {
             if (messageText.Trim().ToLower() == "отписка")
             {
-                var newState = DialogState.SubscribedTriesToUnsubscribe;
-                await _userService.UpdateState(user.ExternalId, newState);
+                var newState = ChatState.SubscribedTriesToUnsubscribe;
+                await _chatService.UpdateState(chat.ExternalId, newState);
 
                 return new TransitionResult
                 {
@@ -175,19 +184,19 @@ namespace Application.Services
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.StaysSubscribed,
-                    NewState = user.CurrentDialogState
+                    NewState = chat.CurrentState
                 };
             }
         }
 
         private async Task<TransitionResult> SubscribedTriesToUnsubscribe(
-            User user,
+            Chat chat,
             string messageText)
         {
             if (messageText.Trim().ToLower() == "да")
             {
-                var newState = DialogState.Unsubscribed;
-                await _userService.UpdateState(user.ExternalId, newState);
+                var newState = ChatState.Unsubscribed;
+                await _chatService.UpdateState(chat.ExternalId, newState);
 
                 return new TransitionResult
                 {
@@ -197,10 +206,10 @@ namespace Application.Services
             }
             else
             {
-                var newState = user.PreviousDialogState
+                var newState = chat.PreviousState
                                ?? throw new Exception(
-                                   $"User has not previous state with external id: {user.ExternalId}");
-                await _userService.UpdateState(user.ExternalId, newState);
+                                   $"User has not previous state with external id: {chat.ExternalId}");
+                await _chatService.UpdateState(chat.ExternalId, newState);
 
                 return new TransitionResult
                 {
@@ -211,13 +220,13 @@ namespace Application.Services
         }
 
         private async Task<TransitionResult> Unsubscribed(
-            User user,
+            Chat chat,
             string messageText)
         {
             if (messageText.Trim().ToLower() == "подписка")
             {
-                var newState = DialogState.UnsubscribedTriesSubscribe;
-                await _userService.UpdateState(user.ExternalId, newState);
+                var newState = ChatState.UnsubscribedTriesSubscribe;
+                await _chatService.UpdateState(chat.ExternalId, newState);
 
                 return new TransitionResult
                 {
@@ -230,29 +239,35 @@ namespace Application.Services
                 return new TransitionResult
                 {
                     AnswerMessageType = AnswerMessageType.Unsubscribed,
-                    NewState = user.CurrentDialogState
+                    NewState = chat.CurrentState
                 };
             }
         }
 
-        private async Task<TransitionResult> WithoutState(MessageDto message)
+        private async Task<TransitionResult> WithoutState(
+            long chatExternalId,
+            UserDto userDto)
         {
             var user = new User
             {
-                ExternalId = message.From.Id,
-                FirstName = message.From.FirstName,
-                LastName = message.From.LastName,
-                UserName = message.From.Username,
-
-                CurrentDialogState = DialogState.ProposedInputCity,
-                StateChangeDate = DateTime.UtcNow
+                ExternalId = userDto.Id,
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                UserName = userDto.Username
+            };
+            var chat = new Chat
+            {
+                ExternalId = chatExternalId,
+                CurrentState = ChatState.ProposedInputCity,
+                StateChangedAt = DateTime.UtcNow
             };
             await _userService.Create(user);
+            await _chatService.Create(chat);
 
             return new TransitionResult
             {
                 AnswerMessageType = AnswerMessageType.InputCity,
-                NewState = user.CurrentDialogState
+                NewState = chat.CurrentState
             };
         }
     }

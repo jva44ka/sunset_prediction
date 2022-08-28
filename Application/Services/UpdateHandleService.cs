@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Application.Mappers.Interfaces;
 using Application.Services.Dto;
@@ -33,28 +34,29 @@ namespace Application.Services
             return lastUpdate?.ExternalId;
         }
 
-        public async Task<HandleUpdateResult> HandleUpdate(UpdateDto update)
+        public async Task<HandleUpdateResult> HandleUpdate(UpdateDto updateDto)
         {
-            var updateDal = _updatesMapper.ToEntity(update);
-            updateDal.HandleDate = DateTime.UtcNow;
-            var creationResult = await _updateDao.Create(updateDal);
+            var update = _updatesMapper.ToEntity(updateDto)!;
+            update.HandledAt = DateTime.UtcNow;
+            var creationResult = await _updateDao.Create(update);
 
             if (creationResult == false)
             {
-                throw new Exception($"Failed to create record in table \"updates\" with update_id: {update.UpdateId}");
+                throw new Exception($"Failed to create record in table \"updates\" with update_id: {updateDto.UpdateId}");
             }
 
-            var userId = update.Message.From.Id;
-            var transitionResult = await _dialogStateService.TransitionState(userId, update.Message);
+            var userId = updateDto.Message.From.Id;
+            var transitionResult = await _dialogStateService.TransitionState(
+                updateDto.Message);
             //TODO: Рефакторинг параметров
             var messageText = _answerService.GenerateAnswerText(
                 transitionResult.AnswerMessageType,
-                transitionResult.CityAddress ?? string.Empty);
+                transitionResult.AnswerMessageArgs);
             var keyboard = _answerService.GenerateKeyboard(transitionResult.AnswerMessageType);
 
             return new HandleUpdateResult
             {
-                ChatId = update.Message.Chat.Id, 
+                ChatId = updateDto.Message.Chat.Id,
                 MessageText = messageText,
                 MessageKeyboard = keyboard
             };

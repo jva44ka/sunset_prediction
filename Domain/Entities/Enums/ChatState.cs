@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities.Enums
 {
-    public enum DialogState : byte
+    public enum ChatState : byte
     {
         /// <summary>
         ///     Пользователь инициировал диалог. Ожидается ввод названия города

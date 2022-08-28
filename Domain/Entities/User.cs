@@ -1,7 +1,4 @@
-﻿using System;
-using Domain.Entities.Enums;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
     public class User
     {
@@ -34,20 +31,5 @@ namespace Domain.Entities
         ///     Никнейм пользователя в Telegram
         /// </summary>
         public string UserName { get; set; } = default!;
-
-        /// <summary>
-        ///     Предыдущее состояние диалога бота с пользователем
-        /// </summary>
-        public DialogState? PreviousDialogState { get; set; }
-
-        /// <summary>
-        ///     Текущее состояние диалога бота с пользователем
-        /// </summary>
-        public DialogState CurrentDialogState { get; set; }
-
-        /// <summary>
-        ///     Дата последнего изменения состояния диалога
-        /// </summary>
-        public DateTime StateChangeDate { get; set; }
     }
 }

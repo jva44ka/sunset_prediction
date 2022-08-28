@@ -30,8 +30,7 @@ VALUES (
             using var connection = await _connectionFactory.CreateConnection();
             var rowsInserted = await connection.ExecuteAsync(sql, new
             {
-                update.ExternalId,
-                update.HandleDate
+                update.ExternalId, HandleDate = update.HandledAt
             });
             return rowsInserted == 1;
         }

@@ -9,8 +9,8 @@ using Newtonsoft.Json;
 
 namespace Application.Services
 {
-    /// <inheritdoc cref="ICitiesParserService"/>
-    public class CitiesParserService : ICitiesParserService
+    /// <inheritdoc cref="ICitiesStoreService"/>
+    public class CitiesStoreService : ICitiesStoreService
     {
         private const string CitiesJsonPath = "./SeedData/cities.json";
         //TODO: Сделать слабую ссылку чтобы не держать файл в памяти

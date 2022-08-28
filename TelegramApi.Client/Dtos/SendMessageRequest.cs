@@ -5,7 +5,7 @@ namespace TelegramApi.Client.Dtos
     public class SendMessageRequest
     {
         [JsonProperty("chat_id")]
-        public int ChatId { get; set; }
+        public long ChatId { get; set; }
 
         [JsonProperty("text")]
         public string Text { get; set; } = default!;

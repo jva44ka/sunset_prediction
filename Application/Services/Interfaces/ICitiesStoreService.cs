@@ -6,7 +6,7 @@ namespace Application.Services.Interfaces
     /// <summary>
     ///     Сервис работы с данными о городах из SeedData/cities.json
     /// </summary>
-    public interface ICitiesParserService
+    public interface ICitiesStoreService
     {
         /// <summary>
         ///     Получение города по названию.

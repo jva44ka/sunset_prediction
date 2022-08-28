@@ -17,14 +17,14 @@ namespace TelegramApi.Client.Dtos
 
         /// <summary>
         ///     Опционально. Если значение True, то при нажатии на кнопку боту отправится контакт пользователя
-        ///     с его номером телефона. Доступно только в диалогах с ботом.
+        ///     с его номером телефона. Доступно только в чатах с ботом.
         /// </summary>
         [JsonProperty("request_contact")]
         public bool? RequestContact { get; set; }
 
         /// <summary>
         ///     Опционально. Если значение True, то при нажатии на кнопку боту отправится местоположение пользователя.
-        ///     Доступно только в диалогах с ботом.
+        ///     Доступно только в чатах с ботом.
         /// </summary>
         [JsonProperty("request_location")]
         public bool? RequestLocation { get; set; }

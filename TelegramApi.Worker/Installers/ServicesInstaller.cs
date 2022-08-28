@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using TelegramApi.Client.Clients;
 using TelegramApi.Client.Clients.Interfaces;
 using TelegramApi.Client.Dtos;
+using TelegramApi.Worker.Services;
+using TelegramApi.Worker.Services.Interfaces;
 
 namespace TelegramApi.Worker.Installers
 {
@@ -27,22 +29,21 @@ namespace TelegramApi.Worker.Installers
             serviceCollection.AddSingleton<IUserDao, UserDao>();
             serviceCollection.AddSingleton<ICityDao, CityDao>();
 
-            //domain
-            serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, UpdateDto>, UpdateMapper>();
-
             //entity services
             serviceCollection.AddSingleton<IUserService, UserService>();
             serviceCollection.AddSingleton<ICityService, CityService>();
+            serviceCollection.AddSingleton<IChatService, ChatService>();
 
             //application
-            serviceCollection.AddSingleton<ICitiesParserService, CitiesParserService>();
+            serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, UpdateDto>, UpdateMapper>();
+            serviceCollection.AddSingleton<ICitiesStoreService, CitiesStoreService>();
             serviceCollection.AddSingleton<IUpdateHandleService, UpdateHandleService>();
             serviceCollection.AddSingleton<IDialogStateService, DialogStateService>();
             serviceCollection.AddSingleton<IAnswerService, AnswerService>();
-            serviceCollection.AddSingleton<ITelegramUpdatesRequesterService, TelegramUpdatesRequesterService>();
 
             //telegram api
             serviceCollection.AddSingleton<ITelegramBotApiClient, TelegramBotApiClient>();
+            serviceCollection.AddSingleton<ITelegramRequesterService, TelegramRequesterService>();
             serviceCollection.AddHttpClient();
             return serviceCollection;
         }

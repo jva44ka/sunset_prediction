@@ -17,6 +17,6 @@ namespace Domain.Entities
         /// <summary>
         ///     Дата обработки обновления ботом
         /// </summary>
-        public DateTime HandleDate { get; set; }
+        public DateTime HandledAt { get; set; }
     }
 }
