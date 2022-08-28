@@ -4,21 +4,21 @@ using DataAccess.ConnectionFactories;
 using DataAccess.Dao.Interfaces;
 using Domain.Entities;
 
-namespace DataAccess.Dao
+namespace DataAccess.Dao;
+
+public class UserDao : IUserDao
 {
-    public class UserDao : IUserDao
+    private readonly IConnectionFactory _connectionFactory;
+
+    public UserDao(IConnectionFactory connectionFactory)
     {
-        private readonly IConnectionFactory _connectionFactory;
+        _connectionFactory = connectionFactory;
+    }
 
-        public UserDao(IConnectionFactory connectionFactory)
-        {
-            _connectionFactory = connectionFactory;
-        }
-
-        public async Task<User?> GetByExternalId(long externalId)
-        {
-            string sql =
-                @"
+    public async Task<User?> GetByExternalId(long externalId)
+    {
+        string sql =
+            @"
 SELECT
     u.id            AS  Id,
     u.external_id   AS  ExternalId,
@@ -31,18 +31,18 @@ FROM
     users u
 WHERE
     u.external_id = @ExternalId";
-            using var connection = await _connectionFactory.CreateConnection();
-            var user = await connection.QueryFirstOrDefaultAsync<User>(sql, new
-            {
-                ExternalId = externalId
-            });
-            return user;
-        }
-        
-        public async Task<bool> Create(User user)
+        using var connection = await _connectionFactory.CreateConnection();
+        var user = await connection.QueryFirstOrDefaultAsync<User>(sql, new
         {
-            string sql =
-                @"
+            ExternalId = externalId
+        });
+        return user;
+    }
+        
+    public async Task<bool> Create(User user)
+    {
+        string sql =
+            @"
 INSERT INTO users (
     external_id,
     city_id,
@@ -59,38 +59,37 @@ VALUES (
     @UserName,
     @ChatId
 )";
-            using var connection = await _connectionFactory.CreateConnection();
-            var rowsInserted = await connection.ExecuteAsync(sql, new
-            {
-                user.ExternalId,
-                user.CityId,
-                user.FirstName,
-                user.LastName,
-                user.UserName,
-                user.ChatId
-            });
-            return rowsInserted == 1;
-        }
-
-        public async Task<bool> UpdateCity(
-            int userId, 
-            int? cityId)
+        using var connection = await _connectionFactory.CreateConnection();
+        var rowsInserted = await connection.ExecuteAsync(sql, new
         {
-            string sql =
-                @"
+            user.ExternalId,
+            user.CityId,
+            user.FirstName,
+            user.LastName,
+            user.UserName,
+            user.ChatId
+        });
+        return rowsInserted == 1;
+    }
+
+    public async Task<bool> UpdateCity(
+        int userId, 
+        int? cityId)
+    {
+        string sql =
+            @"
 UPDATE
     users
 SET
     city_id = @CityId
 WHERE
     id = @UserId";
-            using var connection = await _connectionFactory.CreateConnection();
-            var rowsUpdated = await connection.ExecuteAsync(sql, new
-            {
-                UserId = userId,
-                CityId = cityId
-            });
-            return rowsUpdated == 1;
-        }
+        using var connection = await _connectionFactory.CreateConnection();
+        var rowsUpdated = await connection.ExecuteAsync(sql, new
+        {
+            UserId = userId,
+            CityId = cityId
+        });
+        return rowsUpdated == 1;
     }
 }

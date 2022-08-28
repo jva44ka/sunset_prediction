@@ -1,10 +1,9 @@
-﻿namespace TelegramApi.Client.Dtos
+﻿namespace TelegramApi.Client.Dtos;
+
+public enum ChatType
 {
-    public enum ChatType
-    {
-        Private,
-        Group,
-        Supergroup,
-        Channel
-    }
+    Private,
+    Group,
+    Supergroup,
+    Channel
 }

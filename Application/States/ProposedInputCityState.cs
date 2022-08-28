@@ -15,7 +15,7 @@ public class ProposedInputCityState : IChatState
         _chatContext = chatContext;
     }
 
-    public async Task<TransitionResult> HandleTextMessage()
+    public async Task<AnswerDto> HandleTextMessage()
     {
         var city = await _chatContext.CityService.GetCityByLowerCaseName(_chatContext.MessageText);
         if (city != null)
@@ -24,18 +24,18 @@ public class ProposedInputCityState : IChatState
             await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
             await _chatContext.UserService.UpdateCity(_chatContext.ExistingUser.ExternalId, city.Id);
 
-            return new TransitionResult
+            return new AnswerDto
             {
-                AnswerMessageType = AnswerMessageType.ProposedCityName,
+                MessageType = AnswerMessageType.ProposedCityName,
                 NewState = newState,
-                AnswerMessageArgs = new[] { city.Address }
+                MessageArgs = new[] { city.Address }
             };
         }
         else
         {
-            return new TransitionResult
+            return new AnswerDto
             {
-                AnswerMessageType = AnswerMessageType.CityNameNotFound,
+                MessageType = AnswerMessageType.CityNameNotFound,
                 NewState = _chatContext.ExistingChat.CurrentState
             };
         }

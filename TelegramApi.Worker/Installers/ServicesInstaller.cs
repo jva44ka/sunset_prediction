@@ -14,40 +14,39 @@ using TelegramApi.Client.Dtos;
 using TelegramApi.Worker.Services;
 using TelegramApi.Worker.Services.Interfaces;
 
-namespace TelegramApi.Worker.Installers
+namespace TelegramApi.Worker.Installers;
+
+public static class ServicesInstaller
 {
-    public static class ServicesInstaller
+    /// <summary>
+    ///     Добавляет в serviceCollection сервисы бизнес-логики
+    /// </summary>
+    public static IServiceCollection ConfigureServices(IServiceCollection serviceCollection)
     {
-        /// <summary>
-        ///     Добавляет в serviceCollection сервисы бизнес-логики
-        /// </summary>
-        public static IServiceCollection ConfigureServices(IServiceCollection serviceCollection)
-        {
-            //data access
-            serviceCollection.AddSingleton<IConnectionFactory, NpgConnectionFactory>();
-            serviceCollection.AddSingleton<IUpdateDao, UpdateDao>();
-            serviceCollection.AddSingleton<IUserDao, UserDao>();
-            serviceCollection.AddSingleton<ICityDao, CityDao>();
-            serviceCollection.AddSingleton<IChatDao, ChatDao>();
+        //data access
+        serviceCollection.AddSingleton<IConnectionFactory, NpgConnectionFactory>();
+        serviceCollection.AddSingleton<IUpdateDao, UpdateDao>();
+        serviceCollection.AddSingleton<IUserDao, UserDao>();
+        serviceCollection.AddSingleton<ICityDao, CityDao>();
+        serviceCollection.AddSingleton<IChatDao, ChatDao>();
 
-            //entity services
-            serviceCollection.AddSingleton<IUserService, UserService>();
-            serviceCollection.AddSingleton<ICityService, CityService>();
-            serviceCollection.AddSingleton<IChatService, ChatService>();
+        //entity services
+        serviceCollection.AddSingleton<IUserService, UserService>();
+        serviceCollection.AddSingleton<ICityService, CityService>();
+        serviceCollection.AddSingleton<IChatService, ChatService>();
 
-            //application
-            serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, UpdateDto>, UpdateMapper>();
-            serviceCollection.AddSingleton<ICitiesStoreService, CitiesStoreService>();
-            serviceCollection.AddSingleton<IUpdateHandleService, UpdateHandleService>();
-            serviceCollection.AddSingleton<IChatStateService, ChatStateService>();
-            serviceCollection.AddSingleton<IAnswerService, AnswerService>();
-            serviceCollection.AddSingleton<IChatStateFactory, ChatStateFactory>();
+        //application
+        serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, UpdateDto>, UpdateMapper>();
+        serviceCollection.AddSingleton<ICitiesStoreService, CitiesStoreService>();
+        serviceCollection.AddSingleton<IUpdateHandleService, UpdateHandleService>();
+        serviceCollection.AddSingleton<IChatStateService, ChatStateService>();
+        serviceCollection.AddSingleton<IAnswerService, AnswerService>();
+        serviceCollection.AddSingleton<IChatStateFactory, ChatStateFactory>();
 
-            //telegram api
-            serviceCollection.AddSingleton<ITelegramBotApiClient, TelegramBotApiClient>();
-            serviceCollection.AddSingleton<ITelegramRequesterService, TelegramRequesterService>();
-            serviceCollection.AddHttpClient();
-            return serviceCollection;
-        }
+        //telegram api
+        serviceCollection.AddSingleton<ITelegramBotApiClient, TelegramBotApiClient>();
+        serviceCollection.AddSingleton<ITelegramRequesterService, TelegramRequesterService>();
+        serviceCollection.AddHttpClient();
+        return serviceCollection;
     }
 }

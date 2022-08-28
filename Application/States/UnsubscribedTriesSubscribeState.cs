@@ -3,7 +3,6 @@ using Application.Services.Dto;
 using Application.States.Interfaces;
 using Domain.Entities.Enums;
 using System.Threading.Tasks;
-using TelegramApi.Client.Dtos;
 
 namespace Application.States;
 
@@ -17,7 +16,7 @@ public class UnsubscribedTriesSubscribeState : IChatState
     }
 
     //TODO: Копия OfChoosingSubscribeTypeState
-    public async Task<TransitionResult> HandleTextMessage()
+    public async Task<AnswerDto> HandleTextMessage()
     {
         switch (_chatContext.MessageText.Trim().ToLower())
         {
@@ -26,9 +25,9 @@ public class UnsubscribedTriesSubscribeState : IChatState
                 var newState = ChatStateType.SubscribedToEverydayPushes;
                 await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
 
-                return new TransitionResult
+                return new AnswerDto
                 {
-                    AnswerMessageType = AnswerMessageType.SubscribedToEverydayPushes,
+                    MessageType = AnswerMessageType.SubscribedToEverydayPushes,
                     NewState = newState
                 };
             }
@@ -38,17 +37,17 @@ public class UnsubscribedTriesSubscribeState : IChatState
                 var newState = ChatStateType.SubscribedToEverydayDoublePushes;
                 await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
 
-                return new TransitionResult
+                return new AnswerDto
                 {
-                    AnswerMessageType = AnswerMessageType.SubscribedToEverydayDoublePushes,
+                    MessageType = AnswerMessageType.SubscribedToEverydayDoublePushes,
                     NewState = newState
                 };
             }
 
             default:
-                return new TransitionResult
+                return new AnswerDto
                 {
-                    AnswerMessageType = AnswerMessageType.InputSubscribeNameWrong,
+                    MessageType = AnswerMessageType.InputSubscribeNameWrong,
                     NewState = _chatContext.ExistingChat.CurrentState
                 };
         }

@@ -9,34 +9,33 @@ using OpenWeatherMap.Client.Clients;
 using OpenWeatherMap.Client.Clients.Interfaces;
 using TelegramApi.Client.Dtos;
 
-namespace TelegramApi.Worker.Installers
+namespace TelegramApi.Worker.Installers;
+
+public static class ServicesInstaller
 {
-    public static class ServicesInstaller
+    /// <summary>
+    ///     Добавляет в serviceCollection сервисы бизнес-логики
+    /// </summary>
+    public static IServiceCollection ConfigureServices(IServiceCollection serviceCollection)
     {
-        /// <summary>
-        ///     Добавляет в serviceCollection сервисы бизнес-логики
-        /// </summary>
-        public static IServiceCollection ConfigureServices(IServiceCollection serviceCollection)
-        {
-            //data access
-            serviceCollection.AddSingleton<IConnectionFactory, NpgConnectionFactory>();
-            serviceCollection.AddSingleton<IUpdateDao, UpdateDao>();
-            serviceCollection.AddSingleton<IUserDao, UserDao>();
-            serviceCollection.AddSingleton<ICityDao, CityDao>();
+        //data access
+        serviceCollection.AddSingleton<IConnectionFactory, NpgConnectionFactory>();
+        serviceCollection.AddSingleton<IUpdateDao, UpdateDao>();
+        serviceCollection.AddSingleton<IUserDao, UserDao>();
+        serviceCollection.AddSingleton<ICityDao, CityDao>();
 
-            //domain
-            serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, UpdateDto>, UpdateMapper>();
+        //domain
+        serviceCollection.AddSingleton<IMapper<Domain.Entities.Update, UpdateDto>, UpdateMapper>();
 
-            //application
-            serviceCollection.AddSingleton<ICitiesStoreService, CitiesStoreService>();
-            serviceCollection.AddSingleton<IUpdateHandleService, UpdateHandleService>();
-            serviceCollection.AddSingleton<IChatStateService, ChatStateService>();
+        //application
+        serviceCollection.AddSingleton<ICitiesStoreService, CitiesStoreService>();
+        serviceCollection.AddSingleton<IUpdateHandleService, UpdateHandleService>();
+        serviceCollection.AddSingleton<IChatStateService, ChatStateService>();
 
-            //telegram api
-            serviceCollection.AddSingleton<IForecastClient, ForecastClient>();
-            serviceCollection.AddSingleton<IGeocodingClient, GeocodingClient>();
-            serviceCollection.AddHttpClient();
-            return serviceCollection;
-        }
+        //telegram api
+        serviceCollection.AddSingleton<IForecastClient, ForecastClient>();
+        serviceCollection.AddSingleton<IGeocodingClient, GeocodingClient>();
+        serviceCollection.AddHttpClient();
+        return serviceCollection;
     }
 }

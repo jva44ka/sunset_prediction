@@ -1,16 +1,15 @@
 ﻿using Domain.Entities;
 using System.Threading.Tasks;
 
-namespace Application.Services.EntityServices.Interfaces
+namespace Application.Services.EntityServices.Interfaces;
+
+public interface ICityService
 {
-    public interface ICityService
-    {
-        public Task<City?> GetCityById(int id);
+    public Task<City?> GetCityById(int id);
 
-        public Task<City?> GetCityByLowerCaseName(string cityName);
+    public Task<City?> GetCityByLowerCaseName(string cityName);
 
-        public Task<bool> Create(City city);
+    public Task<bool> Create(City city);
 
-        public Task<bool> Update(City city);
-    }
+    public Task<bool> Update(City city);
 }

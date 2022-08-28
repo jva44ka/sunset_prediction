@@ -1,14 +1,13 @@
 ﻿using Domain.Entities;
 using System.Threading.Tasks;
 
-namespace Application.Services.EntityServices.Interfaces
+namespace Application.Services.EntityServices.Interfaces;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        Task<User?> GetByExternalId(long externalId);
+    Task<User?> GetByExternalId(long externalId);
 
-        Task<bool> Create(User user);
+    Task<bool> Create(User user);
 
-        Task<bool> UpdateCity(long externalId, int? cityId);
-    }
+    Task<bool> UpdateCity(long externalId, int? cityId);
 }

@@ -1,7 +1,6 @@
 ﻿using Application.Services;
 using Application.Services.Dto;
 using Application.States.Interfaces;
-using Domain.Entities;
 using Domain.Entities.Enums;
 using System.Threading.Tasks;
 
@@ -16,16 +15,16 @@ public class ProposedFoundedCityState : IChatState
         _chatContext = chatContext;
     }
 
-    public async Task<TransitionResult> HandleTextMessage()
+    public async Task<AnswerDto> HandleTextMessage()
     {
         if (_chatContext.MessageText.Trim().ToLower() == "да")
         {
             var newState = ChatStateType.OfChoosingSubscribeType;
             await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
 
-            return new TransitionResult
+            return new AnswerDto
             {
-                AnswerMessageType = AnswerMessageType.ProposedSubscribeTypes,
+                MessageType = AnswerMessageType.ProposedSubscribeTypes,
                 NewState = newState
             };
         }
@@ -35,9 +34,9 @@ public class ProposedFoundedCityState : IChatState
             await _chatContext.ChatService.UpdateState(_chatContext.ExistingChat.ExternalId, newState);
             await _chatContext.UserService.UpdateCity(_chatContext.ExistingUser.ExternalId, null);
 
-            return new TransitionResult
+            return new AnswerDto
             {
-                AnswerMessageType = AnswerMessageType.ProposedCityNameWrong,
+                MessageType = AnswerMessageType.ProposedCityNameWrong,
                 NewState = newState
             };
         }

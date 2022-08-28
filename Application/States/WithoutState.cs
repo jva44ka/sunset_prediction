@@ -17,7 +17,7 @@ public class WithoutState : IChatState
         _chatContext = chatContext;
     }
 
-    public async Task<TransitionResult> HandleTextMessage()
+    public async Task<AnswerDto> HandleTextMessage()
     {
         var chat = new Chat
         {
@@ -38,9 +38,9 @@ public class WithoutState : IChatState
         };
         await _chatContext.UserService.Create(user);
 
-        return new TransitionResult
+        return new AnswerDto
         {
-            AnswerMessageType = AnswerMessageType.InputCity,
+            MessageType = AnswerMessageType.InputCity,
             NewState = chat.CurrentState
         };
     }

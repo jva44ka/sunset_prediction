@@ -1,24 +1,23 @@
 ﻿using Newtonsoft.Json;
 
-namespace TelegramApi.Client.Dtos
+namespace TelegramApi.Client.Dtos;
+
+public class SendMessageRequest
 {
-    public class SendMessageRequest
+    [JsonProperty("chat_id")]
+    public long ChatId { get; set; }
+
+    [JsonProperty("text")]
+    public string Text { get; set; } = default!;
+
+    [JsonProperty("reply_markup")]
+    public ReplyKeyboardMarkupDto? ReplyMarkup { get; set; }
+
+    public string ToJson()
     {
-        [JsonProperty("chat_id")]
-        public long ChatId { get; set; }
-
-        [JsonProperty("text")]
-        public string Text { get; set; } = default!;
-
-        [JsonProperty("reply_markup")]
-        public ReplyKeyboardMarkupDto? ReplyMarkup { get; set; }
-
-        public string ToJson()
+        return JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            });
-        }
+            NullValueHandling = NullValueHandling.Ignore
+        });
     }
 }

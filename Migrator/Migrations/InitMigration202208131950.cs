@@ -1,49 +1,48 @@
 ﻿using FluentMigrator;
 
-namespace Migrator.Migrations
+namespace Migrator.Migrations;
+
+[Migration(202208281820)]
+public class InitMigration202208281820 : Migration
 {
-    [Migration(202208281820)]
-    public class InitMigration202208281820 : Migration
+    public override void Up()
     {
-        public override void Up()
-        {
-            Create.Table("cities")
-                .WithColumn("id").AsInt32().PrimaryKey()
-                .WithColumn("name").AsString().Unique()
-                .WithColumn("name_for_url").AsString()
-                .WithColumn("address").AsString()
-                .WithColumn("country_code").AsString()
-                .WithColumn("latitude").AsDouble().Nullable()
-                .WithColumn("longitude").AsDouble().Nullable();
+        Create.Table("cities")
+            .WithColumn("id").AsInt32().PrimaryKey()
+            .WithColumn("name").AsString().Unique()
+            .WithColumn("name_for_url").AsString()
+            .WithColumn("address").AsString()
+            .WithColumn("country_code").AsString()
+            .WithColumn("latitude").AsDouble().Nullable()
+            .WithColumn("longitude").AsDouble().Nullable();
 
-            Create.Table("updates")
-                .WithColumn("id").AsInt32().PrimaryKey().Identity()
-                .WithColumn("external_id").AsInt64().Unique()
-                .WithColumn("handled_at").AsDateTime2().Indexed();
+        Create.Table("updates")
+            .WithColumn("id").AsInt32().PrimaryKey().Identity()
+            .WithColumn("external_id").AsInt64().Unique()
+            .WithColumn("handled_at").AsDateTime2().Indexed();
 
-            Create.Table("chats")
-                .WithColumn("id").AsInt32().PrimaryKey().Identity()
-                .WithColumn("external_id").AsInt64().Unique()
-                .WithColumn("previous_state").AsByte().Nullable()
-                .WithColumn("current_state").AsByte()
-                .WithColumn("state_changed_at").AsDateTime2();
+        Create.Table("chats")
+            .WithColumn("id").AsInt32().PrimaryKey().Identity()
+            .WithColumn("external_id").AsInt64().Unique()
+            .WithColumn("previous_state").AsByte().Nullable()
+            .WithColumn("current_state").AsByte()
+            .WithColumn("state_changed_at").AsDateTime2();
 
-            Create.Table("users")
-                .WithColumn("id").AsInt32().PrimaryKey().Identity()
-                .WithColumn("external_id").AsInt64().Unique()
-                .WithColumn("first_name").AsString().Nullable()
-                .WithColumn("last_name").AsString().Nullable()
-                .WithColumn("user_name").AsString().NotNullable()
-                .WithColumn("city_id").AsInt32().Nullable().ForeignKey("fk_users_cities", "cities", "id")
-                .WithColumn("chat_id").AsInt32().NotNullable().ForeignKey("fk_users_chats", "chats", "id");
-        }
+        Create.Table("users")
+            .WithColumn("id").AsInt32().PrimaryKey().Identity()
+            .WithColumn("external_id").AsInt64().Unique()
+            .WithColumn("first_name").AsString().Nullable()
+            .WithColumn("last_name").AsString().Nullable()
+            .WithColumn("user_name").AsString().NotNullable()
+            .WithColumn("city_id").AsInt32().Nullable().ForeignKey("fk_users_cities", "cities", "id")
+            .WithColumn("chat_id").AsInt32().NotNullable().ForeignKey("fk_users_chats", "chats", "id");
+    }
 
-        public override void Down()
-        {
-            Delete.Table("cities");
-            Delete.Table("updates");
-            Delete.Table("users");
-            Delete.Table("chats");
-        }
+    public override void Down()
+    {
+        Delete.Table("cities");
+        Delete.Table("updates");
+        Delete.Table("users");
+        Delete.Table("chats");
     }
 }
