@@ -21,7 +21,7 @@ public class ProposedInputCityState : IChatState
         _chatContext.ValidateExistingChat();
         _chatContext.ValidateExistingUser();
 
-        var city = await _chatContext.CityService.GetCityByLowerCaseName(_chatContext.MessageText!);
+        var city = await _chatContext.CityService.GetCityByName(_chatContext.MessageText!);
         if (city != null)
         {
             await _chatContext.ChatService.UpdateState(

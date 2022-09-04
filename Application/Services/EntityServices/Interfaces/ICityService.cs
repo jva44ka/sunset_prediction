@@ -7,7 +7,7 @@ public interface ICityService
 {
     public Task<City?> GetCityById(int id);
 
-    public Task<City?> GetCityByLowerCaseName(string cityName);
+    public Task<City?> GetCityByName(string cityName);
 
     public Task<bool> Create(City city);
 

@@ -2,8 +2,8 @@
 
 namespace Migrator.Migrations;
 
-[Migration(202208281820)]
-public class InitMigration202208281820 : Migration
+[Migration(202209041900)]
+public class InitMigration202209041900 : Migration
 {
     public override void Up()
     {
@@ -15,6 +15,8 @@ public class InitMigration202208281820 : Migration
             .WithColumn("country_code").AsString()
             .WithColumn("latitude").AsDouble().Nullable()
             .WithColumn("longitude").AsDouble().Nullable();
+
+        Execute.Sql("CREATE INDEX IX_cities_name_pattern ON cities (name text_pattern_ops)");
 
         Create.Table("updates")
             .WithColumn("id").AsInt32().PrimaryKey().Identity()

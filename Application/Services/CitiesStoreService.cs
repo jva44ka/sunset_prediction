@@ -16,53 +16,46 @@ public class CitiesStoreService : ICitiesStoreService
     //TODO: Сделать слабую ссылку чтобы не держать файл в памяти
     private Location[]? _locations;
 
-    public async Task<City?> FindCity(string searchCityName)
+    public async Task<City?> FindCityByName(string searchCityName)
     {
-        var route = await SearchRoute(searchCityName);
+        var route = await SearchRouteByCityName(searchCityName);
 
-        if (route != null)
-        {
-            var cityLocation = route.First();
-            var countryLocation = route.Last();
-            return new City
-            {
-                Id = cityLocation.Id,
-                Address = string.Join(", ", route.Select(location => location.Name)),
-                Name = cityLocation.Name,
-                NameForUrl = cityLocation.Name.Split('(').First().Trim(),
-                CountryCode = countryLocation.CountryCode
-            };
-        }
+        if (route == null)
+            return null;
 
-        return null;
+        return GenerateCity(route);
     }
-        
-    public async Task<City?> FindCity(int cityId)
+
+    public async Task<City?> FindCityById(int cityId)
     {
-        var route = await SearchRoute(cityId);
+        var route = await SearchRouteByCityId(cityId);
 
-        if (route != null)
+        if (route == null)
+            return null;
+
+        return GenerateCity(route);
+    }
+
+    private City GenerateCity(
+        List<Location> route)
+    {
+        var cityLocation = route.First();
+        var countryLocation = route.Last();
+        return new City
         {
-            var cityLocation = route.First();
-            var countryLocation = route.Last();
-            return new City
-            {
-                Id = cityLocation.Id,
-                Address = string.Join(", ", route.Select(location => location.Name)),
-                Name = cityLocation.Name,
-                NameForUrl = cityLocation.Name.Split('(').First().Trim(),
-                CountryCode = countryLocation.CountryCode
-            };
-        }
-
-        return null;
+            Id = cityLocation.Id,
+            Address = string.Join(", ", route.Select(location => location.Name)),
+            Name = cityLocation.Name,
+            NameForUrl = cityLocation.Name.Split('(').First().Trim(),
+            CountryCode = countryLocation.CountryCode!
+        };
     }
 
     /// <summary>
     ///     При найденом по названию городе возвращает инвертированную (от города к государству)
     ///     коллекцию локаций, представляющую маршрут по дереву до этой локации
     /// </summary>
-    private async Task<List<Location>?> SearchRoute(string searchLocationName)
+    private async Task<List<Location>?> SearchRouteByCityName(string searchLocationName)
     {
         _locations ??= await GetLocationsFromFile();
 
@@ -78,12 +71,12 @@ public class CitiesStoreService : ICitiesStoreService
 
         return null;
     }
-        
+
     /// <summary>
     ///     При найденом по названию городе возвращает инвертированную (от города к государству)
     ///     коллекцию локаций, представляющую маршрут по дереву до этой локации
     /// </summary>
-    private async Task<List<Location>?> SearchRoute(int cityId)
+    private async Task<List<Location>?> SearchRouteByCityId(int cityId)
     {
         _locations ??= await GetLocationsFromFile();
 
@@ -103,7 +96,7 @@ public class CitiesStoreService : ICitiesStoreService
     private async Task<Location[]> GetLocationsFromFile()
     {
         var textFromFile = await File.ReadAllTextAsync(CitiesJsonPath);
-        return JsonConvert.DeserializeObject<Location[]>(textFromFile) 
+        return JsonConvert.DeserializeObject<Location[]>(textFromFile)
                ?? throw new SerializationException(
                    "cities.json file deserialization operations returns null");
     }
@@ -122,7 +115,7 @@ public class CitiesStoreService : ICitiesStoreService
         public string? CountryCode { get; set; }
         public string Name { get; set; }
         public Location[] Areas { get; set; }
-            
+
         /// <summary>
         ///     При найденом по названию городе возвращает инвертированную (от города к государству)
         ///     коллекцию локаций, представляющую маршрут по дереву до этой локации
@@ -131,7 +124,7 @@ public class CitiesStoreService : ICitiesStoreService
         {
             if (Name.ToLower().Contains(searchName.ToLower()) && Areas.Length == 0)
             {
-                var route = new List<Location> {this};
+                var route = new List<Location> { this };
                 return route;
             }
 
@@ -148,7 +141,7 @@ public class CitiesStoreService : ICitiesStoreService
 
             return null;
         }
-            
+
         /// <summary>
         ///     При найденом по названию городе возвращает инвертированную (от города к государству)
         ///     коллекцию локаций, представляющую маршрут по дереву до этой локации
@@ -157,7 +150,7 @@ public class CitiesStoreService : ICitiesStoreService
         {
             if (Id.Equals(cityId))
             {
-                var route = new List<Location> {this};
+                var route = new List<Location> { this };
                 return route;
             }
 

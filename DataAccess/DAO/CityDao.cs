@@ -43,7 +43,7 @@ WHERE
         return city;
     }
         
-    public async Task<City?> GetCityByLowerCaseName(string cityName)
+    public async Task<City?> GetCityByName(string cityName)
     {
         string sql =
             $@"
@@ -52,7 +52,7 @@ SELECT
 FROM 
     cities c
 WHERE
-    LOWER(c.name) LIKE CONCAT('%', @СityName, '%')";
+    c.name ILIKE CONCAT('%', @СityName, '%')";
         using var connection = await _connectionFactory.CreateConnection();
         var city = await connection.QueryFirstOrDefaultAsync<City>(sql, new
         {

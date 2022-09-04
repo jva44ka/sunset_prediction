@@ -27,7 +27,7 @@ public class CityService : ICityService
         if (city == null)
         {
             cityExistsInDb = false;
-            city = await _citiesStoreService.FindCity(id);
+            city = await _citiesStoreService.FindCityById(id);
         }
 
         if (city == null)
@@ -43,18 +43,17 @@ public class CityService : ICityService
         return city;
     }
 
-    public async Task<City?> GetCityByLowerCaseName(string cityName)
+    public async Task<City?> GetCityByName(string cityName)
     {
         var cityLowerCaseName = cityName.Trim().ToLower();
 
         var cityExistsInDb = true;
-        var city = await _cityDao.GetCityByLowerCaseName(cityLowerCaseName);
+        var city = await _cityDao.GetCityByName(cityLowerCaseName);
 
         if (city == null)
         {
-            //TODO: Поменять на cityLowerCaseName для единства
             cityExistsInDb = false;
-            city = await _citiesStoreService.FindCity(cityName);
+            city = await _citiesStoreService.FindCityByName(cityName);
         }
 
         if (city == null)

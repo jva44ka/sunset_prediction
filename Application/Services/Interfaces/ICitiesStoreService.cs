@@ -12,7 +12,7 @@ public interface ICitiesStoreService
     ///     Получение города по названию.
     /// </summary>
     /// <remarks>При совпадении названия города возвращает объект <see cref="City"/></remarks>
-    Task<City?> FindCity(string searchCityName);
+    Task<City?> FindCityByName(string searchCityName);
 
     /// <summary>
     ///     Получение города по id
@@ -21,5 +21,5 @@ public interface ICitiesStoreService
     ///     При совпадении id города возвращает объект <see cref="City"/>.
     ///     Иначе возвращает null
     /// </remarks>
-    Task<City?> FindCity(int id);
+    Task<City?> FindCityById(int id);
 }
