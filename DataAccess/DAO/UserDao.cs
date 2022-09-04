@@ -3,6 +3,7 @@ using Dapper;
 using DataAccess.ConnectionFactories;
 using DataAccess.Dao.Interfaces;
 using Domain.Entities;
+using Domain.Entities.Enums;
 
 namespace DataAccess.Dao;
 
@@ -20,13 +21,14 @@ public class UserDao : IUserDao
         string sql =
             @"
 SELECT
-    u.id            AS  Id,
-    u.external_id   AS  ExternalId,
-    u.city_id       AS  CityId,
-    u.first_name    AS  FirstName,
-    u.last_name     AS  LastName,
-    u.user_name     AS  UserName,
-    u.chat_id       AS  ChatId
+    u.id                AS  Id,
+    u.external_id       AS  ExternalId,
+    u.city_id           AS  CityId,
+    u.first_name        AS  FirstName,
+    u.last_name         AS  LastName,
+    u.subscribe_type    AS  SubscribeType,
+    u.user_name         AS  UserName,
+    u.chat_id           AS  ChatId
 FROM 
     users u
 WHERE
@@ -48,6 +50,7 @@ INSERT INTO users (
     city_id,
     first_name,
     last_name,
+    subscribe_type,
     user_name,
     chat_id
 )
@@ -56,6 +59,7 @@ VALUES (
     @CityId,
     @FirstName,
     @LastName,
+    @SubscribeType,
     @UserName,
     @ChatId
 )";
@@ -67,6 +71,7 @@ VALUES (
             user.FirstName,
             user.LastName,
             user.UserName,
+            user.SubscribeType,
             user.ChatId
         });
         return rowsInserted == 1;
@@ -89,6 +94,27 @@ WHERE
         {
             UserId = userId,
             CityId = cityId
+        });
+        return rowsUpdated == 1;
+    }
+    
+    public async Task<bool> UpdateSubscribeType(
+        int userId, 
+        SubscribeType? subscribeType)
+    {
+        string sql =
+            @"
+UPDATE
+    users
+SET
+    subscribe_type = @SubscribeType
+WHERE
+    id = @UserId";
+        using var connection = await _connectionFactory.CreateConnection();
+        var rowsUpdated = await connection.ExecuteAsync(sql, new
+        {
+            UserId = userId,
+            SubscribeType = subscribeType
         });
         return rowsUpdated == 1;
     }

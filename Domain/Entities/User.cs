@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+﻿using Domain.Entities.Enums;
+
+namespace Domain.Entities;
 
 public class User
 {
@@ -31,6 +33,8 @@ public class User
     ///     Никнейм пользователя в Telegram
     /// </summary>
     public string UserName { get; set; } = default!;
+    
+    public SubscribeType? SubscribeType { get; set; }
 
     /// <summary>
     ///     Идентификатор чата с пользователем

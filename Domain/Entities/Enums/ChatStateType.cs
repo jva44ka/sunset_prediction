@@ -10,35 +10,25 @@ public enum ChatStateType : byte
     /// <summary>
     ///     Распознан введенный пользователем город. Ожидается подтверждение от пользователя
     /// </summary>
-    FoundedProposedCity = 2,
+    FoundedProposedCity,
 
     /// <summary>
     ///     Город пользователя подтвержден. Ожидается выбор типа рассылки
     /// </summary>
-    WithoutSubscribe = 3,
+    WithoutSubscribe,
 
     /// <summary>
     ///     Пользователь запросил новую подписку. Ожидается выбор конкретного типа подписки
     /// </summary>
-    RequestedNewSubscribe = 4,
+    RequestedNewSubscribe,
 
     /// <summary>
-    ///     Пользователь подписан только на закаты.
+    ///     Пользователь подписан на рассылку.
     /// </summary>
-    SubscribedSunset = 5,
-
-    /// <summary>
-    ///     Пользователь подписан только на грозы.
-    /// </summary>
-    SubscribedLightning = 6,
-
-    /// <summary>
-    ///     Пользователь подписан на закаты и грозы.
-    /// </summary>
-    SubscribedSunsetAndLightning = 7,
+    Subscribed,
 
     /// <summary>
     ///     Пользователь запросил отписку. Ожидается выбор конкретного типа подписки
     /// </summary>
-    RequestedUnsubscribe = 8,
+    RequestedUnsubscribe,
 }

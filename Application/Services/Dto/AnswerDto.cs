@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain.Entities.Enums;
+using Application.Enums;
 
 namespace Application.Services.Dto;
 

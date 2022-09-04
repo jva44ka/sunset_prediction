@@ -3,6 +3,7 @@ using Application.Services;
 using Application.Services.Dto;
 using Application.States.Interfaces;
 using Domain.Entities.Enums;
+using Application.Enums;
 
 namespace Application.States;
 
@@ -26,12 +27,9 @@ public class WithoutSubscribeState : IChatState
                 _chatContext.ExistingChat!.ExternalId,
                 ChatStateType.RequestedNewSubscribe);
 
-            var availableSubscribes = new[] { "Грозы", "Закаты", "Закаты и грозы" };
-
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.RequestedNewSubscribe,
-                MessageArgs = availableSubscribes
+                MessageType = AnswerMessageType.RequestedNewSubscribeWithoutSubscribes
             };
         }
         else

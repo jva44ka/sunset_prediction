@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Enums;
 using TelegramApi.Client.Dtos;
+using Application.Enums;
 
 namespace Application.Services.Interfaces;
 

@@ -15,12 +15,10 @@ public class ChatStateFactory : IChatStateFactory
         {
             { ChatStateType.ProposedInputCity, typeof(ProposedInputCityState) },
             { ChatStateType.FoundedProposedCity, typeof(FoundedProposedCityState)},
-            { ChatStateType.OfChoosingSubscribeType, typeof(RequestedUnsubscribeState)},
-            { ChatStateType.SubscribedToEverydayPushes, typeof(SubscribedToEverydayPushesState)},
-            { ChatStateType.SubscribedToEverydayDoublePushes, typeof(SubscribedToEverydayDoublePushesState)},
-            { ChatStateType.SubscribedTriesToUnsubscribe, typeof(SubscribedTriesToUnsubscribeState)},
-            { ChatStateType.Unsubscribed, typeof(UnsubscribedState)},
-            { ChatStateType.UnsubscribedTriesSubscribe, typeof(UnsubscribedTriesSubscribeState)}
+            { ChatStateType.WithoutSubscribe, typeof(WithoutSubscribeState)},
+            { ChatStateType.RequestedNewSubscribe, typeof(RequestedSubscribeState)},
+            { ChatStateType.Subscribed, typeof(SubscribedState)},
+            { ChatStateType.RequestedUnsubscribe, typeof(RequestedUnsubscribeState)}
         };
 
     public IChatState Create(
