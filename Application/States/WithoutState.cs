@@ -40,7 +40,7 @@ public class WithoutState : IChatState
 
         return new AnswerDto
         {
-            MessageType = AnswerMessageType.InputCity
+            MessageType = AnswerMessageType.ProposedInputCity
         };
     }
 }

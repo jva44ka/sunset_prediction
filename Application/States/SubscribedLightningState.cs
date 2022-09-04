@@ -6,11 +6,11 @@ using Domain.Entities.Enums;
 
 namespace Application.States;
 
-public class OfChoosingSubscribeTypeState : IChatState
+public class SubscribedLightningState : IChatState
 {
     private readonly ChatContext _chatContext;
 
-    public OfChoosingSubscribeTypeState(ChatContext chatContext)
+    public SubscribedLightningState(ChatContext chatContext)
     {
         _chatContext = chatContext;
     }

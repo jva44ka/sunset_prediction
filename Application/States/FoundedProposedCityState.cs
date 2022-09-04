@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Application.States;
 
-public class ProposedFoundedCityState : IChatState
+public class FoundedProposedCityState : IChatState
 {
     private readonly ChatContext _chatContext;
 
-    public ProposedFoundedCityState(ChatContext chatContext)
+    public FoundedProposedCityState(ChatContext chatContext)
     {
         _chatContext = chatContext;
     }
@@ -25,11 +25,11 @@ public class ProposedFoundedCityState : IChatState
         {
             await _chatContext.ChatService.UpdateState(
                 _chatContext.ExistingChat!.ExternalId, 
-                ChatStateType.OfChoosingSubscribeType);
+                ChatStateType.WithoutSubscribe);
 
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.ProposedSubscribeTypes
+                MessageType = AnswerMessageType.Unsubscribed
             };
         }
         else

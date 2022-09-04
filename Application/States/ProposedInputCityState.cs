@@ -26,14 +26,14 @@ public class ProposedInputCityState : IChatState
         {
             await _chatContext.ChatService.UpdateState(
                 _chatContext.ExistingChat!.ExternalId, 
-                ChatStateType.ProposedFoundedCity);
+                ChatStateType.FoundedProposedCity);
             await _chatContext.UserService.UpdateCity(
                 _chatContext.ExistingUser!.ExternalId, 
                 city.Id);
 
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.ProposedCityName,
+                MessageType = AnswerMessageType.ProposedFoundedCityName,
                 MessageArgs = new[] { city.Address }
             };
         }

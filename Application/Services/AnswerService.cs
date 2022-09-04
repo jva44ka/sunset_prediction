@@ -12,11 +12,11 @@ public class AnswerService : IAnswerService
         = new Dictionary<AnswerMessageType, string>
     {
         {
-            AnswerMessageType.InputCity,
+            AnswerMessageType.ProposedInputCity,
             "Пожалуйста введите название своего города (желательно точное название)."
         },
         {
-            AnswerMessageType.ProposedCityName,
+            AnswerMessageType.ProposedFoundedCityName,
             "Ваш город {0}?"
         },
         {
@@ -76,7 +76,7 @@ public class AnswerService : IAnswerService
         = new Dictionary<AnswerMessageType, ReplyKeyboardMarkupDto>
     {
         {
-            AnswerMessageType.ProposedCityName, 
+            AnswerMessageType.ProposedFoundedCityName, 
             ReplyKeyboardMarkupDto.CreateFromButtonTexts("Да", "Нет")
         },
         {

@@ -1,21 +1,20 @@
-﻿using Application.Services;
+﻿using System.Threading.Tasks;
+using Application.Services;
 using Application.Services.Dto;
 using Application.States.Interfaces;
 using Domain.Entities.Enums;
-using System.Threading.Tasks;
 
 namespace Application.States;
 
-public class UnsubscribedTriesSubscribeState : IChatState
+public class SubscribedSunsetState : IChatState
 {
     private readonly ChatContext _chatContext;
 
-    public UnsubscribedTriesSubscribeState(ChatContext chatContext)
+    public SubscribedSunsetState(ChatContext chatContext)
     {
         _chatContext = chatContext;
     }
 
-    //TODO: Копия OfChoosingSubscribeTypeState
     public async Task<AnswerDto> HandleTextMessage()
     {
         _chatContext.ValidateMessageText();

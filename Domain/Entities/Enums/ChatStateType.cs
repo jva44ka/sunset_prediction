@@ -5,136 +5,40 @@ public enum ChatStateType : byte
     /// <summary>
     ///     Пользователь инициировал диалог. Ожидается ввод названия города
     /// </summary>
-    /// <remarks>
-    ///     Выход:
-    ///     <list type="bullet">
-    ///         <item><see cref="ProposedInputCity"/></item>
-    ///         <item><see cref="ProposedFoundedCity"/></item>
-    ///     </list>
-    /// </remarks>
     ProposedInputCity = 1,
 
     /// <summary>
     ///     Распознан введенный пользователем город. Ожидается подтверждение от пользователя
     /// </summary>
-    /// <remarks>
-    ///     Вход:
-    ///     <list type="bullet">
-    ///         <item><see cref="ProposedInputCity"/></item>
-    ///     </list>
-    ///
-    ///     Выход:
-    ///     <list type="bullet">
-    ///         <item><see cref="ProposedInputCity"/></item>
-    ///         <item><see cref="OfChoosingSubscribeType"/></item>
-    ///     </list>
-    /// </remarks>
-    ProposedFoundedCity = 2,
+    FoundedProposedCity = 2,
 
     /// <summary>
     ///     Город пользователя подтвержден. Ожидается выбор типа рассылки
     /// </summary>
-    /// <remarks>
-    ///     Вход:
-    ///     <list type="bullet">
-    ///         <item><see cref="ProposedFoundedCity"/></item>
-    ///         <item><see cref="UnsubscribedTriesSubscribe"/></item>
-    ///     </list>
-    ///
-    ///     Выход:
-    ///     <list type="bullet">
-    ///         <item><see cref="SubscribedToEverydayPushes"/></item>
-    ///         <item><see cref="SubscribedToEverydayDoublePushes"/></item>
-    ///     </list>
-    /// </remarks>
-    OfChoosingSubscribeType = 3,
+    WithoutSubscribe = 3,
 
     /// <summary>
-    ///     Выбрана опция рассылки каждый день за час до заката
+    ///     Пользователь запросил новую подписку. Ожидается выбор конкретного типа подписки
     /// </summary>
-    /// <remarks>
-    ///     Вход:
-    ///     <list type="bullet">
-    ///         <item><see cref="OfChoosingSubscribeType"/></item>
-    ///     </list>
-    ///
-    ///     Выход:
-    ///     <list type="bullet">
-    ///         <item><see cref="SubscribedTriesToUnsubscribe"/></item>
-    ///         <item><see cref="OfChoosingSubscribeType"/></item>
-    ///     </list>
-    /// </remarks>
-    SubscribedToEverydayPushes = 4,
+    RequestedNewSubscribe = 4,
 
     /// <summary>
-    ///     Выбрана опция рассылки каждый день за час до заката и с утра
+    ///     Пользователь подписан только на закаты.
     /// </summary>
-    /// <remarks>
-    ///     Вход:
-    ///     <list type="bullet">
-    ///         <item><see cref="OfChoosingSubscribeType"/></item>
-    ///     </list>
-    ///
-    ///     Выход:
-    ///     <list type="bullet">
-    ///         <item><see cref="SubscribedTriesToUnsubscribe"/></item>
-    ///         <item><see cref="OfChoosingSubscribeType"/></item>
-    ///     </list>
-    /// </remarks>
-    SubscribedToEverydayDoublePushes = 5,
+    SubscribedSunset = 5,
 
     /// <summary>
-    ///     Пользователь инициировал отписку от рассылки. Ожидается подтверждение,
-    ///     иначе возвращаемся к предыдущему состоянию
+    ///     Пользователь подписан только на грозы.
     /// </summary>
-    /// <remarks>
-    ///     Вход:
-    ///     <list type="bullet">
-    ///         <item><see cref="SubscribedToEverydayPushes"/></item>
-    ///         <item><see cref="SubscribedToEverydayDoublePushes"/></item>
-    ///     </list>
-    ///
-    ///     Выход:
-    ///     <list type="bullet">
-    ///         <item><see cref="Unsubscribed"/></item>
-    ///         <item><see cref="SubscribedToEverydayPushes"/></item>
-    ///         <item><see cref="SubscribedToEverydayDoublePushes"/></item>
-    ///     </list>
-    /// </remarks>
-    SubscribedTriesToUnsubscribe = 6,
-
+    SubscribedLightning = 6,
 
     /// <summary>
-    ///     Пользователь отписан от рассылки. Ожидается активность (любое сообщение в чат)
+    ///     Пользователь подписан на закаты и грозы.
     /// </summary>
-    /// <remarks>
-    ///     Вход:
-    ///     <list type="bullet">
-    ///         <item><see cref="SubscribedTriesToUnsubscribe"/></item>
-    ///     </list>
-    ///
-    ///     Выход:
-    ///     <list type="bullet">
-    ///         <item><see cref="UnsubscribedTriesSubscribe"/></item>
-    ///     </list>
-    /// </remarks>
-    Unsubscribed = 10,
+    SubscribedSunsetAndLightning = 7,
 
     /// <summary>
-    ///     Пользователь отписан проявил активность в чате, ожидается подтверждение
-    ///     повторной подписки иначе возвращаемся к предыдущему состоянию
+    ///     Пользователь запросил отписку. Ожидается выбор конкретного типа подписки
     /// </summary>
-    /// <remarks>
-    ///     Вход:
-    ///     <list type="bullet">
-    ///         <item><see cref="Unsubscribed"/></item>
-    ///     </list>
-    ///
-    ///     Выход:
-    ///     <list type="bullet">
-    ///         <item><see cref="OfChoosingSubscribeType"/></item>
-    ///         <item><see cref="Unsubscribed"/></item>
-    ///     </list>
-    /// </remarks>
-    UnsubscribedTriesSubscribe = 11
+    RequestedUnsubscribe = 8,
 }
