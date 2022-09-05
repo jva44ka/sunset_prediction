@@ -27,32 +27,20 @@ public class RequestedSubscribeState : IChatState
         {
             case "закаты":
             {
-                await ChangeSubscribeTypeTo(SubscribeType.Sunset);
-
-                return new AnswerDto
-                {
-                    MessageType = AnswerMessageType.SubscribedToSunset
-                };
+                var newSubscribeType = await AddSubscribeType(SubscribeType.Sunset);
+                return GetAnswerMessageType(newSubscribeType);
             }
 
             case "грозы":
             {
-                await ChangeSubscribeTypeTo(SubscribeType.Lightning);
-
-                return new AnswerDto
-                {
-                    MessageType = AnswerMessageType.SubscribedToLightning
-                };
+                var newSubscribeType = await AddSubscribeType(SubscribeType.Lightning);
+                return GetAnswerMessageType(newSubscribeType);
             }
 
             case "закаты и грозы":
             {
-                await ChangeSubscribeTypeTo(SubscribeType.Sunset | SubscribeType.Lightning);
-
-                return new AnswerDto
-                {
-                    MessageType = AnswerMessageType.SubscribedToSunsetAndLightning
-                };
+                var newSubscribeType = await AddSubscribeType(SubscribeType.Sunset | SubscribeType.Lightning);
+                return GetAnswerMessageType(newSubscribeType);
             }
 
             default:
@@ -67,7 +55,7 @@ public class RequestedSubscribeState : IChatState
         }
     }
     
-    private async Task ChangeSubscribeTypeTo(
+    private async Task<SubscribeType> AddSubscribeType(
         SubscribeType newSubscribeType)
     {
         _chatContext.ExistingUser!.SubscribeType ??= SubscribeType.None;
@@ -90,5 +78,40 @@ public class RequestedSubscribeState : IChatState
         await _chatContext.UserService.UpdateSubscription(
             _chatContext.ExistingChat!.ExternalId,
             newSubscription);
+
+        return newSubscription;
+    }
+    
+    private AnswerDto GetAnswerMessageType(
+        SubscribeType subscribeType)
+    {
+        switch (subscribeType)
+        {
+            case (SubscribeType.Sunset | SubscribeType.Lightning):
+            {
+                return new AnswerDto
+                {
+                    MessageType = AnswerMessageType.SubscribedToSunsetAndLightning
+                };
+            }
+            case (SubscribeType.Sunset):
+            {
+                return new AnswerDto
+                {
+                    MessageType = AnswerMessageType.SubscribedToSunset
+                };
+            }
+            case (SubscribeType.Lightning):
+            {
+                return new AnswerDto
+                {
+                    MessageType = AnswerMessageType.SubscribedToLightning
+                };
+            }
+
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(subscribeType));
+        }
     }
 }

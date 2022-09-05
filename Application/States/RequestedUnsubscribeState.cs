@@ -28,32 +28,20 @@ public class RequestedUnsubscribeState : IChatState
         {
             case "закаты":
                 {
-                    await UnsubscribeFrom(SubscribeType.Sunset);
-
-                    return new AnswerDto
-                    {
-                        MessageType = AnswerMessageType.SubscribedToSunset
-                    };
+                    var newSubscription = await UnsubscribeFrom(SubscribeType.Sunset);
+                    return GetAnswerMessageType(newSubscription);
                 }
 
             case "грозы":
                 {
-                    await UnsubscribeFrom(SubscribeType.Lightning);
-
-                    return new AnswerDto
-                    {
-                        MessageType = AnswerMessageType.Unsubscribed
-                    };
+                    var newSubscription = await UnsubscribeFrom(SubscribeType.Lightning);
+                    return GetAnswerMessageType(newSubscription);
                 }
 
             case "от всех":
                 {
-                    await UnsubscribeFrom(SubscribeType.Sunset | SubscribeType.Lightning);
-
-                    return new AnswerDto
-                    {
-                        MessageType = AnswerMessageType.SubscribedToSunsetAndLightning
-                    };
+                    var newSubscription = await UnsubscribeFrom(SubscribeType.Sunset | SubscribeType.Lightning);
+                    return GetAnswerMessageType(newSubscription);
                 }
 
             default:
@@ -68,7 +56,7 @@ public class RequestedUnsubscribeState : IChatState
         }
     }
 
-    private async Task UnsubscribeFrom(
+    private async Task<SubscribeType> UnsubscribeFrom(
         SubscribeType subscribeType)
     {
         var isAlreadyUnsubscribed = _chatContext.ExistingUser!.SubscribeType!.Value.HasFlag(subscribeType) == false;
@@ -89,5 +77,40 @@ public class RequestedUnsubscribeState : IChatState
         await _chatContext.UserService.UpdateSubscription(
             _chatContext.ExistingChat!.ExternalId,
             newSubscriptionType);
+
+        return newSubscriptionType;
+    }
+
+    private AnswerDto GetAnswerMessageType(
+        SubscribeType subscribeType)
+    {
+        switch (subscribeType)
+        {
+            case (SubscribeType.Sunset):
+            {
+                return new AnswerDto
+                {
+                    MessageType = AnswerMessageType.SubscribedToSunset
+                };
+            }
+            case (SubscribeType.Lightning):
+            {
+                return new AnswerDto
+                {
+                    MessageType = AnswerMessageType.SubscribedToLightning
+                };
+            }
+            case (SubscribeType.None):
+            {
+                return new AnswerDto
+                {
+                    MessageType = AnswerMessageType.Unsubscribed
+                };
+            }
+
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(subscribeType));
+        }
     }
 }
