@@ -67,17 +67,19 @@ public class AnswerService : IAnswerService
         {
             AnswerMessageType.Unsubscribed,
             "Вы отписаны от всех рассылок. \n" +
-                "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'"
+                "Если вы хотите подписаться на рассылку прогноза - от рассылки напишите 'Подписка'"
         },
         {
             AnswerMessageType.SubscribedToSunset,
             "Вы подписаны на рассылки закатов. \n" +
-            "Если вы хотите отписаться от рассылки напишите 'Отписка'."
+            "Если вы хотите подписаться на еще одну рассылку напишите 'Подписка'.\n" +
+            "Если вы хотите отписаться от рассылки напишите 'Отписка'.\n"
         },
         {
             AnswerMessageType.SubscribedToLightning,
             "Вы подписаны на рассылки гроз. \n" +
-            "Если вы хотите отписаться от рассылки напишите 'Отписка'."
+            "Если вы хотите подписаться на еще одну рассылку напишите 'Подписка'.\n" +
+            "Если вы хотите отписаться от рассылки напишите 'Отписка'.\n"
         },
         {
             AnswerMessageType.SubscribedToSunsetAndLightning,
@@ -119,6 +121,14 @@ public class AnswerService : IAnswerService
         },
         {
             AnswerMessageType.SubscribedToSunset,
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка", "Отписка")
+        },
+        {
+            AnswerMessageType.SubscribedToLightning,
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка", "Отписка")
+        },
+        {
+            AnswerMessageType.SubscribedToSunsetAndLightning,
             ReplyKeyboardMarkupDto.CreateFromButtonTexts("Отписка")
         },
         {

@@ -25,57 +25,90 @@ public class SubscribedState : IChatState
 
         var existSubscription = _chatContext.ExistingUser!.SubscribeType!.Value;
 
-        if (_chatContext.MessageText!.Trim().ToLower() == "отписка")
+        switch (_chatContext.MessageText!.Trim().ToLower())
         {
-            await _chatContext.ChatService.UpdateState(
-                _chatContext.ExistingChat!.ExternalId,
-                ChatStateType.RequestedUnsubscribe);
+            case "отписка":
+                {
+                    await _chatContext.ChatService.UpdateState(
+                        _chatContext.ExistingChat!.ExternalId,
+                        ChatStateType.RequestedUnsubscribe);
 
-            switch (existSubscription)
-            {
-                case (SubscribeType.Sunset | SubscribeType.Lightning):
-                    return new AnswerDto
+                    switch (existSubscription)
                     {
-                        MessageType = AnswerMessageType.RequestedUnsubscribeWithSunsetAndLightningSubscribes
-                    };
-                case (SubscribeType.Sunset):
-                    return new AnswerDto
+                        case (SubscribeType.Sunset | SubscribeType.Lightning):
+                            return new AnswerDto
+                            {
+                                MessageType = AnswerMessageType.RequestedUnsubscribeWithSunsetAndLightningSubscribes
+                            };
+                        case (SubscribeType.Sunset):
+                            return new AnswerDto
+                            {
+                                MessageType = AnswerMessageType.RequestedUnsubscribeWithSunsetSubscribed
+                            };
+                        case (SubscribeType.Lightning):
+                            return new AnswerDto
+                            {
+                                MessageType = AnswerMessageType.RequestedUnsubscribeWithSunsetSubscribed
+                            };
+                        default:
+                            throw new ArgumentOutOfRangeException(
+                                nameof(existSubscription));
+                    }
+                }
+            case "подписка":
+                {
+                    if (_chatContext.ExistingUser.SubscribeType!.Value.HasFlag(SubscribeType.Sunset | SubscribeType.Lightning))
                     {
-                        MessageType = AnswerMessageType.RequestedUnsubscribeWithSunsetSubscribed
-                    };
-                case (SubscribeType.Lightning):
-                    return new AnswerDto
+                        throw new Exception(
+                            $"User {_chatContext.ExistingUser.ExternalId} already exists all subscription types");
+                    }
+
+                    await _chatContext.ChatService.UpdateState(
+                        _chatContext.ExistingChat!.ExternalId,
+                        ChatStateType.RequestedNewSubscribe);
+
+                    switch (existSubscription)
                     {
-                        MessageType = AnswerMessageType.RequestedUnsubscribeWithSunsetSubscribed
-                    };
-                default: 
-                    throw new ArgumentOutOfRangeException(
-                        nameof(existSubscription));
-            }
-        }
-        else
-        {
-            switch (existSubscription)
-            {
-                case (SubscribeType.Sunset | SubscribeType.Lightning):
-                    return new AnswerDto
+                        case (SubscribeType.Sunset):
+                            return new AnswerDto
+                            {
+                                MessageType = AnswerMessageType.RequestedUnsubscribeWithSunsetSubscribed
+                            };
+                        case (SubscribeType.Lightning):
+                            return new AnswerDto
+                            {
+                                MessageType = AnswerMessageType.RequestedUnsubscribeWithSunsetSubscribed
+                            };
+                        default:
+                            throw new ArgumentOutOfRangeException(
+                                nameof(existSubscription));
+                    }
+                }
+
+            default:
+                {
+                    switch (existSubscription)
                     {
-                        MessageType = AnswerMessageType.SubscribedToSunsetAndLightning
-                    };
-                case (SubscribeType.Sunset):
-                    return new AnswerDto
-                    {
-                        MessageType = AnswerMessageType.SubscribedToSunset
-                    };
-                case (SubscribeType.Lightning):
-                    return new AnswerDto
-                    {
-                        MessageType = AnswerMessageType.SubscribedToLightning
-                    };
-                default:
-                    throw new ArgumentOutOfRangeException(
-                        nameof(existSubscription));
-            }
+                        case (SubscribeType.Sunset | SubscribeType.Lightning):
+                            return new AnswerDto
+                            {
+                                MessageType = AnswerMessageType.SubscribedToSunsetAndLightning
+                            };
+                        case (SubscribeType.Sunset):
+                            return new AnswerDto
+                            {
+                                MessageType = AnswerMessageType.SubscribedToSunset
+                            };
+                        case (SubscribeType.Lightning):
+                            return new AnswerDto
+                            {
+                                MessageType = AnswerMessageType.SubscribedToLightning
+                            };
+                        default:
+                            throw new ArgumentOutOfRangeException(
+                                nameof(existSubscription));
+                    }
+                }
         }
     }
 }
