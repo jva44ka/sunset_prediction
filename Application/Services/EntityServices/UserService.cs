@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Application.Services.EntityServices.Interfaces;
 using DataAccess.Dao.Interfaces;
 using Domain.Entities;
+using Domain.Entities.Enums;
 
 namespace Application.Services.EntityServices;
 
@@ -44,5 +45,18 @@ public class UserService : IUserService
         }
 
         return await _userDao.UpdateCity(user.Id, cityId);
+    }
+    
+    public async Task<bool> UpdateSubscription(long externalId, SubscribeType? subscribeType)
+    {
+        var user = await _userDao.GetByExternalId(externalId);
+
+        if (user == null)
+        {
+            throw new Exception(
+                $"User not found in database by external id: {externalId}");
+        }
+
+        return await _userDao.UpdateSubscribeType(user.Id, subscribeType);
     }
 }

@@ -45,20 +45,26 @@ public class UpdateHandleService : IUpdateHandleService
                 $"Failed to create record in table \"updates\" with update_id: {updateDto.UpdateId}");
         }
 
-        var transitionResult = await _chatStateService.Transit(
-            updateDto.Message);
-
-        var messageText = _answerService.GenerateAnswerText(
-            transitionResult.MessageType,
-            transitionResult.MessageArgs);
-        var keyboard = _answerService.GenerateKeyboard(
-            transitionResult.MessageType);
-
-        return new HandleUpdateResult
+        if (updateDto.Message != null)
         {
-            ChatId = updateDto.Message.Chat.Id,
-            MessageText = messageText,
-            MessageKeyboard = keyboard
-        };
+            var transitionResult = await _chatStateService.Transit(
+                updateDto.Message);
+
+            var messageText = _answerService.GenerateAnswerText(
+                transitionResult.MessageType,
+                transitionResult.MessageArgs);
+            var keyboard = _answerService.GenerateKeyboard(
+                transitionResult.MessageType);
+
+            return new HandleUpdateResult
+            {
+                ChatId = updateDto.Message.Chat.Id,
+                MessageText = messageText,
+                MessageKeyboard = keyboard
+            };
+        }
+
+        throw new NotImplementedException(
+            "Received new update without message text");
     }
 }

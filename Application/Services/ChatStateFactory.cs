@@ -14,13 +14,11 @@ public class ChatStateFactory : IChatStateFactory
         new Dictionary<ChatStateType, Type>
         {
             { ChatStateType.ProposedInputCity, typeof(ProposedInputCityState) },
-            { ChatStateType.ProposedFoundedCity, typeof(ProposedFoundedCityState)},
-            { ChatStateType.OfChoosingSubscribeType, typeof(OfChoosingSubscribeTypeState)},
-            { ChatStateType.SubscribedToEverydayPushes, typeof(SubscribedToEverydayPushesState)},
-            { ChatStateType.SubscribedToEverydayDoublePushes, typeof(SubscribedToEverydayDoublePushesState)},
-            { ChatStateType.SubscribedTriesToUnsubscribe, typeof(SubscribedTriesToUnsubscribeState)},
-            { ChatStateType.Unsubscribed, typeof(UnsubscribedState)},
-            { ChatStateType.UnsubscribedTriesSubscribe, typeof(UnsubscribedTriesSubscribeState)}
+            { ChatStateType.FoundedProposedCity, typeof(FoundedProposedCityState)},
+            { ChatStateType.WithoutSubscribe, typeof(WithoutSubscribeState)},
+            { ChatStateType.RequestedNewSubscribe, typeof(RequestedSubscribeState)},
+            { ChatStateType.Subscribed, typeof(SubscribedState)},
+            { ChatStateType.RequestedUnsubscribe, typeof(RequestedUnsubscribeState)}
         };
 
     public IChatState Create(

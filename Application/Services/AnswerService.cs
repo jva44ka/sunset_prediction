@@ -3,6 +3,7 @@ using System.Linq;
 using Application.Services.Interfaces;
 using Domain.Entities.Enums;
 using TelegramApi.Client.Dtos;
+using Application.Enums;
 
 namespace Application.Services;
 
@@ -12,11 +13,11 @@ public class AnswerService : IAnswerService
         = new Dictionary<AnswerMessageType, string>
     {
         {
-            AnswerMessageType.InputCity,
+            AnswerMessageType.ProposedInputCity,
             "Пожалуйста введите название своего города (желательно точное название)."
         },
         {
-            AnswerMessageType.ProposedCityName,
+            AnswerMessageType.ProposedFoundedCityName,
             "Ваш город {0}?"
         },
         {
@@ -24,76 +25,111 @@ public class AnswerService : IAnswerService
             "Город с таким названием не найден. Попробуйте написать точное название вашего города."
         },
         {
-            AnswerMessageType.ProposedSubscribeTypes,
-            "Выбирите и напишите вариант рассылки:\n" +
-                "1. 'Обычная' - бот присылает одно сообщение за час до заката при высокой вероятности заката \n" +
-                "2. 'Двойная' - бот присылает одно сообщение с утра, второе сообщение за час до заката при высокой вероятности заката"
-        },
-        {
             AnswerMessageType.ProposedCityNameWrong,
             "Возможно вы ввели неполное название города, попробуйте еще раз."
         },
         {
-            AnswerMessageType.SubscribedToEverydayPushes,
-            "Вы подписались на обычную рассылку. В случае успешного прогноза " +
-                "заката вам будет отправлено уведомление за час.\n" +
-                "Если вы хотите отписаться от рассылки напишите 'Отписка'."
+            AnswerMessageType.RequestedNewSubscribeWithoutSubscribes,
+            "Чтобы подписаться на рассылку введите название рассылки.\n" +
+            "Вам доступны рассылки: 'Грозы', 'Закаты', 'Закаты и грозы'."
         },
         {
-            AnswerMessageType.SubscribedToEverydayDoublePushes,
-            "Вы подписались на двойную рассылку. В случае успешного прогноза заката вам будет " +
-                "отправлено уведомление утром. Если вечером того же дня прогноз будет все еще успешен, " +
-                "вам отправится второе уведомление за час до заката. \n" +
-                "Если вы хотите отписаться от рассылки напишите 'Отписка'."
+            AnswerMessageType.RequestedNewSubscribeWithSunsetSubscribe,
+            "Чтобы подписаться на рассылку введите название рассылки.\n" +
+            "Вам доступна рассылка 'Грозы'."
+        },
+        {
+            AnswerMessageType.RequestedNewSubscribeWithLightningSubscribed,
+            "Чтобы подписаться на рассылку введите название рассылки.\n" +
+            "Вам доступна рассылка: 'Закаты'."
+        },
+
+        {
+            AnswerMessageType.RequestedUnsubscribeWithSunsetAndLightningSubscribes,
+            "Чтобы отписаться от рассылки введите название рассылки.\n" +
+            "Вы подписаны на доступны 'Грозы', 'Закаты', 'Закаты и грозы'."
+
+        },
+        {
+            AnswerMessageType.RequestedUnsubscribeWithSunsetSubscribed,
+            "Чтобы отписаться от рассылки введите название рассылки.\n" +
+            "Вы подписаны на доступны 'Закаты'."
+        },
+        {
+            AnswerMessageType.RequestedUnsubscribeWithLightningSubscribe,
+            "Чтобы отписаться от рассылки введите название рассылки.\n" +
+            "Вы подписаны на доступны 'Грозы'."
         },
         {
             AnswerMessageType.InputSubscribeNameWrong,
-            "Введеный вариант подписки не распознан. Пожалуйста напишите один " +
-                "из вариантов: 'Обычная' или 'Двойная'."
-        },
-        {
-            AnswerMessageType.UnsubscribeWarning,
-            "Вы действительно хотите отписаться от рассылки?"
+            "Введеный вариант подписки не распознан. Пожалуйста напишите корректное название подписки."
         },
         {
             AnswerMessageType.Unsubscribed,
             "Вы отписаны от всех рассылок. \n" +
-                "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'"
+                "Если вы хотите подписаться на рассылку прогноза - от рассылки напишите 'Подписка'"
         },
         {
-            AnswerMessageType.StaysSubscribed,
-            "Вы подписаны на рассылку. \n" +
-                "Если вы хотите отписаться от рассылки напишите 'Отписка'."
+            AnswerMessageType.SubscribedToSunset,
+            "Вы подписаны на рассылки закатов. \n" +
+            "Если вы хотите подписаться на еще одну рассылку напишите 'Подписка'.\n" +
+            "Если вы хотите отписаться от рассылки напишите 'Отписка'.\n"
         },
         {
-            AnswerMessageType.StaysUnsubscribed,
-            "Вы отписаны от всех рассылок. \n" +
-                "Если вы хотите опять подписаться на рассылку прогноза - от рассылки напишите 'Подписка'"
-        }
+            AnswerMessageType.SubscribedToLightning,
+            "Вы подписаны на рассылки гроз. \n" +
+            "Если вы хотите подписаться на еще одну рассылку напишите 'Подписка'.\n" +
+            "Если вы хотите отписаться от рассылки напишите 'Отписка'.\n"
+        },
+        {
+            AnswerMessageType.SubscribedToSunsetAndLightning,
+            "Вы подписаны на рассылки закатов и гроз. \n" +
+            "Если вы хотите отписаться от рассылки напишите 'Отписка'."
+        },
     };
 
     private readonly Dictionary<AnswerMessageType, ReplyKeyboardMarkupDto> _messageKeyboards 
         = new Dictionary<AnswerMessageType, ReplyKeyboardMarkupDto>
     {
         {
-            AnswerMessageType.ProposedCityName, 
+            AnswerMessageType.ProposedFoundedCityName, 
             ReplyKeyboardMarkupDto.CreateFromButtonTexts("Да", "Нет")
         },
         {
-            AnswerMessageType.ProposedSubscribeTypes, 
-            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Обычная", "Двойная")
+            AnswerMessageType.RequestedNewSubscribeWithoutSubscribes, 
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Грозы", "Закаты", "Закаты и грозы")
         },
         {
-            AnswerMessageType.SubscribedToEverydayPushes,
+            AnswerMessageType.RequestedNewSubscribeWithSunsetSubscribe, 
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Грозы")
+        }, 
+        {
+            AnswerMessageType.RequestedNewSubscribeWithLightningSubscribed, 
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Закаты")
+        }, 
+        {
+            AnswerMessageType.RequestedUnsubscribeWithSunsetAndLightningSubscribes, 
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Грозы", "Закаты", "От всех")
+        },
+        {
+            AnswerMessageType.RequestedUnsubscribeWithLightningSubscribe,
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Грозы")
+        },
+        {
+            AnswerMessageType.RequestedUnsubscribeWithSunsetSubscribed,
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Закаты")
+        },
+        {
+            AnswerMessageType.SubscribedToSunset,
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка", "Отписка")
+        },
+        {
+            AnswerMessageType.SubscribedToLightning,
+            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Подписка", "Отписка")
+        },
+        {
+            AnswerMessageType.SubscribedToSunsetAndLightning,
             ReplyKeyboardMarkupDto.CreateFromButtonTexts("Отписка")
-        },
-        {
-            AnswerMessageType.SubscribedToEverydayDoublePushes,
-            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Отписка")
-        },
-        {
-            AnswerMessageType.UnsubscribeWarning, 
-            ReplyKeyboardMarkupDto.CreateFromButtonTexts("Да", "Нет")
         },
         {
             AnswerMessageType.Unsubscribed, 

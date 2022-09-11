@@ -36,6 +36,7 @@ public class InitMigration202209041900 : Migration
             .WithColumn("first_name").AsString().Nullable()
             .WithColumn("last_name").AsString().Nullable()
             .WithColumn("user_name").AsString().NotNullable()
+            .WithColumn("subscribe_type").AsByte().Nullable()
             .WithColumn("city_id").AsInt32().Nullable().ForeignKey("fk_users_cities", "cities", "id")
             .WithColumn("chat_id").AsInt32().NotNullable().ForeignKey("fk_users_chats", "chats", "id");
     }

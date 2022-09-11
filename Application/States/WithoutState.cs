@@ -5,6 +5,7 @@ using Application.Services.Dto;
 using Application.States.Interfaces;
 using Domain.Entities;
 using Domain.Entities.Enums;
+using Application.Enums;
 
 namespace Application.States;
 
@@ -40,7 +41,7 @@ public class WithoutState : IChatState
 
         return new AnswerDto
         {
-            MessageType = AnswerMessageType.InputCity
+            MessageType = AnswerMessageType.ProposedInputCity
         };
     }
 }

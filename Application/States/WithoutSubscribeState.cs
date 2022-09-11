@@ -1,42 +1,42 @@
-﻿using Application.Services;
+﻿using System.Threading.Tasks;
+using Application.Services;
 using Application.Services.Dto;
 using Application.States.Interfaces;
 using Domain.Entities.Enums;
-using System.Threading.Tasks;
+using Application.Enums;
 
 namespace Application.States;
 
-public class SubscribedToEverydayPushesState : IChatState
+public class WithoutSubscribeState : IChatState
 {
     private readonly ChatContext _chatContext;
 
-    public SubscribedToEverydayPushesState(ChatContext chatContext)
+    public WithoutSubscribeState(ChatContext chatContext)
     {
         _chatContext = chatContext;
     }
 
-    //TODO: Копия SubscribedToEverydayDoublePushesState
     public async Task<AnswerDto> HandleTextMessage()
     {
         _chatContext.ValidateMessageText();
         _chatContext.ValidateExistingChat();
 
-        if (_chatContext.MessageText!.Trim().ToLower() == "отписка")
+        if (_chatContext.MessageText!.Trim().ToLower() == "подписка")
         {
             await _chatContext.ChatService.UpdateState(
-                _chatContext.ExistingChat!.ExternalId, 
-                ChatStateType.SubscribedTriesToUnsubscribe);
+                _chatContext.ExistingChat!.ExternalId,
+                ChatStateType.RequestedNewSubscribe);
 
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.UnsubscribeWarning
+                MessageType = AnswerMessageType.RequestedNewSubscribeWithoutSubscribes
             };
         }
         else
         {
             return new AnswerDto
             {
-                MessageType = AnswerMessageType.StaysSubscribed
+                MessageType = AnswerMessageType.Unsubscribed
             };
         }
     }
