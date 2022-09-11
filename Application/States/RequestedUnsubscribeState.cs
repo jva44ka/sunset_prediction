@@ -74,6 +74,13 @@ public class RequestedUnsubscribeState : IChatState
                 _chatContext.ExistingChat!.ExternalId,
                 ChatStateType.WithoutSubscribe);
         }
+        else
+        {
+            await _chatContext.ChatService.UpdateState(
+                _chatContext.ExistingChat!.ExternalId,
+                ChatStateType.Subscribed);
+        }
+
         await _chatContext.UserService.UpdateSubscription(
             _chatContext.ExistingChat!.ExternalId,
             newSubscriptionType);

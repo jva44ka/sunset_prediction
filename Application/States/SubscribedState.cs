@@ -48,7 +48,7 @@ public class SubscribedState : IChatState
                         case (SubscribeType.Lightning):
                             return new AnswerDto
                             {
-                                MessageType = AnswerMessageType.RequestedUnsubscribeWithSunsetSubscribed
+                                MessageType = AnswerMessageType.RequestedUnsubscribeWithLightningSubscribe
                             };
                         default:
                             throw new ArgumentOutOfRangeException(
