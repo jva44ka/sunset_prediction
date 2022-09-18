@@ -9,14 +9,14 @@ using OpenWeatherMap.Client.Clients;
 using OpenWeatherMap.Client.Clients.Interfaces;
 using TelegramApi.Client.Dtos;
 
-namespace TelegramApi.Worker.Installers;
+namespace OpenWeatherMap.Worker.Installers;
 
 public static class ServicesInstaller
 {
     /// <summary>
     ///     Добавляет в serviceCollection сервисы бизнес-логики
     /// </summary>
-    public static IServiceCollection ConfigureServices(IServiceCollection serviceCollection)
+    public static IServiceCollection AddServices(this IServiceCollection serviceCollection)
     {
         //data access
         serviceCollection.AddSingleton<IConnectionFactory, NpgConnectionFactory>();

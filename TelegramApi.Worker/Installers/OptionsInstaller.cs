@@ -10,7 +10,7 @@ public static class OptionsInstaller
     /// <summary>
     ///     Добавляет в serviceCollection сервисы настроек appSettings.json
     /// </summary>
-    public static IServiceCollection ConfigureServices(IServiceCollection serviceCollection, 
+    public static IServiceCollection AddOptions(this IServiceCollection serviceCollection, 
         IConfiguration configuration)
     {
         serviceCollection.Configure<DatabaseConnectionSettings>(configuration.GetSection(nameof(DatabaseConnectionSettings)));

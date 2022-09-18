@@ -24,7 +24,7 @@ public class GeocodingClient : IGeocodingClient
         _httpClientFactory = httpClientFactory;
         _openWeatherMapApiSettings = openWeatherMapApiSettingsOptions.Value;
 
-        FindCoordinatesByLocationNameUrl = _openWeatherMapApiSettings.Host + FindCoordinatesByLocationNameEndpoint;
+        FindCoordinatesByLocationNameUrl = $"{_openWeatherMapApiSettings.Host}{FindCoordinatesByLocationNameEndpoint}";
     }
 
     public Task<HttpResponseMessage> FindCoordinatesByLocationName(

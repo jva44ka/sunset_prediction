@@ -12,9 +12,9 @@ public class Program
         IHost host = Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
-                OptionsInstaller.ConfigureServices(services, hostContext.Configuration);
-                ServicesInstaller.ConfigureServices(services);
-                services.AddHostedService<TelegramBackgroundService>();
+                services.AddOptions(hostContext.Configuration)
+                        .AddServices()
+                        .AddHostedService<TelegramBackgroundService>();
             })
             .Build();
 

@@ -22,11 +22,11 @@ public class TelegramBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation($"Worker started at: {DateTimeOffset.UtcNow}");
+        _logger.LogInformation($"TelegramBackgroundService: started at: {DateTimeOffset.UtcNow}");
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            _logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
+            _logger.LogInformation($"TelegramBackgroundService: running at: {DateTimeOffset.UtcNow}");
 
             try
             {
@@ -44,6 +44,6 @@ public class TelegramBackgroundService : BackgroundService
             //TODO: если давно не было апдейтов и наоборот меньший/без таймаута при наличии нагрузки.
         }
 
-        _logger.LogInformation($"Worker stopped at: {DateTimeOffset.UtcNow}");
+        _logger.LogInformation($"TelegramBackgroundService: stopped at: {DateTimeOffset.UtcNow}");
     }
 }
