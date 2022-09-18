@@ -47,14 +47,14 @@ public class UpdateHandleService : IUpdateHandleService
 
         if (updateDto.Message != null)
         {
-            var transitionResult = await _chatStateService.Transit(
+            var transitionAnswer = await _chatStateService.Transit(
                 updateDto.Message);
 
             var messageText = _answerService.GenerateAnswerText(
-                transitionResult.MessageType,
-                transitionResult.MessageArgs);
+                transitionAnswer.MessageType,
+                transitionAnswer.MessageArgs);
             var keyboard = _answerService.GenerateKeyboard(
-                transitionResult.MessageType);
+                transitionAnswer.MessageType);
 
             return new HandleUpdateResult
             {
@@ -65,6 +65,6 @@ public class UpdateHandleService : IUpdateHandleService
         }
 
         throw new NotImplementedException(
-            "Received new update without message text");
+            "Received new update without message");
     }
 }
